@@ -1,0 +1,9 @@
+{
+    "menu": [{
+            "titulo": "Tarea Estantar",
+            "icono": "fa fa-plus",
+            "link": "tareas/Tarea",
+            "nivel": 1
+        }
+    ]
+}
