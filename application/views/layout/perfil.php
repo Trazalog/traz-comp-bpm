@@ -10,7 +10,7 @@
             </a>
             <ul class="dropdown-menu">
                 <li class="user-body">
-                    <a href="<?php echo base_url('Login/edit');?>"><i class="fa fa-pencil"></i> Editar Perfil</a>
+                    <a href="#"><i class="fa fa-pencil"></i> Editar Perfil</a>
                 </li>
                 <li class="user-body">
                     <a href="#" data-ui=""><i class="fa fa-check"></i> U industrial activa</a>
@@ -40,7 +40,7 @@
                 <!-- Menu Footer-->
                 <li class="user-footer">
                     <div class="pull-right">
-                        <a href=<?php echo base_url('login/logout')?> class="btn btn-default btn-flat">Salir <i
+                        <a href="http://localhost/traz-prod-assetplanner/" class="btn btn-default btn-flat">Salir <i
                                 class="fa fa-fw fa-sign-out"></i></a>
                     </div>
                 </li>

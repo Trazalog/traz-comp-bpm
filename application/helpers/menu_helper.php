@@ -6,13 +6,13 @@ if(!function_exists('menu')){
     {
         $array =  json_decode($json);
        // var_dump($array->menu);die;
-        $html = '<ul class="sidebar-menu menu" data-widget="tree">
+        $html = '<ul class="sidebar-menu tree menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>';
         foreach ($array->menu as $i) {
 
             switch ($i->nivel) {
                 case 1:
-                    $html .= '<li><a class="link" href="#" data-link="'.$i->link.'"><i class="'.$i->icono.'"></i>'.$i->titulo.'</a></li>';
+                    $html .= '<li><a class="link" href="#" data-link="'.$i->link.'"><i class="'.$i->icono.'"></i><span>'.$i->titulo.'</span></a></li>';
                     break;
                 case 2:
                     $html .= '<li class="treeview">

@@ -4,21 +4,11 @@
        <script src="<?php base_url() ?>lib/bower_components/jquery-ui/jquery-ui.min.js"></script>
        <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
        <script>
-        $.widget.bridge('uibutton', $.ui.button);
+$.widget.bridge('uibutton', $.ui.button);
        </script>
        <!-- Bootstrap 3.3.7 -->
        <script src="<?php base_url() ?>lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
-       <!-- Select2 -->
-       <script src="<?php base_url() ?>lib/bower_components/select2/dist/js/select2.full.js"></script>
-       <!-- Morris.js charts -->
-       <!-- <script src="<?php base_url() ?>lib/bower_components/raphael/raphael.min.js"></script>
-    <script src="<?php base_url() ?>lib/bower_components/morris.js/morris.min.js"></script> -->
-       <!-- Sparkline -->
-       <!-- <script src="<?php base_url() ?>lib/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script> -->
-       <!-- jvectormap -->
-       <!-- <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script> -->
        <!-- jQuery Knob Chart -->
        <script src="<?php base_url() ?>lib/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
        <!-- daterangepicker -->
@@ -42,11 +32,30 @@
        <!-- AdminLTE App -->
        <script src="<?php base_url() ?>lib/dist/js/adminlte.min.js"></script>
 
-
        <script src="<?php base_url();?>lib/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
-       <!-- <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script> -->
-       <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-       <!-- <script src="<?php base_url() ?>lib/dist/js/pages/dashboard.js"></script> -->
-       <!-- AdminLTE for demo purposes -->
-       <!-- <script src="<?php base_url() ?>lib/dist/js/demo.js"></script> -->
+       <!-- iCheck 1.0.1 -->
+       <script src="<?php base_url();?>lib/plugins/iCheck/icheck.min.js"></script>
+
+
+       <script>
+jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
+    return this.each(function() {
+        var clicks = 0,
+            self = this;
+        jQuery(this).click(function(event) {
+            clicks++;
+            if (clicks == 1) {
+                setTimeout(function() {
+                    if (clicks == 1) {
+                        single_click_callback.call(self, event);
+                    } else {
+                        double_click_callback.call(self, event);
+                    }
+                    clicks = 0;
+                }, timeout || 300);
+            }
+        });
+    });
+}
+       </script>
