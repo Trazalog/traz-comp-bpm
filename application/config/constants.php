@@ -84,54 +84,45 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-/*
-|--------------------------------------------------------------------------
-| Bonita url
-|--------------------------------------------------------------------------
-|
-| Url base to Bonita
-|
-*/
+#TRAZ-COMP-BPM
+define('BPM', 'traz-comp-bpm/');
 
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http:///10.142.0.3:8080/bonita/');
 
-
-/*
-|--------------------------------------------------------------------------
-| Bonita Process ID ()
-|--------------------------------------------------------------------------
-|
-| Id de proceso productivo (se usa para lanzar proceso)
-|
-*/
-
-//? PEDIDOS NORMALES
- 
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
-
-//? PEDIDOS EXTRAORDINATIOS
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406');
 
 define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 
-/*
-|--------------------------------------------------------------------------
-| ERRORES
-|--------------------------------------------------------------------------
-|
-| Listado Errores 
-|
-|
-*/
-//Errores 100 <200 de Bonita
-//No se puedo Cerrar Tarea
-define('ASP_0100', 'Error ASP_0100: No se pudo cerrar la Tarea'); 
+define('BPM_PROCESS', json_encode(array(
+    '8803232493891311406' => ['nombre' => 'Ped. Materiales', 'color' => '#F39C12', 'model' => 'traz-comp-almacenes'],
+    '6013058915384903051' => ['nombre' => 'Ped. Materiales Ext', 'color' => '#F39C12', 'model' => 'traz-comp-almacenes'],
+    '7503443566840192735' => ['nombre' => 'Proc. Mantenimiento', 'color' => '#00A65A', 'model' => 'traz-comp-'],
+)));
+
+define('BPM_ADMIN_USER', 'almacen.tools');
+define('BPM_ADMIN_PASS', 'bpm');
+define('BPM_USER_PASS', 'bpm');
+
+#ERRORES DE BONITA
+define('ASP_100', 'Fallo Conexión BPM');
+define('ASP_101', 'Error al Inciar Proceso');
+define('ASP_102', 'Error al Tomar Tarea');
+define('ASP_103', 'Error al Soltar Tarea');
+define('ASP_104', 'Error al Cerrar Tarea');
+define('ASP_105', 'Error al Obtener Vista Global');
+define('ASP_106', 'Error al Obtener Usuarios');
+define('ASP_107', 'Error al Asignar Usuario');
+define('ASP_108', 'Error al Guardar Comentarios');
+define('ASP_109', 'Error de Loggin');
+define('ASP_110', 'Error al Obtener Detalle Tarea');
+define('ASP_111', 'Error al Obtener Bandeja de Tareas');
+define('ASP_112', 'Error al Obtener Comentarios');
+define('ASP_113', 'Usuario No Encontrado');
+define('ASP_114', 'Error al Actualizar Variable');
+define('ASP_115', 'Error al Leer Variable');
 
 
-//No se pudo Asignar Usuario
-define('ASP_0101', 'Error ASP_0101: No se pudo Asignar Usuario'); 
-
-
-//Errores 200 < 300 de MySql
-define('ASP_0200', 'Error ASP_0200: Error de Base de Datos'); 
-
+#COMPONENTE ALMACENES
+define('ALM', 'traz-comp-almacen/');
+define('viewOT', false);
 

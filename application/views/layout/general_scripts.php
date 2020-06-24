@@ -39,6 +39,12 @@ $.widget.bridge('uibutton', $.ui.button);
 
 
        <script>
+
+function existFunction(nombre) {
+    var fn = window[nombre];
+    if(typeof fn === 'function') fn();
+
+}
 jQuery.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
     return this.each(function() {
         var clicks = 0,
