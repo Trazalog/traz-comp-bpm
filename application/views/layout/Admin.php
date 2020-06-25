@@ -36,6 +36,15 @@
 
   <?php $this->load->view('layout/general_scripts')?>
 
+  <style>
+     .mr-2{
+       margin-right: 5px;
+     }
+     .ml-2{
+       margin-left: 5px;
+     }
+  </style>
+
 </head>
 
 

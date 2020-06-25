@@ -84,6 +84,8 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+define('REST', 'http://10.142.0.3:8280/services/ProduccionDataService/');
+
 #TRAZ-COMP-BPM
 define('BPM', 'traz-comp-bpm/');
 
@@ -94,10 +96,9 @@ define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406');
 define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 
 define('BPM_PROCESS', json_encode(array(
-    '8803232493891311406' => ['nombre' => 'Ped. Materiales', 'color' => '#F39C12', 'model' => 'traz-comp-almacenes'],
-    '6013058915384903051' => ['nombre' => 'Ped. Materiales Ext', 'color' => '#F39C12', 'model' => 'traz-comp-almacenes'],
-    '7503443566840192735' => ['nombre' => 'Proc. Mantenimiento', 'color' => '#00A65A', 'model' => 'traz-comp-'],
-)));
+    '8803232493891311406' => ['nombre' => 'Ped. Materiales', 'color' => '#F39C12', 'model' => 'ALM_Tareas'],
+    '6013058915384903051' => ['nombre' => 'Ped. Materiales Ext', 'color' => '#F39C12', 'model' => 'ALM_Tareas'],
+    '8664799170016058315' => ['nombre' => 'Proc. Mantenimiento', 'color' => '#00A65A', 'model' => 'MAN_Tareas'])));
 
 define('BPM_ADMIN_USER', 'almacen.tools');
 define('BPM_ADMIN_PASS', 'bpm');

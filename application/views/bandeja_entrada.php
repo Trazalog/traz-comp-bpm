@@ -5,85 +5,54 @@
             <div class="box-header">
                 <h3 class="box-title">
                     <i class="fa fa-list"></i>
-
                     Bandeja de Tareas
                 </h3>
             </div>
             <div class="box-body">
+                <table class="table table-hover table-striped" id="tareas">
+                    <tbody>
+                        <?php
+                            if(isset($list)){
 
-                <div class="table-responsive ">
-                    <table class="table table-hover table-striped" id="tareas">
-                        <thead>
-                            <!-- <tr> -->
-                            <th></th>
-                            <th>Tarea</th>
-                            <th class="oculto">Descripción</th>
-                            <th class="oculto">Estado</th>
-                            <th class="oculto">Fec. Venc.</th>
-                            <!-- </tr> -->
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($list as $f) {
-
-                             //   if (true) { //($f->processId'] == BPM_PROCESS_ID_PEDIDOS_NORMALES || $f['processId'] == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
-
+                                foreach ($list as $f) {
+                                    
                                     $id = $f->taskId;
                                     $asig = $f->idUsuarioAsignado;
-
+                                    
                                     echo "<tr class='item' id='$id' data-caseId='$f->caseId' data-json='".json_encode($f)."'  style='cursor: pointer;'>";
-
+                                    
                                     if ($asig != "") {
-                                        echo '<td class="' . ($device == 'android' ? 'hidden"' : '') . '"><i class="fa fa-user text-primary" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i></td>';
+                                        $asig = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
                                     } else {
-                                        echo '<td class="' . ($device == 'android' ? 'hidden"' : '') . '"><i class="fa fa-user" style="color: #d6d9db;" title="No Asignado"></i></td>';
+                                        $asig = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
                                     }
-
+                                    
+                                    // TAREA	
+                                    echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2'><cite>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
+                                    
+                                    foreach ($f->info as $o) {
+                                        echo "<p class='label label-$o->color mr-2'>$o->texto</p>";
+                                    }
+                                    
                                     echo '</td>';
-																		// TAREA	
-																		echo "<td class='mailbox-name'>
-																						<a href='#'>
-																						<b  style='color:$f->color'> $f->nombreProceso </b> 
-																						</a>|  $f->nombreTarea 
-																					</td>";
-																		// DESCRIPCION					
-																		echo '<td class="mailbox-subject oculto">
-																						<p>' . substr($f->nombreTarea, 0, 500) . ' | Justificacion: '.$f->justificacion.'</p>
-																						<p class="label label-danger">Fecha: '.formatFechaPG($f->fecha).'</p> 
-																						<p class="label label-primary">Cod. Lote: '.$f->lote_id.'</p> 
-																						<p class="label label-warning">Nº Pedido: '.$f->pema_id.'</p>
-																					</td>';
-																		// INFO																		
-																		echo '<td class="mailbox-subject oculto">
-																						<p class="label label-primary">'.$f->estado.'</p>
-																					</td>';																	
-																	
-																		// FEC. VENCIMIENTO
-																		if ($f->fec_vencimiento == " ") {
-																			echo '<td class="mailbox-date oculto">' . formato_fecha_hora($f->fec_vencimiento) . '</td>';
-																		} else {
-																			echo '<td class="mailbox-date oculto">Sin fecha</td>';
-																		}																	
-																		
-                                    echo '</tr>';
-
+                                    
                                 }
-                         //   }
+                            }else{
+                                echo "<td class='text-center'><h4>Sin Tareas</h4></td>";
+                            }
                             ?>
 
-                        </tbody>
-                    </table>
-                    <!-- /.table -->
-                </div>
+                    </tbody>
+                </table>
+                <!-- /.table -->
             </div>
             <!-- /.mail-box-messages -->
         </div>
         <!-- /.box-body -->
-
     </div>
     <!-- /. box -->
     <div id="miniView" class="view col-xs-8">
-            
+
     </div>
 </div>
 
@@ -93,7 +62,6 @@
 <!-- /.row -->
 
 <script>
-
 $('.item').single_double_click(function() {
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
@@ -104,7 +72,7 @@ $('.item').single_double_click(function() {
     linkTo('Proceso/detalleTarea/' + $(this).attr('id'));
 });
 
-function closeView() { 
+function closeView() {
     $('#miniView').empty();
     $('.oculto').show();
     $('#bandeja').removeClass().addClass('col-md-12');
@@ -116,5 +84,4 @@ $('input').iCheck({
 });
 
 //DataTable('#tareas');
-
 </script>
