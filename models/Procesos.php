@@ -57,8 +57,6 @@ class Procesos extends CI_Model
 
     public function listar()
     {
-        $this->load->model('Tests');
-
         $rsp =  $this->bpm->getToDoList();
 
         if(!$rsp['status']) return $rsp;
