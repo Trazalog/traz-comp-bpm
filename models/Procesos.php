@@ -65,8 +65,6 @@ class Procesos extends CI_Model
 
         $rsp['data'] = $this->map($this->mapeo($rsp['data']));
 
-        $rsp['data'] = array_merge($rsp['data'], $this->map($this->mapeo($this->Tests->getToDoList()['data'])));
-
         return $rsp;
     }
 
@@ -89,6 +87,6 @@ class Procesos extends CI_Model
     {
         $aux = json_decode(BPM_PROCESS,'true');
        
-        return isset($aux[$processId])?$aux[$processId]:false;
+        return isset($aux[$processId])?$aux[$processId]:'GEN_Tareas';
     }
 }

@@ -4,7 +4,6 @@ class Proceso extends CI_Controller
 {
     public function __construct()
     {
-
         parent::__construct();
 
         $this->load->model('Procesos');
@@ -18,7 +17,6 @@ class Proceso extends CI_Controller
 
             $data['list'] = $rsp['data'];
         }
-        
         $this->load->view('bandeja_entrada', $data);
     }
 
@@ -59,12 +57,10 @@ class Proceso extends CI_Controller
     {
         $id = $this->input->post('id');
         echo json_encode($this->bpm->setUsuario($id, ""));
-
     }
 
     public function cerrarTarea($taskId)
     {
-
         //Obtener Infomracion de Tarea
         $tarea = $this->bpm->getTarea($taskId)['data'];
 
@@ -76,12 +72,11 @@ class Proceso extends CI_Controller
 
         //Cerrar Tarea
         $this->bpm->cerrarTarea($taskId, $contrato);
-
     }
 
     public function getContrato($tarea, $form)
     {
-        $model = $this->mapProcessModel($tarea->processId);
+        $model = $this->Procesos->mapProcessModel($tarea->processId);
 
         $this->load->model("$model/Tareas");
 
@@ -90,7 +85,7 @@ class Proceso extends CI_Controller
 
     public function deplegarVista($tarea)
     {
-        $model = $this->mapProcessModel($tarea->processId);
+        $model = $this->Procesos->mapProcessModel($tarea->processId);
 
         $this->load->model("$model/Tareas");
 
@@ -100,10 +95,5 @@ class Proceso extends CI_Controller
     public function guardarComentario()
     {
         echo $this->bpm->guardarComentario($this->input->post());
-    }
-
-    public function mapProcessModel($processId)
-    {
-        return json_decode(BPM_PROCESS,'true')[$processId]['model'];
     }
 }
