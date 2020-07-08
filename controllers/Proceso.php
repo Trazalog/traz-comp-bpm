@@ -33,7 +33,7 @@ class Proceso extends CI_Controller
 
         //INFORMACION DE TAREA
         $data['tarea'] = $tarea;
-        $data['info'] = $this->load->view('componentes/informacion',null,true);
+        $data['info'] = '';#$this->load->view(BPM.'tareas/componentes/informacion',null,true);
 
         //LINEA DE TIEMPO
         $data['timeline'] =$this->bpm->ObtenerLineaTiempo($tarea->processId, $tarea->caseId);
@@ -44,7 +44,7 @@ class Proceso extends CI_Controller
 
         //DESPLEGAR VISTA
         $data['view'] = $this->deplegarVista($tarea);
-        $this->load->view('notificacion_estandar', $data);
+        $this->load->view(BPM.'notificacion_estandar', $data);
     }
 
     public function tomarTarea()
@@ -85,11 +85,11 @@ class Proceso extends CI_Controller
 
     public function deplegarVista($tarea)
     {
-        $model = $this->Procesos->mapProcessModel($tarea->processId);
+        $process = $this->Procesos->mapProcess($tarea->processId);
 
-        $this->load->model("$model/Tareas");
+        $this->load->model($process['proyecto'].$process['model']);
 
-        return $this->Tareas->desplegarVista($tarea);
+        return $this->{$process['model']}->desplegarVista($tarea);
     }
 
     public function guardarComentario()
