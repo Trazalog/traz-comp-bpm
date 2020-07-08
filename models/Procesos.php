@@ -45,7 +45,7 @@ class Procesos extends CI_Model
             $process = $this->mapProcess($o->processId);
             if($process){
                 $model = $process['model'];
-                $this->load->model($model);
+                $this->load->model($process['proyecto'].$model);
                 $res = $this->{$model}->map($o);
                 $data[$key]->info = isset($res['info'])?$res['info']:[];
                 $data[$key]->descripcion = isset($res['descripcion'])?$res['descripcion']:'Sin Descripción';

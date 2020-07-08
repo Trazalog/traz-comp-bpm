@@ -8,7 +8,7 @@
                     Bandeja de Tareas
                 </h3>
             </div>
-            <div class="box-body">
+            <div class="box-body table-responsive">
                 <table class="table table-hover table-striped" id="tareas">
                     <tbody>
                         <?php
@@ -67,9 +67,9 @@ $('.item').single_double_click(function() {
     $('.oculto').hide();
     $('#bandeja').removeClass().addClass('col-xs-4');
     $('#miniView').empty();
-    $('#miniView').load('Proceso/detalleTarea/' + $(this).attr('id'));
+    $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'));
 }, function() {
-    linkTo('Proceso/detalleTarea/' + $(this).attr('id'));
+    linkTo('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'));
 });
 
 function closeView() {
