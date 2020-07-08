@@ -85,6 +85,6 @@ class Procesos extends CI_Model
     {
         $aux = json_decode(BPM_PROCESS,'true');
        
-        return isset($aux[$processId])?$aux[$processId]:'GEN_Tareas';
+        return isset($aux[$processId])?$aux[$processId]:array('proyecto'=>BPM, 'model'=>'GEN_Tareas');
     }
 }

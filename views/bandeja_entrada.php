@@ -83,5 +83,10 @@ $('input').iCheck({
     radioClass: 'iradio_flat'
 });
 
+
+function existFunction(nombre){
+		var fn = window[nombre]; 
+		if(typeof fn === 'function') fn();
+  }
 //DataTable('#tareas');
 </script>

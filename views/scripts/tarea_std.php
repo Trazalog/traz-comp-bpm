@@ -30,7 +30,7 @@ function tomarTarea() {
         data: {
             id: task.taskId
         },
-        url: 'Proceso/tomarTarea',
+        url: '<?php echo BPM ?>Proceso/tomarTarea',
         success: function(data) {
 
             if (data['status']) {
@@ -53,7 +53,7 @@ function soltarTarea() {
         data: {
             id: task.taskId
         },
-        url: 'Proceso/soltarTarea',
+        url: '<?php echo BPM ?>Proceso/soltarTarea',
         success: function(data) {
 
             // toma a tarea exitosamente
@@ -70,7 +70,7 @@ function soltarTarea() {
 
 function cerrar() {
     if ($('#miniView').length == 0) {
-        linkTo('Proceso');
+        linkTo('<?php echo BPM ?>Proceso');
     } else {
         existFunction('closeView');
     }
@@ -87,7 +87,7 @@ function guardarComentario() {
             'processInstanceId': task.caseId,
             'content': comentario
         },
-        url: 'Proceso/guardarComentario',
+        url: '<?php echo BPM ?>Proceso/guardarComentario',
         success: function(result) {
             var lista = $('#listaComentarios');
             lista.prepend(

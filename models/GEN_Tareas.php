@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-class ALM_Tareas extends CI_Model
+class GEN_Tareas extends CI_Model
 {
     public function __construct()
     {
@@ -12,7 +12,8 @@ class ALM_Tareas extends CI_Model
 
     public function map($tarea)
     {
-        return [];
+        $data['descripcion'] = 'Holis como estas?';
+        return $data;
     }
 
     public function desplegarVista($tarea)
