@@ -50,7 +50,7 @@ class Proceso extends CI_Controller
     public function tomarTarea()
     {
         $id = $this->input->post('id');
-        echo json_encode($this->bpm->setUsuario($id, $this->session->userdata('user_data')['userId']));
+        echo json_encode($this->bpm->setUsuario($id, userId()));
     }
 
     public function soltarTarea()
@@ -62,7 +62,7 @@ class Proceso extends CI_Controller
     public function cerrarTarea($taskId)
     {
         //Obtener Infomracion de Tarea
-        $tarea = $this->bpm->getTarea($taskId)['data'];
+        $tarea = $this->Procesos->mapeoTarea($this->bpm->getTarea($taskId)['data']);
 
         //Formulario desde la Vista
         $form = $this->input->post();
@@ -71,16 +71,17 @@ class Proceso extends CI_Controller
         $contrato = $this->getContrato($tarea, $form);
 
         //Cerrar Tarea
-        $this->bpm->cerrarTarea($taskId, $contrato);
+				$rsp = $this->bpm->cerrarTarea($taskId, $contrato);
+				echo json_encode($rsp);
     }
 
     public function getContrato($tarea, $form)
     {
-        $model = $this->Procesos->mapProcessModel($tarea->processId);
+			$process = $this->Procesos->mapProcess($tarea->processId);
 
-        $this->load->model("$model/Tareas");
+			$this->load->model($process['proyecto'].$process['model']);
 
-        return $this->Tareas->getContrato($tarea);
+        return $this->{$process['model']}->getContrato($tarea, $form);
     }
 
     public function deplegarVista($tarea)

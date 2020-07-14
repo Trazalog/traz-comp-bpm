@@ -53,7 +53,27 @@ class Procesos extends CI_Model
         }
 
         return $data;
-    }
+		}
+		
+		function mapeoTarea($data){
+							
+			$aux = new StdClass();
+
+			$aux->taskId = $data['id'];
+			$aux->caseId = $data['caseId'];
+			$aux->processId = $data['processId'];
+			$aux->nombreTarea = $data['name'];
+			$aux->nombreProceso =  json_decode(BPM_PROCESS,true)[$data['processId']]['nombre'];
+			$aux->color =  json_decode(BPM_PROCESS,true)[$data['processId']]['color'];
+			$aux->descripcion = 'Esto es una Descripcion de la Tarea...<p>Esto es un texto de la solcitud de servicio que puede ser muy larga</p><span class="label label-danger">Urgente</span> <span class="label label-primary">#PonganseLasPilas</span>';
+			$aux->fec_vencimiento = 'dd/mm/aaaa';
+			$aux->usuarioAsignado = 'Nombre Apellido';
+			$aux->idUsuarioAsignado = $data['assigned_id'];
+			$aux->fec_asignacion = $data['assigned_date'];
+			$aux->prioridad = $data['priority'];
+
+			return $aux;
+	}
 
     public function listar()
     {
