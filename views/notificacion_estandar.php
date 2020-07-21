@@ -1,8 +1,7 @@
 <?php #info_header('Cabecera Informacion 1',''); ?>
 <?php #info_header('Cabecera Informacion 2',''); ?>
 <?php #info_header('Cabecera Informacion 3',''); ?>
-<?php echo infoProceso($tarea); ?>
-<?php echo infoEntidadesProceso($tarea); ?>
+<?php echo $cabecera; ?>
 <input id="tarea" data-info="" class="hidden">
 <input type="text" class="form-control hidden" id="asignado" value="<?php echo $tarea->idUsuarioAsignado?>">
 <input type="text" class="form-control hidden" id="taskId" value="<?php echo $tarea->taskId?>">

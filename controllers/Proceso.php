@@ -42,6 +42,9 @@ class Proceso extends CI_Controller
         $data_aux = ['case_id' => $tarea->caseId, 'comentarios' => $this->bpm->ObtenerComentarios($tarea->caseId)];
         $data['comentarios'] = '';#$this->load->view('componentes/comentarios', $data_aux, true);
 
+        // $data['cabecera'] = infoproceso($tarea);
+        $data['cabecera'] = $this->deplegarCabecera($tarea);
+
         //DESPLEGAR VISTA
         $data['view'] = $this->deplegarVista($tarea);
         $this->load->view(BPM.'notificacion_estandar', $data);
@@ -91,6 +94,15 @@ class Proceso extends CI_Controller
         $this->load->model($process['proyecto'].$process['model']);
 
         return $this->{$process['model']}->desplegarVista($tarea);
+    }
+
+    public function deplegarCabecera($tarea)
+    {
+        $process = $this->Procesos->mapProcess($tarea->processId);
+
+        $this->load->model($process['proyecto'].$process['model']);
+
+        return $this->{$process['model']}->desplegarCabecera($tarea);
     }
 
     public function guardarComentario()
