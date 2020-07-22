@@ -1,7 +1,6 @@
-<?php #info_header('Cabecera Informacion 1',''); ?>
-<?php #info_header('Cabecera Informacion 2',''); ?>
-<?php #info_header('Cabecera Informacion 3',''); ?>
+
 <?php echo $cabecera; ?>
+
 <input id="tarea" data-info="" class="hidden">
 <input type="text" class="form-control hidden" id="asignado" value="<?php echo $tarea->idUsuarioAsignado?>">
 <input type="text" class="form-control hidden" id="taskId" value="<?php echo $tarea->taskId?>">
@@ -51,7 +50,7 @@
 			
 			?>
 
-            <div id="view">
+            <div id="view" class="box">
                 <?php echo $view ?>
             </div>
             <hr>
