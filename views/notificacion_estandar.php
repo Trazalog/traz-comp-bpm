@@ -51,6 +51,7 @@
 			?>
 
             <div id="view" class="box">
+                <div class="overlay"></div>
                 <?php echo $view ?>
             </div>
             <hr>
