@@ -16,14 +16,14 @@ function habilitar() {
     $(".btn-soltar").show();
     $(".btn-tomar").hide();
     $('#view').css('pointer-events', 'auto');
-    $('#view').find('.overlay').hide();
+    $('#view').find('.overlay').remove();
 }
 
 function deshabilitar() {
     $(".btn-soltar").hide();
     $(".btn-tomar").show();
     $('#view').css('pointer-events', 'none');
-    $('#view').find('.overlay').show();
+    $('#view').append('<div class="overlay"></div>');
 }
 
 function tomarTarea() {
