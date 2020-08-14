@@ -63,11 +63,14 @@
 
 <script>
 $('.item').single_double_click(function() {
+    wo()
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
     $('#bandeja').removeClass().addClass('col-xs-4');
-    $('#miniView').empty();
-    $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'));
+    // $('#miniView').html('<div class="box"><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>');
+    $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'), function(){
+        wc();   
+    });
 }, function() {
     linkTo('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'));
 });
