@@ -34,5 +34,10 @@ class GEN_Tareas extends CI_Model
         }
     }
 
+    public function desplegarCabecera($tarea)
+    {
+        
+    }
+
 
 }

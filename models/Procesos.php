@@ -21,9 +21,9 @@ class Procesos extends CI_Model
             $aux->taskId = $o['id'];
             $aux->caseId = $o['caseId'];
             $aux->processId = $o['processId'];
-            $aux->nombreTarea = $o['name'];
+            $aux->nombreTarea = $o['displayName'];
             $aux->nombreProceso =  $process?$process['nombre']:'';
-            $aux->color =  $process?$process['color']:'';						
+            $aux->color =  $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');						
             $aux->descripcion = '-';
             $aux->fec_vencimiento = $o['dueDate'];
             $aux->usuarioAsignado = 'Nombre Apellido';

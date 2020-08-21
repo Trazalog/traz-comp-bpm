@@ -1,5 +1,6 @@
 <script>
 //Script para Vista Standar  
+initForm();
 evaluarEstado();
 
 function evaluarEstado() {
