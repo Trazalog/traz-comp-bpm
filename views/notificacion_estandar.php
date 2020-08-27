@@ -4,6 +4,7 @@
 <input id="tarea" data-info="" class="hidden">
 <input type="text" class="form-control hidden" id="asignado" value="<?php echo $tarea->idUsuarioAsignado?>">
 <input type="text" class="form-control hidden" id="taskId" value="<?php echo $tarea->taskId?>">
+<input type="text" class="form-control hidden" id="caseId" value="<?php echo $tarea->caseId?>">
 
 <div class="nav-tabs-custom ">
     <ul class="nav nav-tabs">
