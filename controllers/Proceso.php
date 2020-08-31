@@ -40,9 +40,8 @@ class Proceso extends CI_Controller
 
         //COMENTARIOS
         $data_aux = ['case_id' => $tarea->caseId, 'comentarios' => $this->bpm->ObtenerComentarios($tarea->caseId)];
-        $data['comentarios'] = '';#$this->load->view('componentes/comentarios', $data_aux, true);
+        $data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
 
-        // $data['cabecera'] = infoproceso($tarea);
         $data['cabecera'] = $this->deplegarCabecera($tarea);
 
         //DESPLEGAR VISTA
@@ -107,6 +106,7 @@ class Proceso extends CI_Controller
 
     public function guardarComentario()
     {
-        echo $this->bpm->guardarComentario($this->input->post());
+        $data = $this->input->post();
+        echo $this->bpm->guardarComentario($data);
     }
 }

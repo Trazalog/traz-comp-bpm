@@ -38,7 +38,7 @@
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_3">
-            <-?php echo $timeline ?>
+            <?php echo timeline($timeline) ?>
         </div>
 
         <div class="tab-pane active" id="tab_4">
