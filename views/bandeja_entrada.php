@@ -12,7 +12,8 @@
                 <table class="table table-hover table-striped" id="tareas">
                     <tbody>
                         <?php
-                            if(isset($list)){
+                            #Validacion de bandeja vacia
+                            if(!empty($list)){
 
                                 foreach ($list as $f) {
                                     
