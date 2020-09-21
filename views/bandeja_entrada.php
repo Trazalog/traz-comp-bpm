@@ -19,27 +19,33 @@
                                     
                                     $id = $f->taskId;
                                     $asig = $f->idUsuarioAsignado;
+                                    $nombreTarea = $f->nombreTarea;
+																		$depo_id = $f->info[3]->depo_id;
+
+																		if (filtrarbyDepo($nombreTarea, $depo_id)) {
                                     
-                                    echo "<tr class='item' id='$id' data-caseId='$f->caseId' data-json='".json_encode($f)."'  style='cursor: pointer;'>";
+                                      echo "<tr class='item' id='$id' data-caseId='$f->caseId' data-json='".json_encode($f)."'  style='cursor: pointer;'>";
                                     
-                                    if ($asig != "") {
-                                        $asig = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
-                                    } else {
-                                        $asig = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
-                                    }
-                                    
-                                    // TAREA	
-                                    echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2'><cite>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
-                                    
-                                    foreach ($f->info as $o) {
-                                        echo "<p class='label label-$o->color mr-2'>$o->texto</p>";
-                                    }
-                                    
-                                    echo '</td>';
+                                      if ($asig != "") {
+                                          $asig = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
+                                      } else {
+                                          $asig = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
+                                      }
+                                      
+                                      // TAREA	
+                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2'><cite>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
+                                      
+                                      foreach ($f->info as $o) {
+                                          echo "<p class='label label-$o->color mr-2'>$o->texto</p>";
+                                      }
+                                      
+                                      echo '</td>';
+                                      echo '</tr>';
+																		}
                                     
                                 }
                             }else{
-                                echo "<td class='text-center'><h4>Sin Tareas</h4></td>";
+                                echo "<td class='text-center'><h4>Sin Tareas en este momento...</h4></td>";
                             }
                             ?>
 
