@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-class GEN_Tareas extends CI_Model
+class Gentareas extends CI_Model
 {
     public function __construct()
     {
