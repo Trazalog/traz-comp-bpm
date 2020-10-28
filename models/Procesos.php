@@ -11,27 +11,31 @@ class Procesos extends CI_Model
 
     public function mapeo($data)
     {
-        $array = [];
+				$array = [];
+				$empr_id = empresa();
 
         foreach ($data as $o) {
-            
-            $process = $this->mapProcess($o['processId']);
-            
-            $aux = new StdClass();
-            $aux->taskId = $o['id'];
-            $aux->caseId = $o['caseId'];
-            $aux->processId = $o['processId'];
-            $aux->nombreTarea = $o['displayName'];
-            $aux->nombreProceso =  $process?$process['nombre']:'';
-            $aux->color =  $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');						
-            $aux->descripcion = '-';
-            $aux->fec_vencimiento = $o['dueDate'];
-            $aux->usuarioAsignado = 'Nombre Apellido';
-            $aux->idUsuarioAsignado = $o['assigned_id'];
-            $aux->fec_asignacion = $o['assigned_date'];
-            $aux->prioridad = $o['priority'];					
-	
-            $array[] = $aux;
+
+						$process = $this->mapProcess($o['processId']);
+
+					if(bandejaEmpresa($o['caseId'], $empr_id)){
+
+							$aux = new StdClass();
+							$aux->taskId = $o['id'];
+							$aux->caseId = $o['caseId'];
+							$aux->processId = $o['processId'];
+							$aux->nombreTarea = $o['displayName'];
+							$aux->nombreProceso =  $process?$process['nombre']:'';
+							$aux->color =  $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');
+							$aux->descripcion = '-';
+							$aux->fec_vencimiento = $o['dueDate'];
+							$aux->usuarioAsignado = 'Nombre Apellido';
+							$aux->idUsuarioAsignado = $o['assigned_id'];
+							$aux->fec_asignacion = $o['assigned_date'];
+							$aux->prioridad = $o['priority'];
+		
+							$array[] = $aux;
+					}
         }
         
         return $array;
