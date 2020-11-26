@@ -95,14 +95,11 @@ class Pedidotrabajo extends CI_Controller
 
     public function hito($hitoId = false)
     {  
-        $data['usuarios']  = getJson('usuarios')->usuarios->usuario;
-        $data['unidades_tiempo'] = getJson('unti')->unidades_medidas->unidad_medida;
         if($hitoId){
-          
             $data['hito'] = $this->Pedidotrabajos->obtenerHito($hitoId)['data'][0];
             $this->load->view('pedidos_trabajo/detalle_hito', $data);
         }else{
-            $this->load->view('pedidos_trabajo/form_hito', $data);
+            $this->load->view('pedidos_trabajo/form_hito');
         }
     }
 }

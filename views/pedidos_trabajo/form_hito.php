@@ -34,14 +34,9 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Encargado:</label>
-                        <select class="form-control frm-select" name="user_id" <?php echo req() ?>>
-                            <option disabled selected>- Seleccionar -</option>
-                            <?php
-                                foreach($usuarios as $key => $o){
-                                    echo "<option value='$o->user_id'>$o->nombre $o->apellido</option>";
-                                }
-                            ?>
-                        </select>
+                        <?php 
+                            echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users', array('valor'=>'id_user', 'descripcion'=> 'first_name_user'), true);
+                        ?>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -53,23 +48,17 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>U.Tiempo</label>
-                        <select class="form-control frm-select" name="unidad_tiempo" <?php echo req() ?>>
-                            <option disabled selected>- Seleccionar -</option>
-                            <?php
-                            foreach($unidades_tiempo as $key => $o){
-                                echo "<option value='".ucfirst($o->descripcion)."'>$o->descripcion</option>";
-                            }
+                        <?php
+                            echo selectFromCore('unidad_tiempo','Seleccionar', "unidad_medida_tiempo", true);
                         ?>
-                        </select>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Ubicación:</label>
-                        <select class="form-control frm-select" name="esta_id" <?php echo req() ?>>
-                            <option disabled selected>- Seleccionar -</option>
-                            <option value="1">Esta 1</option>
-                        </select>
+                        <?php 
+                            echo selectFromFont('esta_id','Seleccionar', REST_PRD.'/establecimientos/'.empresa(), array('valor'=>'esta_id', 'descripcion'=> 'nombre'), true);
+                        ?>
                     </div>
                 </div>
             </div>
