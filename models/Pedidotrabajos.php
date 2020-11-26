@@ -9,75 +9,87 @@ class Pedidotrabajos extends CI_Model
         parent::__construct();
     }
 
-    
-public function seleccionarUnidadMedidaTiempo()
-{
-  $resource = 'tablas/unidad_medida_tiempo';
-  $url = REST_CORE . $resource;
-  return wso2($url);
-}
+    public function seleccionarUnidadMedidaTiempo()
+    {
+        $resource = 'tablas/unidad_medida_tiempo';
+        $url = REST_CORE . $resource;
+        return wso2($url);
+    }
 
-
-    
-public function getClientes()
-{
-$resource = 'clientes/porEmpresa/1/porEstado/ACTIVO';
-$url = REST_CORE . $resource;
-return wso2($url);   
-}         
-
+    public function getClientes()
+    {
+        $resource = 'clientes/porEmpresa/1/porEstado/ACTIVO';
+        $url = REST_CORE . $resource;
+        return wso2($url);
+    }
 
 // Guardar guardar Pedido de Trabajo
-public function guardarPedidoTrabajo($data)
-{ 
-    $url = REST_PROD . '/pedidoTrabajo';
-  $rsp = $this->rest->callApi('POST', $url, $data);
-  return $rsp;
-  if (!$rsp) {
+    public function guardarPedidoTrabajo($data)
+    {
+        $url = REST_PROD . '/pedidoTrabajo';
+        $rsp = $this->rest->callApi('POST', $url, $data);
+        return $rsp;
+        if (!$rsp) {
 
-    log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
+            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
 
-   
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> TODO OK');
+        }
 
-}else{
-  log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> TODO OK');
-}
+    }
 
-
-}
-
-
-     function eliminarPedidoTrabajo($data)
-  	{
-   //   DELETE http://10.142.0.7:8280/services/PRODataService/pedidoTrabajo 
+    public function eliminarPedidoTrabajo($data)
+    {
+        //   DELETE http://10.142.0.7:8280/services/PRODataService/pedidoTrabajo
         $url = REST_PROD . "/pedidoTrabajo";
-        return wso2($url, 'DELETE',$data);
-         }
-
+        return wso2($url, 'DELETE', $data);
+    }
 
 // Guardar guardar BonitaProccess
-public function guardarBonitaProccess($data)
-{  
-   //REST_PRD  http://10.142.0.7:8280/tools/bpm/proceso/instancia 
-   //define('REST_BPM', 'http://10.142.0.7:8280/tools/bpm');
-   
-    $url = REST_BPM . '/proceso/instancia';
-    $rsp = $this->rest->callApi('POST', $url, $data);
-    return $rsp;
+    public function guardarBonitaProccess($data)
+    {
+        //REST_PRD  http://10.142.0.7:8280/tools/bpm/proceso/instancia
+        //define('REST_BPM', 'http://10.142.0.7:8280/tools/bpm');
 
-    if (!$rsp) {
+        $url = REST_BPM . '/proceso/instancia';
+        $rsp = $this->rest->callApi('POST', $url, $data);
+        return $rsp;
 
-      log_message('ERROR', '#TRAZA | #BPM >> guardarBonitaProccess  >> ERROR');
+        if (!$rsp) {
+
+            log_message('ERROR', '#TRAZA | #BPM >> guardarBonitaProccess  >> ERROR');
+
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM >> guardarBonitaProccess  >> TODO OK');
+        }
+
+    }
 
     
+    public function obtener($emprId)
+    {
+        $url = REST_PRO."/pedidoTrabajo/$emprId";
+        return wso2($url);
+    }
 
-  }else{
-    log_message('DEBUG', '#TRAZA | #BPM >> guardarBonitaProccess  >> TODO OK');
-  }
+    public function obtenerHitosXPedido($petrId)
+    {
+        $url = REST_TST."/pedidostrabajo/hitos/$petrId";
+        return wso2($url);
+    }
 
+    public function obtenerHito($hitoId)
+    {
+        $url = REST_TST."/hitos/$hitoId";
+        return wso2($url);
+    }
 
-}
-    
-
+    public function mapHito($data)
+    {
+        $data['fec_inicio'] = $data['fec_inicio'].'+00:00:00';
+        $data['documento'] = isset($data['documento'])? $data['documento']:'';
+        return $data;
+    }
 
 }

@@ -6,79 +6,103 @@ class Pedidotrabajo extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-    $this->load->model('Pedidotrabajos');
+        $this->load->model('Pedidotrabajos');
     }
 
     public function index()
     {
-   $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
-   $data['clientes'] = $this->Pedidotrabajos->getClientes()['data'];
-   $this->load->view('pedido_trabajo',$data);
+        $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
+        $data['clientes'] = $this->Pedidotrabajos->getClientes()['data'];
+        $this->load->view('pedido_trabajo', $data);
     }
-
 
     public function guardarPedidoTrabajo()
     {
 
-      $data['_post_pedidotrabajo'] = array(
+        $data['_post_pedidotrabajo'] = array(
 
-        'cod_proyecto' => $this->input->post('cod_proyecto'),
-        'descripcion' => $this->input->post('descripcion'),
-        'estado'=>'PROC_INICIAL_EN_CURSO',
-        'objetivo' => $this->input->post('objetivo'),
-        'fec_inicio' => $this->input->post('fec_inicio'),
-        'fec_entrega' => $this->input->post('fec_entrega'),
-        'usuario_app' =>'rodotest',
-        'umti_id' => $this->input->post('unidad_medida_tiempo'),
-        'info_id'=>'571',
-        'proc_id'=>'procesosReparacion Neumaticos',
-        'empr_id' =>'1',
-        'clie_id' => $this->input->post('clie_id'),
-        'case_id_inicial'=>'1000'
-       
-        
-       
-      );
-  
-      $rsp =  $this->Pedidotrabajos->guardarPedidoTrabajo($data);
-      $petr_id = json_decode($rsp['data'])->respuesta->petr_id;
-     
-      $this->BonitaProccess($petr_id);
-      
-      echo json_encode($data);
-    }
+            'cod_proyecto' => $this->input->post('cod_proyecto'),
+            'descripcion' => $this->input->post('descripcion'),
+            'estado' => 'PROC_INICIAL_EN_CURSO',
+            'objetivo' => $this->input->post('objetivo'),
+            'fec_inicio' => $this->input->post('fec_inicio'),
+            'fec_entrega' => $this->input->post('fec_entrega'),
+            'usuario_app' => 'rodotest',
+            'umti_id' => $this->input->post('unidad_medida_tiempo'),
+            'info_id' => '571',
+            'proc_id' => 'procesosReparacion Neumaticos',
+            'empr_id' => '1',
+            'clie_id' => $this->input->post('clie_id'),
+            'case_id_inicial' => '1000',
 
-  
-
- public function BonitaProccess($petr_id)
-
-    {
-
-      $data = array(
-          'nombre_proceso'=> 'YUDI001',
-          "payload" =>  array('p_petrId' => $petr_id),
-          'session' => 'X-Bonita-API-Token=14485fa7-6b5e-4972-9aa4-4571668c9321;JSESSIONID=AC637E6D080C7E5CF3EEF8407D5ACEE6;bonita.tenant=1;'
         );
 
-        
-      $data = $this->Pedidotrabajos->guardarBonitaProccess($data);
-      echo json_encode($data);
+        $rsp = $this->Pedidotrabajos->guardarPedidoTrabajo($data);
+        $petr_id = json_decode($rsp['data'])->respuesta->petr_id;
+
+        $this->BonitaProccess($petr_id);
+
+        echo json_encode($data);
     }
 
+    public function BonitaProccess($petr_id)
+    {
 
+        $data = array(
+            'nombre_proceso' => 'YUDI001',
+            "payload" => array('p_petrId' => $petr_id),
+            'session' => 'X-Bonita-API-Token=14485fa7-6b5e-4972-9aa4-4571668c9321;JSESSIONID=AC637E6D080C7E5CF3EEF8407D5ACEE6;bonita.tenant=1;',
+        );
+
+        $data = $this->Pedidotrabajos->guardarBonitaProccess($data);
+        echo json_encode($data);
+    }
 
     public function eliminarPedidoTrabajo()
+    {
+        $data['_delete_pedidotrabajo'] = array(
+            'petr_id' => $this->input->post(''),
+        );
+
+        $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
+
+    }
+
+    public function dash()
+    {
+      $this->load->view('pedidos_trabajo/dash', $data);
+    }
+
+    public function pedidosTrabajos($emprId)
+    {
+
+        $data['ots'] = $this->Pedidotrabajos->obtener($emprId)['data'];
+        $this->load->view('pedidos_trabajo/lista_pedidos', $data);
+    }
+
+    public function hitos($petrId)
+    {
+        $post = $this->input->post();
+        if($post)
         {
-          $data['_delete_pedidotrabajo'] = array(
-            'petr_id' => $this->input->post('')
-          );
-
-          $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
-        
+            $rsp = $this->Pedidotrabajos->guardarHito();
+            echo json_encode($rsp);
+        }else{
+            $data['hitos'] = $this->Pedidotrabajos->obtenerHitosXPedido($petrId)['data'];
+            $this->load->view('pedidos_trabajo/lista_hitos', $data);
         }
+    }
 
-
-   
-
-
+    public function hito($hitoId = false)
+    {  
+        $data['usuarios']  = getJson('usuarios')->usuarios->usuario;
+        $data['unidades_tiempo'] = getJson('unti')->unidades_medidas->unidad_medida;
+        if($hitoId){
+          
+            $data['hito'] = $this->Pedidotrabajos->obtenerHito($hitoId)['data'][0];
+            $this->load->view('pedidos_trabajo/detalle_hito', $data);
+        }else{
+            $this->load->view('pedidos_trabajo/form_hito', $data);
+        }
+    }
 }
