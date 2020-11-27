@@ -25,6 +25,9 @@
     flex: 1;
 }
 
+.sidebar-toggle{
+    display:none;
+}
 /* .my-custom-scrollbar {
     position: relative;
     height: 70vh;
@@ -43,7 +46,7 @@
                 <h3 class="box-title">Pedidos Trabajo</h3>
             </div>
             <div class="box-body">
-                <?php echo comp('pedidos-trabajos', base_url(BPM.'Pedidotrabajo/pedidosTrabajos'), true)?>
+                <?php echo comp('pedidos-trabajos', base_url(BPM.'Pedidotrabajo/pedidosTrabajos/'.empresa()), true)?>
             </div>
         </div>
     </div>

@@ -29,14 +29,6 @@ class Pedidotrabajos extends CI_Model
         $url = REST_PRO . '/pedidoTrabajo';
         $rsp = $this->rest->callApi('POST', $url, $data);
         return $rsp;
-        if (!$rsp) {
-
-            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
-
-        } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> TODO OK');
-        }
-
     }
 
     public function eliminarPedidoTrabajo($data)
@@ -56,39 +48,52 @@ class Pedidotrabajos extends CI_Model
         $rsp = $this->rest->callApi('POST', $url, $data);
         return $rsp;
 
-        if (!$rsp) {
+    }
 
-            log_message('ERROR', '#TRAZA | #BPM >> guardarBonitaProccess  >> ERROR');
+/// GET
 
-        } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> guardarBonitaProccess  >> TODO OK');
-        }
+    // lanzar proceso
+    public function procesos()
+    {
+        $proccessname = "YUDI-NEUMATICOS";
+// http://10.142.0.7:8280/services/PRODataService/proceso/nombre/YUDI-NEUMATICOS/empresa/1
+        $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+        $url = REST_PRO . $resource;
+        //  return wso2($url);
+        $array = $this->rest->callApi('GET', $url);
+        return json_decode($array['data']);
+    }
+
+    public function ActualizarCaseId($data)
+    {
+        $url = REST_PRO . "/pedidoTrabajo";
+        $rsp = $this->rest->callApi('PUT', $url, $data);
+        return $rsp;
 
     }
 
-    
     public function obtener($emprId)
     {
-        $url = REST_PRO."/pedidoTrabajo/$emprId";
+        $url = REST_PRO . "/pedidoTrabajo/$emprId";
         return wso2($url);
     }
 
     public function obtenerHitosXPedido($petrId)
     {
-        $url = REST_TST."/pedidostrabajo/hitos/$petrId";
+        $url = REST_TST . "/pedidostrabajo/hitos/$petrId";
         return wso2($url);
     }
 
     public function obtenerHito($hitoId)
     {
-        $url = REST_TST."/hitos/$hitoId";
+        $url = REST_TST . "/hitos/$hitoId";
         return wso2($url);
     }
 
     public function mapHito($data)
     {
-        $data['fec_inicio'] = $data['fec_inicio'].'+00:00:00';
-        $data['documento'] = isset($data['documento'])? $data['documento']:'';
+        $data['fec_inicio'] = $data['fec_inicio'] . '+00:00:00';
+        $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
         return $data;
     }
 

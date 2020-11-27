@@ -1,3 +1,8 @@
+<style>
+.frm-save {
+    display: none;
+}
+</style>
 <div class="box box-primary">
     <div class="box-header with-border">
         <h4 class="box-title">Pedido de Trabajo</h4>
@@ -8,7 +13,7 @@
             <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title=""
                 data-original-title="Remove">
                 <i class="fa fa-times"></i></button>
-        </div>    
+        </div>
     </div>
     <div class="box-body">
         <div class="panel panel-default">
@@ -23,7 +28,7 @@
                                 <label class="col-md-2 control-label" for="clie_id">Cliente</label>
                                 <div class="col-md-3">
                                     <select id="clie_id" name="clie_id" class="form-control" required>
-                                    <option value="" disabled selected> - Seleccionar  cliente- </option>
+                                        <option value="" disabled selected> - Seleccionar cliente- </option>
                                         <?php 
                                         if(is_array($clientes)){
                                         foreach ($clientes as $i) {
@@ -51,7 +56,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <!-- Text input-->
                             <div class="form-group">
                                 <label class="col-md-2 control-label" for="cod_proyecto">Código proyecto</label>
@@ -66,8 +70,7 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label" for="descripcion">Descripción</label>
                                 <div class="col-md-10">
-                                    <textarea class="form-control" id="descripcion"
-                                        name="descripcion"></textarea>
+                                    <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
                                 </div>
                             </div>
 
@@ -88,19 +91,22 @@
                                 </div>
                             </div>
                             <br>
+
                             <!-- Button -->
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-6">
-                                    <button type="button" class="btn btn-danger">Cerrar</button>
-
-                                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                                        onclick="guardarPedidoTrabajo();">Guardar</button>
-                                </div>
-
-                            </div>
 
                         </fieldset>
                     </form>
+                    <div class="frm-new" data-form="1"></div>
+
+                    <div class="form-group">
+                        <div class="col-md-6 col-md-offset-6">
+                            <button type="button" class="btn btn-danger">Cerrar</button>
+
+                            <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
+                                onclick="guardarTodo()">Guardar</button>
+                        </div>
+
+                    </div>
 
                     <!-- ************************************************************ -->
                 </div>
@@ -108,36 +114,23 @@
         </div>
     </div>
 </div>
-  <!-- ************************************************************ -->
-  <div class="box box-primary">
-    <div class="box-header with-border">
-    <h4 class="box-title">Formulario Adjunto</h4>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" id="minimizar_tarea" data-widget="collapse"
-                data-toggle="tooltip" title="" data-original-title="Collapse">
-                <i class="fa fa-minus"></i></button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title=""
-                data-original-title="Remove">
-                <i class="fa fa-times"></i></button>
-        </div>
-    </div>
-    <div class="box-body">
-    <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Tarea Complementaria</h3>
-            </div>
-        <div class="frm-new" data-form="1" id="div_tarea"></div>
-        </div>
-    </div>
-    </div>      
-</div>
-<script>
 
-$('#minimizar_tarea').click(function(){
-	$('#div_tarea').toggle(1000);
+<script>
+function guardarTodo() {
+    $('.frm-save').click();
+    var info_id = $('.frm').attr('data-ninfoid');
+    console.log('info_id:' + info_id);
+}
+
+function frmPosGuardado() {
+    guardarPedidoTrabajo();
+}
+
+$('#minimizar_tarea').click(function() {
+    $('#div_tarea').toggle(1000);
 });
-$('#minimizar_pedido_trabajo').click(function(){
-	$('#div_pedido_trabajo').toggle(1000);
+$('#minimizar_pedido_trabajo').click(function() {
+    $('#div_pedido_trabajo').toggle(1000);
 });
 
 initForm();
@@ -146,6 +139,8 @@ detectarForm();
 function guardarPedidoTrabajo() {
 
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
+    formData.append('info_id', $('.frm').attr('data-ninfoid'));
+    wo();
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
@@ -157,9 +152,7 @@ function guardarPedidoTrabajo() {
         success: function(rsp) {
 
             if (rsp.status) {
-               
-                
-        
+                console.log("Exito al guardar Formulario");
                 Swal.fire(
                     'Guardado!',
                     'El registro se Guardo Correctamente',
@@ -169,81 +162,20 @@ function guardarPedidoTrabajo() {
                 reload('#pedidos-trabajos');
                 $('#mdl-peta').modal('hide');
                 reload('#frm-peta')
-            } else {
-                Swal.fire(
-                    'Oops...',
-                    'Algo salio mal!',
-                    'error'
-                )
             }
-
-           
         },
+
         error: function(rsp) {
+            console.log("Error al guardar Formulario");
             Swal.fire(
                 'Oops...',
-                'No se lanzo poroceso en BPM...',
-                'Algo salio mal!',
+                'No se Guardo Pedido de Trabajo',
                 'error'
             )
-            console.log(rsp.msj);
         },
         complete: function() {
             wc();
         }
     });
- 
-}
-
-
-function guardarBonitaProccess() {
-
-    var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-$.ajax({
-    type: 'POST',
-    dataType: 'JSON',
-    url: '<?php echo base_url(BPM) ?>Pedidotrabajo/BonitaProccess',
-    data: formData,
-    cache: false,
-    contentType: false,
-    processData: false,
-    success: function(rsp) {
-
-       
-
-        if (rsp.status) {
-           
-            
-    
-            Swal.fire(
-                'Guardado!',
-                'success'
-            )
-            $('#frm-PedidoTrabajo')[0].reset();
-            linkTo();
-        } else {
-            Swal.fire(
-                'Oops...',
-                'Oops...',
-                'Algo salio mal!',
-                'error'
-            )
-        }
-
-       
-    },
-    error: function(rsp) {
-        Swal.fire(
-            'Oops...',
-            'Algo salio mal!',
-            'error'
-        )
-        console.log(rsp.msj);
-    },
-    complete: function() {
-        wc();
-    }
-});
-
 }
 </script>
