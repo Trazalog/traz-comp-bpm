@@ -11,14 +11,14 @@ class Pedidotrabajos extends CI_Model
 
     public function seleccionarUnidadMedidaTiempo()
     {
-        $resource = 'tablas/unidad_medida_tiempo';
+        $resource = '/tablas/unidad_medida_tiempo';
         $url = REST_CORE . $resource;
         return wso2($url);
     }
 
     public function getClientes()
     {
-        $resource = 'clientes/porEmpresa/1/porEstado/ACTIVO';
+        $resource = '/clientes/porEmpresa/1/porEstado/ACTIVO';
         $url = REST_CORE . $resource;
         return wso2($url);
     }
@@ -26,7 +26,7 @@ class Pedidotrabajos extends CI_Model
 // Guardar guardar Pedido de Trabajo
     public function guardarPedidoTrabajo($data)
     {
-        $url = REST_PROD . '/pedidoTrabajo';
+        $url = REST_PRO . '/pedidoTrabajo';
         $rsp = $this->rest->callApi('POST', $url, $data);
         return $rsp;
         if (!$rsp) {
@@ -42,7 +42,7 @@ class Pedidotrabajos extends CI_Model
     public function eliminarPedidoTrabajo($data)
     {
         //   DELETE http://10.142.0.7:8280/services/PRODataService/pedidoTrabajo
-        $url = REST_PROD . "/pedidoTrabajo";
+        $url = REST_PRO . "/pedidoTrabajo";
         return wso2($url, 'DELETE', $data);
     }
 

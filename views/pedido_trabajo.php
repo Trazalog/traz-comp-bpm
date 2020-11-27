@@ -166,7 +166,9 @@ function guardarPedidoTrabajo() {
                     'success'
                 )
                 $('#frm-PedidoTrabajo')[0].reset();
-                linkTo();
+                reload('#pedidos-trabajos');
+                $('#mdl-peta').modal('hide');
+                reload('#frm-peta')
             } else {
                 Swal.fire(
                     'Oops...',

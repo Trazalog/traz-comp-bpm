@@ -1,10 +1,12 @@
 <style>
-    .srow{background-color: #82E0AA}
+.srow {
+    background-color: #82E0AA
+}
 </style>
 <div class="table-wrapper-scroll-y my-custom-scrollbar">
     <table id="tbl-pedidos" class="table table-hover text-center t-btn">
         <thead>
-            <th> <button type="button" class="btn btn-sm btn-flat btn-block mr-2"><i class="fa fa-plus"></i>
+            <th> <button type="button" class="btn btn-sm btn-flat btn-block mr-2" onclick="$('#mdl-peta').modal('show')"><i class="fa fa-plus"></i>
                     Nuevo Pedido Trabajo
                 </button></th>
         </thead>
@@ -34,8 +36,8 @@
 </div>
 <script>
 var s_pema_row = false
-var s_pema =  false;
-$('#tbl-pedidos tbody').find('tr').click(function(){
+var s_pema = false;
+$('#tbl-pedidos tbody').find('tr').click(function() {
     $(s_pema_row).removeClass('srow');
     s_pema_row = this;
     $(this).addClass('srow');
@@ -47,6 +49,4 @@ function selectPeta(id, codigo) {
     reload('comp#hitos', id);
     emptyTareas()
 }
-
-
 </script>

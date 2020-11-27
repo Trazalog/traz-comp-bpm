@@ -1,6 +1,7 @@
 
 <?php
     $this->load->view('pedidos_trabajo/mdl_hitos');
+    $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
 
 <style>
