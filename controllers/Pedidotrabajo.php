@@ -154,7 +154,7 @@ class Pedidotrabajo extends CI_Controller
         $post = $this->input->post();
         if($post)
         {
-            $rsp = $this->Pedidotrabajos->guardarHito();
+            $rsp = $this->Pedidotrabajos->guardarHito($petrId, $post);
             echo json_encode($rsp);
         }else{
             $data['hitos'] = $this->Pedidotrabajos->obtenerHitosXPedido($petrId)['data'];

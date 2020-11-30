@@ -92,9 +92,17 @@ class Pedidotrabajos extends CI_Model
 
     public function mapHito($data)
     {
-        $data['fec_inicio'] = $data['fec_inicio'] . '+00:00:00';
+        $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
         $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
-        return $data;
+        return payToStr($data);
+    }
+
+    public function guardarHito($petrId, $data)
+    {
+        $data['petr_id'] = $petrId;
+        $xdata['_post_hitos'] = $this->mapHito($data);
+        $url = REST_TST."/hitos";
+        return wso2($url, 'POST', $xdata);
     }
 
 }
