@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label>Encargado:</label>
                         <?php 
-                            echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users', array('valor'=>'id_user', 'descripcion'=> 'first_name_user'), true);
+                            echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users', array('value'=>'id_user', 'descripcion'=> 'first_name_user'), true);
                         ?>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                     <div class="form-group">
                         <label>Ubicación:</label>
                         <?php 
-                            echo selectFromFont('esta_id','Seleccionar', REST_PRD.'/establecimientos/'.empresa(), array('valor'=>'esta_id', 'descripcion'=> 'nombre'), true);
+                            echo selectFromFont('esta_id','Seleccionar', REST_PRD.'/establecimientos/'.empresa(), array('value'=>'esta_id', 'descripcion'=> 'nombre'), true);
                         ?>
                     </div>
                 </div>
