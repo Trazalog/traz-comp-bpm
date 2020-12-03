@@ -171,4 +171,11 @@ class Pedidotrabajo extends CI_Controller
             $this->load->view('pedidos_trabajo/form_hito');
         }
     }
+
+    public function cambiarEstado()
+    {
+        $post  = $this->input->post();
+        $rsp = $this->Pedidotrabajos->cambiarEstado($post['petrId'], $post['estado']);
+        echo json_encode($rsp);
+    }
 }

@@ -105,4 +105,11 @@ class Pedidotrabajos extends CI_Model
         return wso2($url, 'POST', $xdata);
     }
 
+    public function cambiarEstado($petrId, $estado)
+    {
+        $data['_put_pedidoTrabajo_estado'] = array('estado' => $estado, 'petr_id'=>"$petrId");
+        $url = REST_PRO."/pedidoTrabajo/estado";
+        return wso2($url, 'PUT', $data);
+    }
+
 }
