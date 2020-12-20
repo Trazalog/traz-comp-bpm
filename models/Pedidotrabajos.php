@@ -84,6 +84,12 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
+    public function obtenerInfoId($petrId)
+    {
+        $url = REST_PRO . "/info_id/$petrId";
+        return wso2($url);
+    }
+
     public function obtenerHito($hitoId)
     {
         $url = REST_TST . "/hitos/$hitoId";

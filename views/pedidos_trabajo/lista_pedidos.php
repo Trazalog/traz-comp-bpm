@@ -22,7 +22,7 @@
             foreach ($ots as $key => $o) {
                 echo "<tr class='block-disabled'>";
                 echo '<td><div class="btn-group">
-                        <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn code"><h4>'.$o->cod_proyecto.'</h4><img src="http://localhost/traz-tools/lib/dist/img/user2-160x160.jpg" class="user-image"  alt="User Image"></button>
+                        <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn code"><h4>'.$o->cod_proyecto.'</h4><p>'.$o->nombre.'/'.$o->petr_id.'</p><img src="http://localhost/traz-tools/lib/dist/img/user2-160x160.jpg" class="user-image"  alt="User Image"></button>
                         <button style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class=""><i class="fa fa-ellipsis-v"></i></span>
                             <span class="sr-only">Toggle Dropdown</span>
