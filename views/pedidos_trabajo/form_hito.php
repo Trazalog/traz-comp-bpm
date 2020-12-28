@@ -83,8 +83,8 @@ function guardarHito() {
                 $('#mdl-hito').modal('hide');
                 hecho();
                 reload('comp#hitos', s_pema);
-                reload('#pnl-nuevo-pema', id);
-                reload('#pnl-hito', id);
+                // reload('#pnl-nuevo-pema', id);
+                // reload('#pnl-hito', id);
             }
         },
         error: function(res) {
