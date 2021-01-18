@@ -42,7 +42,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label>Objetivo:</label>
-                        <input type="number" class="form-control" name="objetivo" <?php echo req() ?>>
+                        <input type="number" class="form-control" name="objetivo" min="0" <?php echo req() ?>>
                     </div>
                 </div>
                 <div class="col-md-4">
