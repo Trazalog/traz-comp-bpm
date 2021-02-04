@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label>Encargado:</label>
                         <?php 
-                            echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users', array('value'=>'id_user', 'descripcion'=> 'first_name_user'), true);
+                            echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users/'.empresa(), array('value'=>'id_user', 'descripcion'=> 'first_name_user'), true);
                         ?>
                     </div>
                 </div>
