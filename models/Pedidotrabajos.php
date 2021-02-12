@@ -110,6 +110,14 @@ class Pedidotrabajos extends CI_Model
         $data['_put_pedidoTrabajo_estado'] = array('estado' => $estado, 'petr_id'=>"$petrId");
         $url = REST_PRO."/pedidoTrabajo/estado";
         return wso2($url, 'PUT', $data);
-    }
+		}
+
+		// AGREGADO DE MERGE DE CHECHO
+			public function obtenerInfoId($petrId)
+			{
+					$url = REST_PRO . "/info_id/$petrId";
+					return wso2($url);
+			}
+		// FIN AGREGADO DE MERGE DE CHECHO
 
 }
