@@ -157,7 +157,11 @@ class Pedidotrabajo extends CI_Controller
             $rsp = $this->Pedidotrabajos->guardarHito($petrId, $post);
             echo json_encode($rsp);
         }else{
-            $data['hitos'] = $this->Pedidotrabajos->obtenerHitosXPedido($petrId)['data'];
+						$data['hitos'] = $this->Pedidotrabajos->obtenerHitosXPedido($petrId)['data'];
+					// AGREGADO DE MERGE DE CHECHO
+						$data['info_id']="0".$this->Pedidotrabajos->obtenerInfoId($petrId)['data'];
+						$data['petr_id'] = "0".$petrId;
+					// FIN AGREGADO DE MERGE DE CHECHO
             $this->load->view('pedidos_trabajo/lista_hitos', $data);
         }
     }
