@@ -39,15 +39,17 @@ class Pedidotrabajos extends CI_Model
     }
 
 // Guardar guardar BonitaProccess
-    public function guardarBonitaProccess($data)
+    public function guardarBonitaProccess($contract)
     {
         //REST_PRD  http://10.142.0.7:8280/tools/bpm/proceso/instancia
         //define('REST_BPM', 'http://10.142.0.7:8280/tools/bpm');
 
-        $url = REST_BPM . '/proceso/instancia';
-        $rsp = $this->rest->callApi('POST', $url, $data);
-        return $rsp;
+        // $url = REST_BPM . '/proceso/instancia';
+        // $rsp = $this->rest->callApi('POST', $url, $data);
+        // return $rsp;
 
+        $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
+        return $rsp;
     }
 
 /// GET

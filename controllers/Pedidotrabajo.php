@@ -28,6 +28,7 @@ class Pedidotrabajo extends CI_Controller
 
         $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
 
+
         $data['_post_pedidotrabajo'] = array(
 
             'cod_proyecto' => $this->input->post('cod_proyecto'),
@@ -39,7 +40,7 @@ class Pedidotrabajo extends CI_Controller
             'usuario_app' => $user_app,
             'umti_id' => $this->input->post('unidad_medida_tiempo'),
             'info_id' => $this->input->post('info_id'),
-            'proc_id' => 'YUDI-NEUMATICOS', // cambiar 'YUDI-NEUMATICOS' por proc_id
+            'proc_id' => 'YUDI-NEUMATICOS', // cambiar 'YUDI-NEUMATICOS'
             'empr_id' => $empr_id,
             'clie_id' => $this->input->post('clie_id'),
 
@@ -62,7 +63,7 @@ class Pedidotrabajo extends CI_Controller
 
             log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
 
-            $this->eliminarPedidoTrabajo($petr_id);
+           // $this->eliminarPedidoTrabajo($petr_id);
 
         } else {
 
@@ -74,18 +75,15 @@ class Pedidotrabajo extends CI_Controller
 
     public function BonitaProccess($petr_id)
     {
-        $nombre_bpm = $this->Pedidotrabajos->procesos()->proceso->nombre_bpm;
+        //$nombre_bpm = $this->Pedidotrabajos->procesos($petr_id)->proceso->nombre_bpm;
 
         $data = array(
-            'nombre_proceso' => $nombre_bpm,
-            "payload" => array('p_petrId' => $petr_id),
-            'session' => 'X-Bonita-API-Token=14485fa7-6b5e-4972-9aa4-4571668c9321;JSESSIONID=AC637E6D080C7E5CF3EEF8407D5ACEE6;bonita.tenant=1;',
-        );
+            'p_petrId' => $petr_id);
 
         $rsp = $this->Pedidotrabajos->guardarBonitaProccess($data);
-        $case_id = json_decode($rsp['data'])->payload->caseId;
+        $case_id = json_decode($rsp['data']['caseId']);
 
-        if (!$rsp) {
+        if (!$rsp['status']) {
 
             log_message('ERROR', '#TRAZA | #BPM >> BonitaProccess  >> ERROR AL GUARDAR');
 
@@ -103,9 +101,11 @@ class Pedidotrabajo extends CI_Controller
     public function ActualizarCaseId($case_id, $petr_id)
     {
 
+$str_case_id = (string) $case_id;
+
         $data['_put_pedidotrabajo'] = array(
 
-            "case_id" => "$case_id",
+            "case_id" => $str_case_id,
             "petr_id" => $petr_id,
 
         );

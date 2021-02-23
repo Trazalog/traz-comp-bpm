@@ -84,8 +84,8 @@
 
                 </fieldset>
             </form>
-            <div class="frm-new" data-form="1"></div>
-            <!-- 
+            <div class="frm-new" data-form="35"></div>
+            
             <div class="form-group">
                 <div class="col-md-6 col-md-offset-6">
                     <button type="button" class="btn btn-danger">Cerrar</button>
@@ -94,7 +94,7 @@
                         onclick="guardarTodo()">Guardar</button>
                 </div>
 
-            </div> -->
+            </div> 
 
             <!-- ************************************************************ -->
         </div>
@@ -130,7 +130,7 @@ initForm();
 function guardarPedidoTrabajo() {
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
     var infoId = $('.frm').attr('data-ninfoid');
-    //formData.append('info_id', infoId?infoId:"0");
+    formData.append('info_id', infoId?infoId:"0");
     wo();
     $.ajax({
         type: 'POST',
@@ -150,12 +150,15 @@ function guardarPedidoTrabajo() {
                     'success'
                 )
                 $('#frm-PedidoTrabajo')[0].reset();
-                reload('#pedidos-trabajos');
-                $('#mdl-peta').modal('hide');
-                reload('#frm-peta')
-                detectarForm();
-                initForm();
-            } else {
+                linkTo();
+                //lineas del checho #CHUKA
+             //   reload('#pedidos-trabajos');
+             //   $('#mdl-peta').modal('hide');
+             //   reload('#frm-peta')
+             //   detectarForm();
+             //   initForm();
+            
+              } else {
                 Swal.fire(
                     'Oops...',
                     'No se Guardo Pedido de Trabajo',
