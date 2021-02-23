@@ -47,7 +47,9 @@ class Pedidotrabajo extends CI_Controller
         );
 
         $rsp = $this->Pedidotrabajos->guardarPedidoTrabajo($data);
-        $petr_id = json_decode($rsp['data'])->respuesta->petr_id;
+    
+        $dato  = json_decode($rsp['data']);
+        $petr_id  = $dato->respuesta->petr_id;
 
         if ($rsp) {
 
