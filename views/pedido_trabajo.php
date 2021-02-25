@@ -87,12 +87,12 @@
             <div class="frm-new" data-form="35"></div>
             
             <div class="form-group">
-                <div class="col-md-6 col-md-offset-6">
+                 <div class="col-md-6 col-md-offset-6">
                     <button type="button" class="btn btn-danger">Cerrar</button>
 
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                        onclick="guardarTodo()">Guardar</button>
-                </div>
+                        onclick="frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo)">Guardar</button>
+                </div> 
 
             </div> 
 
@@ -103,19 +103,17 @@
 
 
 <script>
-function guardarTodo() {
-    if ($('.frm-save').lenght == 1) {
-        $('.frm-save').click();
-        var info_id = $('.frm').attr('data-ninfoid');
-        console.log('info_id:' + info_id);
-    } else {
-        guardarPedidoTrabajo()
-    }
-}
+// function guardarTodo() {
+//     if ($('.frm-save').lenght == 1) {
+//         $('.frm-save').click();
+//         var info_id = $('.frm').attr('data-ninfoid');
+//         console.log('info_id:' + info_id);
+//     } else {
+//   //      guardarPedidoTrabajo()
+//     }
+// }
+//
 
-function frmPosGuardado() {
-    guardarPedidoTrabajo();
-}
 
 $('#minimizar_tarea').click(function() {
     $('#div_tarea').toggle(1000);
@@ -127,10 +125,13 @@ $('#minimizar_pedido_trabajo').click(function() {
 detectarForm();
 initForm();
 
-function guardarPedidoTrabajo() {
+var guardarPedidoTrabajo = function() {
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-    var infoId = $('.frm').attr('data-ninfoid');
-    formData.append('info_id', infoId?infoId:"0");
+    formData.append('info_id', $('.frm').attr('data-ninfoid'));
+
+    // var formData = new FormData($('#frm-PedidoTrabajo')[0]);
+    // var infoId = $('.frm').attr('data-ninfoid');
+    // formData.append('info_id', infoId?infoId:"0");
     wo();
     $.ajax({
         type: 'POST',
@@ -146,7 +147,7 @@ function guardarPedidoTrabajo() {
                 console.log("Exito al guardar Formulario");
                 Swal.fire(
                     'Guardado!',
-                    'El registro se Guardo Correctamente',
+                    'El Pedido de Trabajo se Guardo Correctamente',
                     'success'
                 )
                 $('#frm-PedidoTrabajo')[0].reset();
@@ -157,13 +158,14 @@ function guardarPedidoTrabajo() {
              //   reload('#frm-peta')
              //   detectarForm();
              //   initForm();
-            
+          
               } else {
                 Swal.fire(
                     'Oops...',
                     'No se Guardo Pedido de Trabajo',
                     'error'
                 )
+                console.log("Error al guardar Formulario de Pedido de trabajo");
             }
         },
 
@@ -171,7 +173,7 @@ function guardarPedidoTrabajo() {
             console.log("Error al guardar Formulario");
             Swal.fire(
                 'Oops...',
-                'No se Guardo Pedido de Trabajo',
+                'No se Guardo Formulario',
                 'error'
             )
         },

@@ -16,9 +16,9 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
-    public function getClientes()
+    public function getClientes($empr_id)
     {
-        $resource = '/clientes/porEmpresa/1/porEstado/ACTIVO';
+        $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
         $url = REST_CORE . $resource;
         return wso2($url);
     }

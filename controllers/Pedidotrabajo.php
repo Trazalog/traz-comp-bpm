@@ -11,8 +11,9 @@ class Pedidotrabajo extends CI_Controller
 
     public function index()
     {
+       
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
-        $data['clientes'] = $this->Pedidotrabajos->getClientes()['data'];
+        $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
         // $this->procesos();
 
