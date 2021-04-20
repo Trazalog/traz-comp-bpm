@@ -151,7 +151,7 @@ var guardarPedidoTrabajo = function() {
                     'success'
                 )
                 $('#frm-PedidoTrabajo')[0].reset();
-                linkTo();
+                linkTo('<?php echo BPM ?>Proceso/');
                 //lineas del checho #CHUKA
              //   reload('#pedidos-trabajos');
              //   $('#mdl-peta').modal('hide');

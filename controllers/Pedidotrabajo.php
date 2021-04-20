@@ -27,7 +27,7 @@ class Pedidotrabajo extends CI_Controller
         $user_app = userNick();
         $esin_id = $this->Pedidotrabajos->procesos()->proceso->esin_id;
 
-        $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
+       $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
 
 
         $data['_post_pedidotrabajo'] = array(
@@ -66,11 +66,18 @@ class Pedidotrabajo extends CI_Controller
 
             log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
 
-           // $this->eliminarPedidoTrabajo($petr_id);
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
 
             log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR TREMENDO');
+
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
+
 
         }
 
@@ -90,7 +97,9 @@ class Pedidotrabajo extends CI_Controller
 
             log_message('ERROR', '#TRAZA | #BPM >> BonitaProccess  >> ERROR AL GUARDAR');
 
-            // $this->eliminarPedidoTrabajo($petr_id);
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
             log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK');
@@ -119,7 +128,9 @@ $str_case_id = (string) $case_id;
 
             log_message('ERROR', '#TRAZA | #BPM >> ActualizarCaseId  >> ERROR AL ACTUALIZAR');
 
-            // $this->eliminarPedidoTrabajo($petr_id);
+           // $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
             log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK');
