@@ -22,13 +22,14 @@
 
 				foreach($array as $f){
 
-			//	if(strcmp($f['userId']['userName'],'System')!=0){
+				if(strcmp($f['userId']['userName'],'System')!=0){
                 if($array){
 				echo '<hr/>';
 				echo '<li><h4><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i>- '.$f['userId']["userName"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
 				echo '<p><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i>'.$f['content'].'</p></li>';
 				}
-				}
+			    	}
+                }
 				?>
         </ul>
     </div>

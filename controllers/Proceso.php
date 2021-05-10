@@ -33,7 +33,7 @@ class Proceso extends CI_Controller
 
         //INFORMACION DE TAREA
         $data['tarea'] = $tarea;
-        $data['info'] = '';#$this->load->view(BPM.'tareas/componentes/informacion',null,true);
+        $data['info'] = '';#$this->load->view(BPM.'tareas/componentes/informacion',$data['tarea'], true);
 
         //LINEA DE TIEMPO
         $data['timeline'] =$this->bpm->ObtenerLineaTiempo($tarea->processId, $tarea->caseId);
