@@ -33,7 +33,6 @@ class Pedidotrabajos extends CI_Model
 
     public function eliminarPedidoTrabajo($data)
     {
-        //   DELETE http://10.142.0.7:8280/services/PRODataService/pedidoTrabajo
         $url = REST_PRO . "/pedidoTrabajo";
         return wso2($url, 'DELETE', $data);
     }
@@ -41,13 +40,6 @@ class Pedidotrabajos extends CI_Model
 // Guardar guardar BonitaProccess
     public function guardarBonitaProccess($contract)
     {
-        //REST_PRD  http://10.142.0.7:8280/tools/bpm/proceso/instancia
-        //define('REST_BPM', 'http://10.142.0.7:8280/tools/bpm');
-
-        // $url = REST_BPM . '/proceso/instancia';
-        // $rsp = $this->rest->callApi('POST', $url, $data);
-        // return $rsp;
-
         $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
         return $rsp;
     }
@@ -57,12 +49,14 @@ class Pedidotrabajos extends CI_Model
     // lanzar proceso
     public function procesos()
     {
-        $proccessname = "YUDI-NEUMATICOS";
-// http://10.142.0.7:8280/services/PRODataService/proceso/nombre/YUDI-NEUMATICOS/empresa/1
+        $proccessname = $this->session->userdata('proccessname');
+
         $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+
         $url = REST_PRO . $resource;
-        //  return wso2($url);
+        
         $array = $this->rest->callApi('GET', $url);
+
         return json_decode($array['data']);
     }
 
