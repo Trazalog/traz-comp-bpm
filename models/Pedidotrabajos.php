@@ -52,13 +52,11 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
-/// GET
-
     // lanzar proceso
     public function procesos()
     {
         $proccessname = "YUDI-NEUMATICOS";
-// http://10.142.0.7:8280/services/PRODataService/proceso/nombre/YUDI-NEUMATICOS/empresa/1
+				// http://10.142.0.7:8280/services/PRODataService/proceso/nombre/YUDI-NEUMATICOS/empresa/1
         $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
         $url = REST_PRO . $resource;
         //  return wso2($url);
