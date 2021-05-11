@@ -15,13 +15,29 @@ class Pedidotrabajo extends CI_Controller
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
-        // $this->procesos();
+
+       // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
+
+        $url_info= $_SERVER["REQUEST_URI"];
+
+        $components = parse_url($url_info);
+
+        parse_str($components['query'], $results);
+    
+        $proccessname = $results['proccessname']; 
+
+        $this->session->set_userdata('proccessname', $proccessname);
 
         $this->load->view('pedido_trabajo', $data);
     }
 
+    
+  
+
     public function guardarPedidoTrabajo()
     {
+       $proccessname = $this->session->userdata('proccessname');
+
 
         $empr_id = empresa();
         $user_app = userNick();
@@ -41,7 +57,7 @@ class Pedidotrabajo extends CI_Controller
             'usuario_app' => $user_app,
             'umti_id' => $this->input->post('unidad_medida_tiempo'),
             'info_id' => $this->input->post('info_id'),
-            'proc_id' => 'YUDI-NEUMATICOS', // cambiar 'YUDI-NEUMATICOS'
+            'proc_id' =>  $proccessname,
             'empr_id' => $empr_id,
             'clie_id' => $this->input->post('clie_id'),
 
@@ -85,8 +101,7 @@ class Pedidotrabajo extends CI_Controller
 
     public function BonitaProccess($petr_id)
     {
-        //$nombre_bpm = $this->Pedidotrabajos->procesos($petr_id)->proceso->nombre_bpm;
-
+      
         $data = array(
             'p_petrId' => $petr_id);
 
@@ -102,7 +117,7 @@ class Pedidotrabajo extends CI_Controller
             return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK');
+            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
            #echo json_encode($data);
             $this->ActualizarCaseId($case_id, $petr_id);
 
@@ -133,7 +148,7 @@ class Pedidotrabajo extends CI_Controller
             return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK');
+            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
             #echo json_encode($data);
             //     $this->BonitaProccess($petr_id);
 
