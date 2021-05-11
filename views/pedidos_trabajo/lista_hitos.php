@@ -41,15 +41,16 @@ $('#tbl-hitos tbody').find('tr').click(function(){
 });
 
 function selectHito(id, codigo) {
+
     s_hito = id;
     $('#tab-hito').click();
     reload('#tareas_planificadas', id);
     reload('#pnl-pema', id);
     reload('#pnl-nuevo-pema', id);
-    reload('#pnl-hito', id); 
+    reload('#pnl-hito', id);
 }
 
-function nuevoHito() 
+function nuevoHito()
 {
     s_hito = false;
     reload('#pnl-hito');
