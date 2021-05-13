@@ -15,19 +15,35 @@ class Pedidotrabajo extends CI_Controller
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
-        // $this->procesos();
+
+       // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
+
+        $url_info= $_SERVER["REQUEST_URI"];
+
+        $components = parse_url($url_info);
+
+        parse_str($components['query'], $results);
+    
+        $proccessname = $results['proccessname']; 
+
+        $this->session->set_userdata('proccessname', $proccessname);
 
         $this->load->view('pedido_trabajo', $data);
     }
 
+    
+  
+
     public function guardarPedidoTrabajo()
     {
+       $proccessname = $this->session->userdata('proccessname');
+
 
         $empr_id = empresa();
         $user_app = userNick();
         $esin_id = $this->Pedidotrabajos->procesos()->proceso->esin_id;
 
-        $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
+       $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
 
 
         $data['_post_pedidotrabajo'] = array(
@@ -41,7 +57,7 @@ class Pedidotrabajo extends CI_Controller
             'usuario_app' => $user_app,
             'umti_id' => $this->input->post('unidad_medida_tiempo'),
             'info_id' => $this->input->post('info_id'),
-            'proc_id' => 'YUDI-NEUMATICOS', // cambiar 'YUDI-NEUMATICOS'
+            'proc_id' =>  $proccessname,
             'empr_id' => $empr_id,
             'clie_id' => $this->input->post('clie_id'),
 
@@ -66,11 +82,18 @@ class Pedidotrabajo extends CI_Controller
 
             log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
 
-           // $this->eliminarPedidoTrabajo($petr_id);
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
 
             log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR TREMENDO');
+
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
+
 
         }
 
@@ -78,8 +101,7 @@ class Pedidotrabajo extends CI_Controller
 
     public function BonitaProccess($petr_id)
     {
-        //$nombre_bpm = $this->Pedidotrabajos->procesos($petr_id)->proceso->nombre_bpm;
-
+      
         $data = array(
             'p_petrId' => $petr_id);
 
@@ -90,10 +112,12 @@ class Pedidotrabajo extends CI_Controller
 
             log_message('ERROR', '#TRAZA | #BPM >> BonitaProccess  >> ERROR AL GUARDAR');
 
-            // $this->eliminarPedidoTrabajo($petr_id);
+            $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK');
+            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
            #echo json_encode($data);
             $this->ActualizarCaseId($case_id, $petr_id);
 
@@ -104,7 +128,7 @@ class Pedidotrabajo extends CI_Controller
     public function ActualizarCaseId($case_id, $petr_id)
     {
 
-$str_case_id = (string) $case_id;
+				$str_case_id = (string) $case_id;
 
         $data['_put_pedidotrabajo'] = array(
 
@@ -119,10 +143,12 @@ $str_case_id = (string) $case_id;
 
             log_message('ERROR', '#TRAZA | #BPM >> ActualizarCaseId  >> ERROR AL ACTUALIZAR');
 
-            // $this->eliminarPedidoTrabajo($petr_id);
+           // $this->eliminarPedidoTrabajo($petr_id);
+
+            return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK');
+            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
             #echo json_encode($data);
             //     $this->BonitaProccess($petr_id);
 
@@ -139,19 +165,32 @@ $str_case_id = (string) $case_id;
         $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
 
     }
-
+		/**
+		* Levanta pantalla Planificacion de Pedido de Trabajo
+		* @param
+		* @return
+		*/
     public function dash()
     {
       $this->load->view('pedidos_trabajo/dash', $data);
     }
-
+		/**
+		* Agrega componente Pedidos Trabajo(en Planificacion Trabajos)
+		* @param
+		* @return 
+		*/
     public function pedidosTrabajos($emprId)
     {
 
         $data['ots'] = $this->Pedidotrabajos->obtener($emprId)['data'];
         $this->load->view('pedidos_trabajo/lista_pedidos', $data);
     }
-
+		/**
+		* Agrega componente Hitos(en Planificacion Trabajos) si envia datos.
+		* sino es asi,trae el listado de hitos guardados para ese pedido ese trabajo
+		* @param
+		* @return view listado de hitos de un pedido de trabajo
+		*/
     public function hitos($petrId)
     {
         $post = $this->input->post();

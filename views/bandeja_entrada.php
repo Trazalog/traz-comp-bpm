@@ -9,8 +9,15 @@
                 </h3>
             </div>
             <div class="box-body table-responsive">
-                <table class="table table-hover table-striped" id="tareas">
+                <table id="tareas" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class='text-center'></th>
+                    </tr>
+                </thead>
+
                     <tbody>
+                   
                         <?php
                             #Validacion de bandeja vacia
                             if(!empty($list)){
@@ -69,6 +76,11 @@
 <!-- /.row -->
 
 <script>
+
+$(document).ready( function () {
+    $('#tareas').DataTable();
+} );
+
 $('.item').single_double_click(function() {
     wo()
     $('body').addClass('sidebar-collapse');

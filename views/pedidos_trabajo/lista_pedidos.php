@@ -80,6 +80,7 @@ $('#tbl-pedidos tbody').find('tr').click(function() {
 });
 
 function selectPeta(id, codigo) {
+	debugger;
     s_pema = id;
     $('peta').html(codigo);
     reload('comp#hitos', id);
