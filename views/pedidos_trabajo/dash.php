@@ -5,41 +5,42 @@
 ?>
 
 <style>
-.user-image {
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    margin-top: 5px;
-}
+	.user-image {
+			border-radius: 50%;
+			width: 25px;
+			height: 25px;
+			margin-top: 5px;
+	}
 
-.t-btn .btn-group .btn {
-    height: 100px;
-}
+	.t-btn .btn-group .btn {
+			height: 100px;
+	}
 
-.t-btn .btn-group {
-    display: flex;
-    margin: 0;
-}
+	.t-btn .btn-group {
+			display: flex;
+			margin: 0;
+	}
 
-.code {
-    flex: 1;
-}
+	.code {
+			flex: 1;
+	}
 
-.sidebar-toggle{
-    display:none;
-}
-/* .my-custom-scrollbar {
-    position: relative;
-    height: 70vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
+	.sidebar-toggle{
+			display:none;
+	}
+	/* .my-custom-scrollbar {
+			position: relative;
+			height: 70vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+	}
 
-.table-wrapper-scroll-y {
-    display: block;
-} */
+	.table-wrapper-scroll-y {
+			display: block;
+	} */
 </style>
 <div class="row">
+	<!-- Pedidos Trabajo -->
     <div class="col-md-2">
         <div class="box box-primary w-box">
             <div class="box-header  with-border">
@@ -50,6 +51,9 @@
             </div>
         </div>
     </div>
+	<!-- / Pedidos Trabajo -->
+
+	<!-- Hitos -->
     <div class="col-md-2">
         <div class="box box-primary w-box">
             <div class="box-header  with-border">
@@ -67,6 +71,9 @@
             </div>
         </div>
     </div>
+	<!-- / Hitos -->
+
+	<!-- Tareas Planificar -->
     <div class="col-md-8">
         <!-- <tareas>
             <script>
@@ -75,6 +82,7 @@
         </tareas> -->
         <?php echo comp('tareas_planificadas', base_url(TST.'tarea/planificar/PETR')) ?>
     </div>
+	<!-- / Tareas Planificar -->
 </div>
 
 <script>

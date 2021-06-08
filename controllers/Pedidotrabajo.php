@@ -138,7 +138,7 @@ class Pedidotrabajo extends CI_Controller
     public function ActualizarCaseId($case_id, $petr_id)
     {
 
-$str_case_id = (string) $case_id;
+				$str_case_id = (string) $case_id;
 
         $data['_put_pedidotrabajo'] = array(
 
@@ -175,19 +175,32 @@ $str_case_id = (string) $case_id;
         $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
 
     }
-
+		/**
+		* Levanta pantalla Planificacion de Pedido de Trabajo
+		* @param
+		* @return
+		*/
     public function dash()
     {
       $this->load->view('pedidos_trabajo/dash', $data);
     }
-
+		/**
+		* Agrega componente Pedidos Trabajo(en Planificacion Trabajos)
+		* @param
+		* @return 
+		*/
     public function pedidosTrabajos($emprId)
     {
 
         $data['ots'] = $this->Pedidotrabajos->obtener($emprId)['data'];
         $this->load->view('pedidos_trabajo/lista_pedidos', $data);
     }
-
+		/**
+		* Agrega componente Hitos(en Planificacion Trabajos) si envia datos.
+		* sino es asi,trae el listado de hitos guardados para ese pedido ese trabajo
+		* @param
+		* @return view listado de hitos de un pedido de trabajo
+		*/
     public function hitos($petrId)
     {
         $post = $this->input->post();

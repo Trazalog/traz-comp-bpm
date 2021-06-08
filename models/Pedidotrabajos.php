@@ -44,8 +44,6 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
-/// GET
-
     // lanzar proceso
     public function procesos()
     {
