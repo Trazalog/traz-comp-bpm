@@ -20,7 +20,7 @@ class Pedidotrabajos extends CI_Model
     {
         $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
         $url = REST_CORE . $resource;
-        return wso2($url);
+        return wso2($url);                                
     }
 
 // Guardar guardar Pedido de Trabajo

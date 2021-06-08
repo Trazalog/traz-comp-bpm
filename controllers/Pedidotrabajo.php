@@ -60,31 +60,41 @@ class Pedidotrabajo extends CI_Controller
             'proc_id' =>  $proccessname,
             'empr_id' => $empr_id,
             'clie_id' => $this->input->post('clie_id'),
+            'tipt_id' => $this->input->post('tipt_id'), 
 
         );
 
         $rsp = $this->Pedidotrabajos->guardarPedidoTrabajo($data);
-    
+
+        $status = ($rsp['status']);
+
         $dato  = json_decode($rsp['data']);
+
         $petr_id  = $dato->respuesta->petr_id;
 
-        if ($rsp) {
 
-            echo json_encode($rsp);
+        if ($status == true) {
+
+            $respuesta = json_encode($rsp);
+
+            echo $respuesta;
 
             if ($lanzar_bpm == "true") {
                 $this->BonitaProccess($petr_id);
+
+                return $rsp;
+
             } else {
                 log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> lanzar_bpm viene false');
             }
 
-        } elseif (!$rsp) {
+        } elseif ($status == false) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
+            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
         } else {
 
@@ -92,7 +102,7 @@ class Pedidotrabajo extends CI_Controller
 
             $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
 
         }
@@ -145,7 +155,7 @@ $str_case_id = (string) $case_id;
 
            // $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
         } else {
             log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
