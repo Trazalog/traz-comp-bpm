@@ -3,7 +3,6 @@
     display: none;
 }
 </style>
-
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
@@ -15,9 +14,8 @@
                     <div class="form-group">
                         <label class="col-md-2 control-label" for="cod_proyecto">Código proyecto:</label>
                         <div class="col-md-3">
-                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="codigo"
+                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código de proyecto"
                                 class="form-control input-md">
-                            <span class="help-block">ingresa el código de proyecto</span>
                         </div>
 
 
@@ -118,7 +116,7 @@
 
             <div class="form-group">
                 <div class="col-md-6 col-md-offset-6">
-                    <button type="button" class="btn btn-danger">Cerrar</button>
+                    <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
 
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
                         onclick="frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo)">Guardar</button>
@@ -133,16 +131,8 @@
 
 
 <script>
-// function guardarTodo() {
-//     if ($('.frm-save').lenght == 1) {
-//         $('.frm-save').click();
-//         var info_id = $('.frm').attr('data-ninfoid');
-//         console.log('info_id:' + info_id);
-//     } else {
-//   //      guardarPedidoTrabajo()
-//     }
-// }
-//
+
+
 $("#clie_id").change(function() {
     debugger;
     nuevaDireccion = $(this).children(':selected').data('dir');
@@ -154,7 +144,11 @@ $("#clie_id").change(function() {
 
 
 
+function cerrarModal() {
 
+ $('#mdl-peta').modal('hide');
+
+}
 
 
 $('#minimizar_tarea').click(function() {
@@ -169,7 +163,7 @@ initForm();
 
 var guardarPedidoTrabajo = function() {
     debugger;
-  
+    $('#mdl-peta').modal('hide')
   
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
     formData.append('info_id', $('.frm').attr('data-ninfoid'));
