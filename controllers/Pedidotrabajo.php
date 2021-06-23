@@ -13,8 +13,10 @@ class Pedidotrabajo extends CI_Controller
     {
        
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
+
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
+        $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
 
        // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
 
@@ -28,9 +30,34 @@ class Pedidotrabajo extends CI_Controller
 
         $this->session->set_userdata('proccessname', $proccessname);
 
-        $this->load->view('pedido_trabajo', $data);
+      //  $this->load->view('pedido_trabajo', $data);
+      $this->load->view('listar_pedidos_trabajo', $data);
     }
 
+
+    //carga la vista de pedido trabajo
+    public function view_pedido()
+    {
+       
+        $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
+        $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
+
+
+        $url_info= $_SERVER["REQUEST_URI"];
+
+        $components = parse_url($url_info);
+
+        parse_str($components['query'], $results);
+    
+        $this->load->view('pedido_trabajo', $data);
+     
+    }
+
+
+    public function cargar_datos_detalle()
+    {
+
+    }
     
   
 

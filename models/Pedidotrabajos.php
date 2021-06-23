@@ -16,11 +16,23 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
+   //Obtiene datos de clientes 
     public function getClientes($empr_id)
     {
         $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
         $url = REST_CORE . $resource;
         return wso2($url);                                
+    }
+
+    //Obtiene los formularios asociados a un pedido de trabajo por petr_id
+    // parametro petr_id
+    //
+    public function getFormularios($petr_id)
+    {
+        $resource = "/pedidoTrabajo/petr_id/$petr_id";
+        $url = REST_PRO . $resource;
+        return wso2($url);     
+                                   
     }
 
 // Guardar guardar Pedido de Trabajo
