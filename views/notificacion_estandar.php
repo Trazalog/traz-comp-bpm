@@ -1,4 +1,3 @@
-
 <?php echo $cabecera; ?>
 
 <input id="tarea" data-info="" class="hidden">
@@ -12,7 +11,7 @@
         <li class="privado"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Comentarios</a></li>
         <li class="privado"><a href="#tab_3" data-toggle="tab" aria-expanded="false">Trazabilidad</a></li>
         <li class="privado"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Información</a></li>
-
+        <li class="privado"><a href="#tab_5" data-toggle="tab" aria-expanded="true">Formulario</a></li>
         <!-- <li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
 				Dropdown <span class="caret"></span>
@@ -39,6 +38,41 @@
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_3">
             <?php echo timeline($timeline) ?>
+        </div>
+
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_5">
+            <?php ?>
+<br>
+<h3>Formularios</h3>
+<br><br>
+            <div class="table-responsive-md">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Acciones</th>
+                            <th scope="col">Paso del Proceso</th>
+                            <th scope="col">Nombre de Formulario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       <?php foreach($formularios as $rsp){
+
+                           $info_id = $rsp->info_id;
+                           $nom_tarea = $rsp->nom_tarea;
+                           $task_id = $rsp->task_id;
+
+                          echo "<tr id='$' data-json='" . json_encode($rsp) . "'>"; 
+                          echo '<td>'.$nom_tarea.'</td>';
+                          echo '<td>'.$info_id.'</td>';
+						  echo '<td>'.$task_id.'</td>';
+                          echo '</tr>';
+                        } 
+                           ?>
+                    </tbody>
+                </table>
+            </div>
+<br><br><br>
         </div>
 
         <div class="tab-pane active" id="tab_4">
@@ -69,6 +103,6 @@
 
 
 <script>
-var task = <?php echo json_encode($tarea) ?> ;
+var task = <?php echo json_encode($tarea) ?>;
 </script>
 <?php $this->load->view('scripts/tarea_std'); ?>
