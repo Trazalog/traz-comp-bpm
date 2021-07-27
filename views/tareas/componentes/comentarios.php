@@ -48,42 +48,108 @@ function ajax(options) {
 
     return $.ajax(options);
 }
+
+
 //Funcion COMENTARIOS
 function guardarComentario() {
+
     debugger;
+    var comentario = $('#comentario').val();
+    if (comentario.length == 0 ) {
+					
+	Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Asegurate de escribir un comentario!',
+				footer: ''
+				});
+		
+		return;
+
+                }
+				else{
+
     console.log("Guardar Comentarios...");
     var id = $('#case_id').val();
     var comentario = $('#comentario').val();
     var nombUsr = $('#usrName').val();
-    var apellUsr = $('#usrLastName').val();
-
-    var html = '<hr /><li><h4>' + nombUsr + ' ' + apellUsr +
-        '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
-    ajax({
+    var apellUsr = $('#usrLastName').val();;
+    $.ajax({
         type: 'POST',
         data: {
             'processInstanceId': id,
             'content': comentario
         },
-        url: 'index.php/Tarea/GuardarComentario',
+        url: '<?php echo base_url(BPM) ?>Proceso/guardarComentario',
         success: function(result) {
+            console.log("Submit");
             var lista = $('#listaComentarios');
-            lista.prepend(html);
+            lista.prepend('<hr/><li><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>'
+                );
             $('#comentario').val('');
         },
         error: function(result) {
             console.log("Error");
-
-            if (!conexion()) {
-                console.log('Navegador Offline');
-                var task = $('#task').val() + '_comentarios';
-                guardarEstado(task, html);
-                var lista = $('#listaComentarios');
-                lista.prepend(html);
-                $('#comentario').val('');
-            }
-
         }
     });
+    }
 }
+
+
+// //Funcion COMENTARIOS OLD
+// function guardarComentario_old() {
+//     debugger;
+//     var comentario = $('#comentario').val();
+//     if (comentario.length == 0 ) {
+					
+// 	Swal.fire({
+// 				icon: 'error',
+// 				title: 'Error...',
+// 				text: 'Asegurate de escribir un comentario!',
+// 				footer: ''
+// 				});
+		
+// 		return;
+
+//                 }
+// 				else{
+
+   
+//     console.log("Guardar Comentarios...");
+//     var id = $('#case_id').val();
+//     var comentario = $('#comentario').val();
+//     var nombUsr = $('#usrName').val();
+//     var apellUsr = $('#usrLastName').val();
+
+//     var html = '<hr /><li><h4>' + nombUsr + ' ' + apellUsr +
+//         '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
+//     ajax({
+//         type: 'POST',
+//         data: {
+//             'processInstanceId': id,
+//             'content': comentario
+//         },
+//         url: 'index.php/Tarea/GuardarComentario',
+//         success: function(result) {
+//             var lista = $('#listaComentarios');
+//             lista.prepend(html);
+//             $('#comentario').val('');
+//         },
+//         error: function(result) {
+//             console.log("Error");
+
+//             if (!conexion()) {
+//                 console.log('Navegador Offline');
+//                 var task = $('#task').val() + '_comentarios';
+//                 guardarEstado(task, html);
+//                 var lista = $('#listaComentarios');
+//                 lista.prepend(html);
+//                 $('#comentario').val('');
+//             }
+
+//         }
+//     });
+//     }
+// }
 </script>

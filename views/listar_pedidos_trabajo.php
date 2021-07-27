@@ -32,7 +32,7 @@
                 $tipo_trabajo = $rsp->tipo_trabajo;
                 $dir_entrega = $rsp->dir_entrega;
 
-								echo "<tr id='$petr_id' data-json='" . json_encode($rsp) . "'>";
+								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
 
 								echo "<td class='text-center text-light-blue'>";
 								echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="EliminarPedido()"></i>';
@@ -45,7 +45,31 @@
                                 echo '<td>'.$tipo_trabajo.'</td>';
 								echo '<td>'.formatFechaPG($fec_inicio).'</td>';
 								
-								echo '<td>'.$estado.'</td>';
+switch ($estado) {
+  case 'estados_yudicaEN_CURSO':
+
+    echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+     
+    break;
+
+    case 'estados_yudicaPROC_REPROCESO':
+      echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+      break;
+
+      case 'estados_yudicaPROC_ENTREGADO':
+        echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
+        break;
+
+        case 'estados_yudicaPROC_RECHAZADO':
+          echo '<td><button type="button" class="btn btn-danger">RECHAZADO</button></td>';
+          break;
+  
+  default:
+  echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+    break;
+}
+                
+							
 								echo '</tr>';
 						}
 						?>
@@ -54,30 +78,15 @@
 			</div>
     </div>
 </div>
-<?php
-  
-        //informacion del proceso
-        $data['info'] = '';#$this->load->view(BPM.'tareas/componentes/informacion',$data['tarea'], true);
-
-        //LINEA DE TIEMPO
-        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($tarea->processId, $case_id);
-
-        //COMENTARIOS DEL PEDIDO
-        $data_aux = ['case_id' => $case_id, 'comentarios' => $this->bpm->ObtenerComentarios($case_id)];
-        $data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
-        
-        $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id);
-
-        
-?>
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-vista">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="xmodal-body">
                 <?php 
-                
-                   $this->load->view(BPM.'notificacion_estandar', $data);
+             
+             $this->load->view(BPM.'pedidos_trabajo/mdl_pedido_detalle');
+    
                 ?>
             </div>
             <!-- <div class="modal-footer">
@@ -91,7 +100,6 @@
 
 
 <?php
-
 $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
 
@@ -103,13 +111,42 @@ $('#tbl-pedidos').DataTable({
 
 
     function verPedido(e) {
-				selected = $(e).closest('tr').attr('id');
+      petr_id = $(e).closest('tr').attr('id');
 
-				console.log('trae pedido N°: '+ selected)
+      case_id = $(e).closest('tr').attr('case_id');
 
-            $('#mdl-vista').modal('show');       
+				console.log('trae pedido N°: '+ petr_id)
+
+        console.log('trae case_id N°: '+ case_id)
+
+      
+ var url = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_comentario?petr_id="+petr_id+"&case_id="+case_id;
+  
+
+ var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id="+petr_id+"&case_id="+case_id;
+  
+
+ var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id="+case_id;
+
+ wo();  wo();  wo();
+ $('#mdl-vista').modal('show');
+     wo();
+   
+     console.log(url);
+     $("#cargar_comentario").empty();
+      $("#cargar_comentario").load(url);
+      
+      console.log(url1);   
+      $("#cargar_form").empty();
+      $("#cargar_form").load(url1);
+
+      console.log(url2);   
+      $("#cargar_trazabilidad").empty();
+      $("#cargar_trazabilidad").load(url2);
+      wc();
+      
 	} 
-	
+
 
 function EliminarPedido(){
 
