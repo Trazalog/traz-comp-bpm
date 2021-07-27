@@ -78,6 +78,9 @@ class Pedidotrabajos extends CI_Model
 
     }
 
+  //Obtiene lista pedido de trabajo por emprId (todos los pedidos de una empresa)
+    // parametro emprId
+    //
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";

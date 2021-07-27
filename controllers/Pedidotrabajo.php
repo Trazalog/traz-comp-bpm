@@ -17,9 +17,7 @@ class Pedidotrabajo extends CI_Controller
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
         $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
-
-       // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
-
+   
         $url_info= $_SERVER["REQUEST_URI"];
 
         $components = parse_url($url_info);
@@ -36,6 +34,7 @@ class Pedidotrabajo extends CI_Controller
 
 
     //carga la vista de pedido trabajo
+    //
     public function view_pedido()
     {
        
@@ -54,11 +53,53 @@ class Pedidotrabajo extends CI_Controller
     }
 
 
-    public function cargar_datos_detalle()
-    {
+//trae comentarios segun Case_id
+//
+public function cargar_detalle_comentario(){
 
-    }
+$case_id = $_GET['case_id'];    
+
+$data_aux = ['case_id' => $case_id, 'comentarios' => $this->bpm->ObtenerComentarios($case_id)];
+
+$data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
+
+echo $data['comentarios'];
+}
+
+//trae trazabilidad de un pedido segun case_id
+//y processId.
+//HARCODECHUKA processId
+public function cargar_detalle_linetiempo(){
+
+    $case_id = $_GET['case_id'];               
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+  //LINEA DE TIEMPO
+  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+  echo timeline($data['timeline']);
+ 
+}
+
+//trae formularios asociados al pedido de trabajo segun petr_id
+//
+public function cargar_detalle_formulario(){
+
+    $case_id = $_GET['case_id'];        
     
+    $petr_id = $_GET['petr_id'];
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+   $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+
+   $this->load->view(BPM.'pedidos_trabajo/tbl_formularios_pedido', $data);
+   
+
+}
+
+   
   
 
     public function guardarPedidoTrabajo()
