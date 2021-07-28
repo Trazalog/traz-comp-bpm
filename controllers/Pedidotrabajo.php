@@ -99,6 +99,19 @@ public function cargar_detalle_formulario(){
 
 }
 
+
+//instancia un formulario asociado
+// info_id
+
+public function cargar_formulario_asociado(){
+
+    $info_id = $_GET['info_id'];   
+    
+    $formulario = getForm($info_id);
+
+    echo $formulario;
+}
+
    
   
 
