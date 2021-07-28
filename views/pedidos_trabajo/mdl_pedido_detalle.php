@@ -59,15 +59,15 @@
     </div>
 </div>
 <script>
-$(document).ready(function() { 
+// $(document).ready(function() { 
    
-    $("#cargar_comentario").load();
+//     $("#cargar_comentario").load();
       
-      $("#cargar_form").load();
+//       $("#cargar_form").load();
 
-      $("#cargar_trazabilidad").load();
+//       $("#cargar_trazabilidad").load();
   
-    }); 
+//     }); 
      
    
 </script>

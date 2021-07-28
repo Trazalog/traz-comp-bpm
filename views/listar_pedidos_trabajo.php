@@ -52,16 +52,16 @@ switch ($estado) {
      
     break;
 
-    case 'estados_yudicaPROC_REPROCESO':
+    case 'estados_yudicaREPROCESO':
       echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
       break;
 
-      case 'estados_yudicaPROC_ENTREGADO':
+      case 'estados_yudicaENTREGADO':
         echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
         break;
 
-        case 'estados_yudicaPROC_RECHAZADO':
-          echo '<td><button type="button" class="btn btn-danger">RECHAZADO</button></td>';
+        case 'estados_yudicaRECHAZADO':
+          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">ENTREGADO</span></td>';
           break;
   
   default:
@@ -128,9 +128,12 @@ $('#tbl-pedidos').DataTable({
 
  var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id="+case_id;
 
- wo();  wo();  wo();
- $('#mdl-vista').modal('show');
-     wo();
+ wo();
+ wc();
+ window.setTimeout(function(){
+    $('#mdl-vista').modal('show');
+  }, 7000);
+ 
    
      console.log(url);
      $("#cargar_comentario").empty();
