@@ -13,11 +13,11 @@ class Pedidotrabajo extends CI_Controller
     {
        
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
+
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
-
-       // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
-
+        $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
+   
         $url_info= $_SERVER["REQUEST_URI"];
 
         $components = parse_url($url_info);
@@ -28,10 +28,91 @@ class Pedidotrabajo extends CI_Controller
 
         $this->session->set_userdata('proccessname', $proccessname);
 
-        $this->load->view('pedido_trabajo', $data);
+      //  $this->load->view('pedido_trabajo', $data);
+      $this->load->view('listar_pedidos_trabajo', $data);
     }
 
+
+    //carga la vista de pedido trabajo
+    //
+    public function view_pedido()
+    {
+       
+        $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
+        $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
+
+
+        $url_info= $_SERVER["REQUEST_URI"];
+
+        $components = parse_url($url_info);
+
+        parse_str($components['query'], $results);
     
+        $this->load->view('pedido_trabajo', $data);
+     
+    }
+
+
+//trae comentarios segun Case_id
+//
+public function cargar_detalle_comentario(){
+
+$case_id = $_GET['case_id'];    
+
+$data_aux = ['case_id' => $case_id, 'comentarios' => $this->bpm->ObtenerComentarios($case_id)];
+
+$data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
+
+echo $data['comentarios'];
+}
+
+//trae trazabilidad de un pedido segun case_id
+//y processId.
+//HARCODECHUKA processId
+public function cargar_detalle_linetiempo(){
+
+    $case_id = $_GET['case_id'];               
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+  //LINEA DE TIEMPO
+  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+  echo timeline($data['timeline']);
+ 
+}
+
+//trae formularios asociados al pedido de trabajo segun petr_id
+//
+public function cargar_detalle_formulario(){
+
+    $case_id = $_GET['case_id'];        
+    
+    $petr_id = $_GET['petr_id'];
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+   $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+
+   $this->load->view(BPM.'pedidos_trabajo/tbl_formularios_pedido', $data);
+   
+
+}
+
+
+//instancia un formulario asociado
+// info_id
+
+public function cargar_formulario_asociado(){
+
+    $info_id = $_GET['info_id'];   
+    
+    $formulario = getForm($info_id);
+
+    echo $formulario;
+}
+
+   
   
 
     public function guardarPedidoTrabajo()
@@ -60,31 +141,41 @@ class Pedidotrabajo extends CI_Controller
             'proc_id' =>  $proccessname,
             'empr_id' => $empr_id,
             'clie_id' => $this->input->post('clie_id'),
+            'tipt_id' => $this->input->post('tipt_id'), 
 
         );
 
         $rsp = $this->Pedidotrabajos->guardarPedidoTrabajo($data);
-    
+
+        $status = ($rsp['status']);
+
         $dato  = json_decode($rsp['data']);
+
         $petr_id  = $dato->respuesta->petr_id;
 
-        if ($rsp) {
 
-            echo json_encode($rsp);
+        if ($status == true) {
+
+            $respuesta = json_encode($rsp);
+
+            echo $respuesta;
 
             if ($lanzar_bpm == "true") {
                 $this->BonitaProccess($petr_id);
+
+                return $rsp;
+
             } else {
                 log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> lanzar_bpm viene false');
             }
 
-        } elseif (!$rsp) {
+        } elseif ($status == false) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR');
+            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
         } else {
 
@@ -92,7 +183,7 @@ class Pedidotrabajo extends CI_Controller
 
             $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
 
         }
@@ -145,7 +236,7 @@ class Pedidotrabajo extends CI_Controller
 
            // $this->eliminarPedidoTrabajo($petr_id);
 
-            return;
+            return $rsp;
 
         } else {
             log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');

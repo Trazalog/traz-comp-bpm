@@ -1,4 +1,3 @@
-
 <?php echo $cabecera; ?>
 
 <input id="tarea" data-info="" class="hidden">
@@ -12,7 +11,6 @@
         <li class="privado"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Comentarios</a></li>
         <li class="privado"><a href="#tab_3" data-toggle="tab" aria-expanded="false">Trazabilidad</a></li>
         <li class="privado"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Información</a></li>
-
         <!-- <li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
 				Dropdown <span class="caret"></span>
@@ -39,6 +37,11 @@
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_3">
             <?php echo timeline($timeline) ?>
+        </div>
+
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_5">
+
         </div>
 
         <div class="tab-pane active" id="tab_4">
@@ -69,6 +72,6 @@
 
 
 <script>
-var task = <?php echo json_encode($tarea) ?> ;
+var task = <?php echo json_encode($tarea) ?>;
 </script>
 <?php $this->load->view('scripts/tarea_std'); ?>
