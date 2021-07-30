@@ -2,48 +2,55 @@
 .frm-save {
     display: none;
 }
+.espaciado{
+    margin-bottom: 20px;
+}
 </style>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
     </div>
     <div class="panel-body" id="div_pedido_trabajo">
-        <div class="col-md-12">
-            <form class="form-horizontal" id="frm-PedidoTrabajo">
+        <div class="row">
+            <form class="form-inline" id="frm-PedidoTrabajo">
                 <fieldset>
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="cod_proyecto">Código proyecto:</label>
-                        <div class="col-md-3">
-                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código de proyecto"
-                                class="form-control input-md">
-                        </div>
-
-
-                        <label class="col-md-2 control-label" for="objetivo">Objetivo:</label>
-                        <div class="col-md-2">
-                            <input id="objetivo" name="objetivo" type="number" placeholder=""
-                                class="form-control input-md">
-                        </div>
-                        <div class="col-md-2">
-                            <select name="unidad_medida_tiempo" id="unidad_medida_tiempo" class="form-control">
-                                <option value="" disabled selected> - Seleccionar - </option>
-                                <?php 
-                                if(is_array($unidad_medida_tiempo)){
-                                foreach ($unidad_medida_tiempo as $i) {
-                                echo "<option value = $i->tabl_id>$i->valor</option>";
-                                        }                   
-                                    }
-                                ?>
-                            </select>
+                    <!-- Codigo proyecto-->
+                    <div class="col-md-6 espaciado" style="margin-bottom:5px">
+                        <div class="form-group">
+                            <label class="control-label" for="cod_proyecto">Número Pedido <strong style="color: #dd4b39">*</strong>:</label>
+                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código proyecto" class="form-control input-md" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                         </div>
                     </div>
-                    <!-- Text input-->
-                    <div class="form-group">
+                    <!-- ***************** -->
+                    <!-- Objetivo -->
+                    <div class="col-md-6 espaciado">
+                        <div class="form-group" style="display:inline-flex">
+                            <label class="control-label" for="objetivo">Objetivo:</label>
+                            <div class="input-group" style="display:inline-flex;">
+                                <input id="objetivo" name="objetivo" type="number" placeholder="" class="form-control input-md" data-bv-notempty="false">
+                            
+                                <select name="unidad_medida_tiempo" id="unidad_medida_tiempo" class="form-control" style="width: auto" data-bv-notempty="false">
+                                    <option value="" disabled selected> -Seleccionar- </option>
+                                    <?php 
+                                    if(is_array($unidad_medida_tiempo)){
+                                    foreach ($unidad_medida_tiempo as $i) {
+                                    echo "<option value = $i->tabl_id>$i->valor</option>";
+                                            }                   
+                                        }
+                                    ?>
+                                </select>
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ***************** -->           
+                    <!-- Cliente-->
+                    <div class="col-md-6 espaciado">
+                        <div class="form-group">
 
-                        <label class="col-md-2 control-label" for="clie_id">Cliente:</label>
-                        <div class="col-md-3">
-                            <select id="clie_id" name="clie_id" class="form-control" required>
-                                <option value="" disabled selected> - Seleccionar cliente- </option>
+                            <label class="control-label" for="clie_id">Cliente <strong style="color: #dd4b39">*</strong>:</label>
+                            <select id="clie_id" name="clie_id" class="form-control select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                                <option value="" disabled selected> -Seleccionar- </option>
                                 <?php 
                                 if(is_array($clientes)){
                                 
@@ -60,52 +67,52 @@
                                 ?>
                             </select>
                         </div>
-
+                    </div>
+                    <!-- ***************** -->
+                    <!-- Direccion Entrega -->
+                    <div class="col-md-6 espaciado">                                            
                         <div class="form-group">
-                            <label class="col-md-2 control-label" for="dir_entrega" name="">Dirección de
-                                Entrega:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control habilitar" id="dir_entrega" value="" readonly>
+                            <label class=" control-label" for="dir_entrega" name="">Dirección de Entrega:</label>
+                            <input type="text" class="form-control habilitar" id="dir_entrega" value="" readonly>
+                        </div>
+                    </div>
+                    <!-- ***************** --> 
+                    <!-- Descripción -->
+                    <div class="col-md-12 espaciado">
+                        <div class="form-group" style="width: 100%">                                       
+                            <label class="control-label" for="descripcion">Descripción <strong style="color: #dd4b39">*</strong>:</label>
+                            <div class="input-group" style="width:100%">
+                                <textarea class="form-control" id="descripcion" name="descripcion" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required></textarea>
                             </div>
                         </div>
-
                     </div>
-
-                    <!-- Textarea -->
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="descripcion">Descripción:</label>
-                        <div class="col-md-10">
-                            <textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+                    <!-- ***************** -->
+                    <!-- Fecha Inicio-->
+                    <div class="col-md-6 espaciado">
+                        <div class="form-group">
+                            <label class="control-label" for="fec_inicio">Fecha inicio <strong style="color: #dd4b39">*</strong>:</label>
+                            <input id="fec_inicio" name="fec_inicio" type="date" placeholder="" class="form-control input-md" readonly>
                         </div>
                     </div>
-
-                    <!-- Text input-->
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="fec_inicio">Fecha inicio:</label>
-                        <div class="col-md-2">
-                            <input id="fec_inicio" name="fec_inicio" type="date" placeholder=""
-                                class="form-control input-md">
-
-                        </div>
-
-                        <label class="col-md-2 control-label" for="fec_entrega">Fecha entrega:</label>
-                        <div class="col-md-2">
-                            <input id="fec_entrega" name="fec_entrega" type="date" placeholder=""
-                                class="form-control input-md">
-
+                    <!-- ***************** -->
+                    <!-- Fecha Entrega-->                                            
+                    <div class="col-md-6 espaciado">
+                        <div class="form-group">                                                
+                            <label class="control-label" for="fec_entrega">Fecha entrega:</label>
+                            <input id="fec_entrega" name="fec_entrega" type="date" placeholder="" class="form-control input-md">
                         </div>
                     </div>
-
+                    <!-- ***************** -->
                     <!-- tipo trabajo -->
-                    <div class="form-group">
-                        <label class="col-md-2 control-label" for="tipt_id">Tipo de Trabajo:</label>
-                        <div class="col-md-10">
-                            <select id="tipt_id" name="tipt_id" class="form-control" required>
-                                <option value="" disabled selected> - Seleccionar Tipo de Trabajo- </option>
+                    <div class="col-md-12 espaciado">
+                        <div class="form-group">
+                            <label class=" control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
+                            <select id="tipt_id" name="tipt_id" class="form-control" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                                <option value="" disabled selected> -Seleccionar- </option>
                                 <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option>
                             </select>
                         </div>
-                    </div>
+                    </div>  
                     <br>
 
                     <!-- Button -->
@@ -115,11 +122,10 @@
             <div class="frm-new" data-form="35"></div>
 
             <div class="form-group">
-                <div class="col-md-6 col-md-offset-6">
+                <div class="col-xs-12 col-xs-offset-5 col-sm-12 col-sm-offset-6 col-md-6 col-md-offset-8">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
 
-                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                        onclick="frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo)">Guardar</button>
+                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
                 </div>
 
             </div>
@@ -131,10 +137,33 @@
 
 
 <script>
+//Capturo el evento de apertura del modal
+$(document).ready(function () {
+    $('.select2').select2();
+    clie_id
+    $(window).on('show.bs.modal', function (e) {
+        fecha = new Date();
+        
+        dia = fecha.getDate();
+        mes = fecha.getMonth()+1;
+        anio = fecha.getFullYear();
 
+        if(dia<10){dia='0'+dia;} 
+        if(mes<10){mes='0'+mes;}
+        
+        hoy = anio+'-'+mes+'-'+dia;  
+        $("#fec_inicio").val(hoy);
+    });
+    
+    $("#fec_entrega").on("change", function (e) {
+        if($("#fec_entrega").val() < $("#fec_inicio").val()){
+            alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
+            e.preventDefault();
+        }
+    });
+});
 
 $("#clie_id").change(function() {
-    debugger;
     nuevaDireccion = $(this).children(':selected').data('dir');
     console.log(nuevaDireccion);
 
@@ -142,14 +171,9 @@ $("#clie_id").change(function() {
     $('#dir_entrega').val(nuevaDireccion);
 });
 
-
-
 function cerrarModal() {
-
- $('#mdl-peta').modal('hide');
-
+    $('#mdl-peta').modal('hide');
 }
-
 
 $('#minimizar_tarea').click(function() {
     $('#div_tarea').toggle(1000);
@@ -163,14 +187,10 @@ initForm();
 
 var guardarPedidoTrabajo = function() {
     debugger;
-    $('#mdl-peta').modal('hide')
+    $('#mdl-peta').modal('hide');
   
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
     formData.append('info_id', $('.frm').attr('data-ninfoid'));
-
-    // var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-    // var infoId = $('.frm').attr('data-ninfoid');
-    // formData.append('info_id', infoId?infoId:"0");
 
     wo();
     $.ajax({
@@ -230,5 +250,42 @@ var guardarPedidoTrabajo = function() {
             wc();
         }
     });
+}
+//Se debe validar el formulario antes de cerrar el modal
+// de lo contrario frm_validar() retorna true; y no lo es
+function cierraPedidoTrabajo(){
+    idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+
+    //valido para obtener los campos con error
+    $(idFormDinamico).bootstrapValidator("validate");
+    $("#frm-PedidoTrabajo").bootstrapValidator("validate");
+
+    if($("#objetivo").val() != ""){
+        if($("#unidad_medida_tiempo").val() == null){
+            alert("Si completo objetivo, seleccione medida de tiempo");
+            return;
+        }
+    }
+
+    if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
+        Swal.fire(
+            'Error..',
+            'Debes completar los campos obligatorios (*)',
+            'error'
+        );
+        return;
+    }
+    
+    if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
+        Swal.fire(
+            'Error..',
+            'Debes completar los campos obligatorios (*)',
+            'error'
+        );
+        return;
+    }
+    debugger;
+    console.log("avance de todas maneras");
+    // frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
 }
 </script>
