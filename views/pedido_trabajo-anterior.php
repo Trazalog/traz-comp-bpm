@@ -2,14 +2,16 @@
 .frm-save {
     display: none;
 }
-.espaciado{
+/* .espaciado{
     margin-bottom: 20px;
-}
+} */
 </style>
+
 <?php
     // carga el modal de impresion de QR
     $this->load->view( COD.'componentes/modal');
 ?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
@@ -52,29 +54,27 @@
                     <div class="col-md-6 espaciado">
                         <div class="form-group">
 
-                            <label class="control-label" for="clie_id">Cliente <strong style="color: #dd4b39">*</strong>:</label>
-                            <select id="clie_id" name="clie_id" class="form-control select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
-                                <option value="" disabled selected> -Seleccionar- </option>
-                                <?php 
-                                if(is_array($clientes)){
-                                
-                                $array = json_decode(json_encode($clientes), true);
+													<label class="control-label" for="clie_id">Cliente <strong style="color: #dd4b39">*</strong>:</label>
+													<select id="clie_id" name="clie_id" class="form-control select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+														<option value="" disabled selected> -Seleccionar- </option>
+														<?php
+															if(is_array($clientes)){
 
-                                foreach ($array as $i) {
-                                    $clie_id= $i['clie_id']; $dir_entrega=$i['dir_entrega']; $nombre= $i['nombre'];
+																	$array = json_decode(json_encode($clientes), true);
 
-                                    $dir_entrega= strval ($dir_entrega);
-
-                                echo '<option value ="'.$clie_id.'" data-dir="'.$dir_entrega.'"> '.$nombre.'</option>';
-                                        }
-                                                                }
-                                ?>
-                            </select>
+																	foreach ($array as $i) {
+																			$clie_id= $i['clie_id']; $dir_entrega=$i['dir_entrega']; $nombre= $i['nombre'];
+																			$dir_entrega= strval ($dir_entrega);
+																			echo '<option value ="'.$clie_id.'" data-dir="'.$dir_entrega.'"> '.$nombre.'</option>';
+																	}
+															}
+														?>
+													</select>
                         </div>
                     </div>
                     <!-- ***************** -->
                     <!-- Direccion Entrega -->
-                    <div class="col-md-6 espaciado">                                            
+                    <div class="col-md-6 espaciado">
                         <div class="form-group">
                             <label class=" control-label" for="dir_entrega" name="">Dirección de Entrega:</label>
                             <input type="text" class="form-control habilitar" id="dir_entrega" value="" readonly>
@@ -83,7 +83,7 @@
                     <!-- ***************** --> 
                     <!-- Descripción -->
                     <div class="col-md-12 espaciado">
-                        <div class="form-group" style="width: 100%">                                       
+                        <div class="form-group" style="width: 100%">
                             <label class="control-label" for="descripcion">Descripción <strong style="color: #dd4b39">*</strong>:</label>
                             <div class="input-group" style="width:100%">
                                 <textarea class="form-control" id="descripcion" name="descripcion" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required></textarea>
@@ -99,9 +99,9 @@
                         </div>
                     </div>
                     <!-- ***************** -->
-                    <!-- Fecha Entrega-->                                            
+                    <!-- Fecha Entrega-->
                     <div class="col-md-6 espaciado">
-                        <div class="form-group">                                                
+                        <div class="form-group">
                             <label class="control-label" for="fec_entrega">Fecha entrega:</label>
                             <input id="fec_entrega" name="fec_entrega" type="date" placeholder="" class="form-control input-md">
                         </div>
@@ -123,13 +123,18 @@
 
                 </fieldset>
             </form>
+
             <div class="frm-new" data-form="35"></div>
 
             <div class="form-group">
                 <div class="col-xs-12 col-xs-offset-5 col-sm-12 col-sm-offset-6 col-md-6 col-md-offset-8">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
-                    <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button>
-                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
+
+										<button type="button" id="btn-accion" class="btn btn-success btn-guardar"
+                        onclick="modalCodigos()">Imprimir</button>
+
+                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
+                        onclick="frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo)">Guardar</button>
                 </div>
 
             </div>
@@ -171,9 +176,9 @@ $("#clie_id").change(function() {
     nuevaDireccion = $(this).children(':selected').data('dir');
     console.log(nuevaDireccion);
 
-    $(this).next('input').focus().val(nuevaDireccion);
-    $('#dir_entrega').val(nuevaDireccion);
-});
+			$(this).next('input').focus().val(nuevaDireccion);
+			$('#dir_entrega').val(nuevaDireccion);
+	});
 
 function cerrarModal() {
     $('#mdl-peta').modal('hide');
@@ -186,62 +191,50 @@ $('#minimizar_pedido_trabajo').click(function() {
     $('#div_pedido_trabajo').toggle(1000);
 });
 
-detectarForm();
-initForm();
+	detectarForm();
+	initForm();
 
 var guardarPedidoTrabajo = function() {
     debugger;
-    $('#mdl-peta').modal('hide');
+    //$('#mdl-peta').modal('hide')
   
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
     formData.append('info_id', $('.frm').attr('data-ninfoid'));
 
-    wo();
-    $.ajax({
-        type: 'POST',
-        dataType: 'JSON',
-        url: '<?php echo base_url(BPM) ?>Pedidotrabajo/guardarPedidoTrabajo',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(rsp) {
+    	wo();
+			$.ajax({
+					type: 'POST',
+					dataType: 'JSON',
+					url: '<?php echo base_url(BPM) ?>Pedidotrabajo/guardarPedidoTrabajo',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(rsp) {
+									debugger;
+									var result = rsp.status.toString();
 
-         var result = rsp.status.toString(); 
-        
-         console.log('status esta en saliendo por success:' + result);
+									console.log('status esta en saliendo por success:' + result);
+									wc();
+							if (rsp.status) {
+									console.log("Exito al guardar Formulario");
+									Swal.fire(
+											'Guardado!',
+											'El Pedido de Trabajo se Guardo Correctamente',
+											'success'
+									 )
+							}
+									//Imprimir();
+									// $('#frm-PedidoTrabajo')[0].reset();
+									// linkTo('<?php //echo BPM ?>Proceso/');
 
-            if (rsp.status) {
-                console.log("Exito al guardar Formulario");
-                Swal.fire(
-                    'Guardado!',
-                    'El Pedido de Trabajo se Guardo Correctamente',
-                    'success'
-                )
-                $('#frm-PedidoTrabajo')[0].reset();
-                linkTo('<?php echo BPM ?>Proceso/');
-                //lineas del checho #CHUKA
-                //   reload('#pedidos-trabajos');
-                //   $('#mdl-peta').modal('hide');
-                //   reload('#frm-peta')
-                //   detectarForm();
-                //   initForm();
 
-            } else {
-                Swal.fire(
-                    'Oops...',
-                    'No se Guardo Pedido de Trabajo',
-                    'error'
-                )
-                console.log("Error al guardar Formulario de Pedido de trabajo");
-            }
-        },
-
-        error: function(rsp) {
-
-            var result = rsp.status.toString(); 
-        
-        console.log('status esta en saliendo por error:' + result);
+									//lineas del checho #CHUKA
+									//   reload('#pedidos-trabajos');
+									//   $('#mdl-peta').modal('hide');
+									//   reload('#frm-peta')
+									//   detectarForm();
+									//   initForm();
 
             console.log("Error al guardar Formulario");
             Swal.fire(
@@ -255,44 +248,9 @@ var guardarPedidoTrabajo = function() {
         }
     });
 }
-//Se debe validar el formulario antes de cerrar el modal
-// de lo contrario frm_validar() retorna true; y no lo es
-function cierraPedidoTrabajo(){
-    idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
-
-    //valido para obtener los campos con error
-    $(idFormDinamico).bootstrapValidator("validate");
-    $("#frm-PedidoTrabajo").bootstrapValidator("validate");
-
-    if($("#objetivo").val() != ""){
-        if($("#unidad_medida_tiempo").val() == null){
-            alert("Si completo objetivo, seleccione medida de tiempo");
-            return;
-        }
-    }
-
-    if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    
-    if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    debugger;
-    console.log("avance de todas maneras");
-    // frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
-}
 </script>
+
+
 <script>
 //#HGALLARDO
 
