@@ -6,6 +6,12 @@
     margin-bottom: 20px;
 }
 </style>
+
+<?php
+    // carga el modal de impresion de QR
+    $this->load->view( COD.'componentes/modal');
+?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
@@ -125,7 +131,11 @@
                 <div class="col-xs-12 col-xs-offset-5 col-sm-12 col-sm-offset-6 col-md-6 col-md-offset-8">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
 
-                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
+                    <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
+                        onclick="frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo)">Guardar</button>
+
+										<button type="button" id="btn-accion" class="btn btn-success btn-guardar"
+                        onclick="modalCodigos()">Imprimir</button>
                 </div>
 
             </div>
@@ -167,9 +177,9 @@ $("#clie_id").change(function() {
     nuevaDireccion = $(this).children(':selected').data('dir');
     console.log(nuevaDireccion);
 
-    $(this).next('input').focus().val(nuevaDireccion);
-    $('#dir_entrega').val(nuevaDireccion);
-});
+			$(this).next('input').focus().val(nuevaDireccion);
+			$('#dir_entrega').val(nuevaDireccion);
+	});
 
 function cerrarModal() {
     $('#mdl-peta').modal('hide');
@@ -182,15 +192,19 @@ $('#minimizar_pedido_trabajo').click(function() {
     $('#div_pedido_trabajo').toggle(1000);
 });
 
-detectarForm();
-initForm();
+	detectarForm();
+	initForm();
 
 var guardarPedidoTrabajo = function() {
     debugger;
-    $('#mdl-peta').modal('hide');
+    $('#mdl-peta').modal('hide')
   
     var formData = new FormData($('#frm-PedidoTrabajo')[0]);
     formData.append('info_id', $('.frm').attr('data-ninfoid'));
+
+    // var formData = new FormData($('#frm-PedidoTrabajo')[0]);
+    // var infoId = $('.frm').attr('data-ninfoid');
+    // formData.append('info_id', infoId?infoId:"0");
 
     wo();
     $.ajax({
@@ -203,41 +217,43 @@ var guardarPedidoTrabajo = function() {
         processData: false,
         success: function(rsp) {
 
-         var result = rsp.status.toString(); 
-        
-         console.log('status esta en saliendo por success:' + result);
+			// var formData = new FormData($('#frm-PedidoTrabajo')[0]);
+			// var infoId = $('.frm').attr('data-ninfoid');
+			// formData.append('info_id', infoId?infoId:"0");
 
-            if (rsp.status) {
-                console.log("Exito al guardar Formulario");
-                Swal.fire(
-                    'Guardado!',
-                    'El Pedido de Trabajo se Guardo Correctamente',
-                    'success'
-                )
-                $('#frm-PedidoTrabajo')[0].reset();
-                linkTo('<?php echo BPM ?>Proceso/');
-                //lineas del checho #CHUKA
-                //   reload('#pedidos-trabajos');
-                //   $('#mdl-peta').modal('hide');
-                //   reload('#frm-peta')
-                //   detectarForm();
-                //   initForm();
+			wo();
+			$.ajax({
+					type: 'POST',
+					dataType: 'JSON',
+					url: '<?php echo base_url(BPM) ?>Pedidotrabajo/guardarPedidoTrabajo',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(rsp) {
+							debugger;
+					var result = rsp.status.toString();
 
-            } else {
-                Swal.fire(
-                    'Oops...',
-                    'No se Guardo Pedido de Trabajo',
-                    'error'
-                )
-                console.log("Error al guardar Formulario de Pedido de trabajo");
-            }
-        },
+					console.log('status esta en saliendo por success:' + result);
+							wc();
+							if (rsp.status) {
+									console.log("Exito al guardar Formulario");
+									Swal.fire(
+											'Guardado!',
+											'El Pedido de Trabajo se Guardo Correctamente',
+											'success'
+									 )
+									//Imprimir();
+									// $('#frm-PedidoTrabajo')[0].reset();
+									// linkTo('<?php //echo BPM ?>Proceso/');
 
-        error: function(rsp) {
 
-            var result = rsp.status.toString(); 
-        
-        console.log('status esta en saliendo por error:' + result);
+									//lineas del checho #CHUKA
+									//   reload('#pedidos-trabajos');
+									//   $('#mdl-peta').modal('hide');
+									//   reload('#frm-peta')
+									//   detectarForm();
+									//   initForm();
 
             console.log("Error al guardar Formulario");
             Swal.fire(
@@ -251,41 +267,121 @@ var guardarPedidoTrabajo = function() {
         }
     });
 }
-//Se debe validar el formulario antes de cerrar el modal
-// de lo contrario frm_validar() retorna true; y no lo es
-function cierraPedidoTrabajo(){
-    idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+</script>
 
-    //valido para obtener los campos con error
-    $(idFormDinamico).bootstrapValidator("validate");
-    $("#frm-PedidoTrabajo").bootstrapValidator("validate");
 
-    if($("#objetivo").val() != ""){
-        if($("#unidad_medida_tiempo").val() == null){
-            alert("Si completo objetivo, seleccione medida de tiempo");
-            return;
-        }
-    }
+<script>  //#HGALLARDO
 
-    if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    
-    if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    debugger;
-    console.log("avance de todas maneras");
-    // frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
-}
+	// function Imprimir(){
+	// 	debugger;
+	// 	Swal.fire({
+	// 			title: 'Desea imprimir el Ped. de Trabajo ?',
+	// 			//text: "You won't be able to revert this!",
+	// 			icon: 'warning',
+	// 			showCancelButton: true,
+	// 			confirmButtonColor: '#3085d6',
+	// 			cancelButtonColor: '#d33',
+	// 			confirmButtonText: 'Imprimir!'
+	// 		}).then((result) => {
+
+	// 				modalCodigos();
+	// 		});
+
+	// }
+
+	var band = 0;
+	// Se peden hacer dos cosas: o un ajax con los datos o directamente
+	// armar con los datos de la pantalla
+	function modalCodigos(){
+		debugger;
+
+			if (!validarImpresion()) {
+				alert('Complete los campos por favor antes de imprimir');
+				return;
+			}
+
+			if (band == 0) {
+					// configuracion de codigo QR
+					var config = {};
+							config.titulo = "Pedido de Trabajo";
+							config.pixel = "5";
+							config.level = "L";
+							config.framSize = "2";
+					// info para immprimir
+					var arraydatos = {};
+							arraydatos.Cliente = $('#clie_id option:selected').text();
+							arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
+							arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
+							arraydatos.Serie = $('#num_serie').val();
+					// info para grabar en codigo QR
+					armarInfo(arraydatos);
+					//agrega codigo QR al modal impresion
+					getQR(config, arraydatos);
+			}
+			// llama modal con datos e img de QR ya ingresados
+			verModalImpresion();
+			band = 1;
+	}
+
+	function armarInfo(arraydatos){
+
+		var d = new Date();
+		var month = d.getMonth()+1;
+		var day = d.getDate();
+		var fecha_actual = ((''+day).length<2 ? '0' : '') + day + '/' +
+				((''+month).length<2 ? '0' : '') + month + '/' +
+				d.getFullYear();
+
+		var num = $('#num_cubiertas').val();
+
+		var html =
+
+					"<div class'row'>" +
+									"<div class='col-md-2'>" +
+										"<p>" + num + "</p>" +
+									"</div>" +
+									//"<div class='col-md-8 col-sm-8 col-xs-12'>" +
+									"<div class='col-md-8 col-sm-8 center-block'>" +
+										"<h3 class='center-block'>YUDICA NEUMATICOS</h3>"+
+									"</div>" +
+									"<div class='col-md-2'>" +
+										"<p>" + fecha_actual + "</p>"+
+									"</div>" +
+							"</div>" +
+					"</div>" +
+					"<table class='table table-bordered table-striped'>"+
+							"<thead class='thead-dark' bgcolor='#eeeeee'>" +
+								"<th>Cliente</th>" +
+								"<th>Medida</th>" +
+								"<th>Marca</th>" +
+								"<th>Serie</th>" +
+							"</thead>" +
+							"<tbody>" +
+								"<tr>" +
+									"<td>" + arraydatos.Cliente + "</td>" +
+									"<td>" + arraydatos.Medida + "</td>" +
+									"<td>" + arraydatos.Marca + "</td>" +
+									"<td>" + arraydatos.Serie + "</td>" +
+								"</tr>" +
+							"</tbody>" +
+					"</table>"
+				;
+
+		$("#infoEtiqueta").append(html);
+	}
+
+	function validarImpresion(){
+debugger;
+		var cli = $('#clie_id option:selected').val();
+		var medida = $('select[name="medidas_yudica"] option:selected').val();
+		var marca = $('select[name="marca_yudica"] option:selected').val();
+		var serie = $('#num_serie').val();
+		if ( cli == "" || medida == "" || marca == "" || serie == "" ) {
+			return false;
+		} else {
+			return true;
+		}
+
+
+	}
 </script>
