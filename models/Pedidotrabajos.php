@@ -35,7 +35,7 @@ class Pedidotrabajos extends CI_Model
                                    
     }
 
-// Guardar guardar Pedido de Trabajo
+// Guardar Pedido de Trabajo
     public function guardarPedidoTrabajo($data)
     {
         $url = REST_PRO . '/pedidoTrabajo';
@@ -49,7 +49,7 @@ class Pedidotrabajos extends CI_Model
         return wso2($url, 'DELETE', $data);
     }
 
-// Guardar guardar BonitaProccess
+// Guardar BonitaProccess
     public function guardarBonitaProccess($contract)
     {
         $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
@@ -70,6 +70,7 @@ class Pedidotrabajos extends CI_Model
         return json_decode($array['data']);
     }
 
+//Luego de crear un pedido de trabajo esta funcion actualiza el caseId del pedido
     public function ActualizarCaseId($data)
     {
         $url = REST_PRO . "/pedidoTrabajo";

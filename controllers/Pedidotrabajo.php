@@ -83,7 +83,7 @@ public function cargar_detalle_linetiempo(){
 }
 
 //trae formularios asociados al pedido de trabajo segun petr_id
-//
+//HARCODECHUKA processId
 public function cargar_detalle_formulario(){
 
     $case_id = $_GET['case_id'];        
@@ -171,7 +171,7 @@ public function cargar_formulario_asociado(){
 
         } elseif ($status == false) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
@@ -179,7 +179,7 @@ public function cargar_formulario_asociado(){
 
         } else {
 
-            log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR TREMENDO');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR TREMENDO');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
@@ -201,14 +201,14 @@ public function cargar_formulario_asociado(){
 
         if (!$rsp['status']) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> BonitaProccess  >> ERROR AL GUARDAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  BonitaProccess  >> ERROR AL GUARDAR POCESO EN BONITA');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
             return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
            #echo json_encode($data);
             $this->ActualizarCaseId($case_id, $petr_id);
 
@@ -232,14 +232,14 @@ public function cargar_formulario_asociado(){
 
         if (!$rsp) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> ActualizarCaseId  >> ERROR AL ACTUALIZAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | ActualizarCaseId  >> ERROR AL ACTUALIZAR CASO DE PEDIDO');
 
            // $this->eliminarPedidoTrabajo($petr_id);
 
             return $rsp;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
             #echo json_encode($data);
             //     $this->BonitaProccess($petr_id);
 
@@ -247,18 +247,71 @@ public function cargar_formulario_asociado(){
 
     }
 
-    public function eliminarPedidoTrabajo($petr_id)
+    	/**
+		* Elimina Pedidos Trabajo
+		* @param $petr_id $processId,$case_id
+		* @return 
+		*/
+//HARCODECHUKA processId
+
+    public function eliminarPedidoTrabajo()
     {
+        $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+        if($_GET)
+		{
+			$case_id = $_GET["case_id"];
+
+            $petr_id = $_GET["petr_id"];
+			
+		} else{
+            $case_id =  $this->input->post('case_id');
+
+            $petr_id =  $this->input->post('petr_id');
+        }
+
         $data['_delete_pedidotrabajo'] = array(
             'petr_id' => $petr_id,
         );
 
-        $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
+        $rsp = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
+
+        if (!$rsp) {
+
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido  >> ERROR AL ELIMINAR');
+
+           // $this->eliminarPedidoTrabajo($petr_id);
+
+            return $rsp;
+
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido  >> Se Elimino pedido');
+            
+
+           //si no falla elimina el caso asociado al pedido de trabajo
+
+           $rsp = $this->bpm->eliminarCaso($processId, $case_id);
+
+           if (!$rsp) {
+
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> ERROR AL ELIMINAR');
+
+            return $rsp;
+
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar Caso  >>  se Elimino caso');
+
+            echo json_encode($rsp);
+        
+        }
 
     }
+}
+
+
 		/**
 		* Levanta pantalla Planificacion de Pedido de Trabajo
-		* @param
+		* @param 
 		* @return
 		*/
     public function dash()
