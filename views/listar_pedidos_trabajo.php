@@ -35,7 +35,7 @@
 								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
 
 								echo "<td class='text-center text-light-blue'>";
-								echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="EliminarPedido()"></i>';
+								echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
 								echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante"></i>';
 								echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
 								echo "</td>";
@@ -98,7 +98,6 @@ switch ($estado) {
 </div>
 
 
-
 <?php
 $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
@@ -151,7 +150,18 @@ $('#tbl-pedidos').DataTable({
 	} 
 
 
-function EliminarPedido(){
+function Eliminar(e){
+
+debugger;
+
+  petr_id = $(e).closest('tr').attr('id');
+
+  case_id = $(e).closest('tr').attr('case_id');
+
+  console.log('trae pedido N°: '+ petr_id);
+
+  console.log('trae case_id N°: '+ case_id);
+
 
     const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
@@ -162,6 +172,7 @@ function EliminarPedido(){
 })
 
 swalWithBootstrapButtons.fire({
+  
   title: 'Estas Seguro?',
   text: "Esta accion no puede ser revertida!",
   icon: 'warning',
@@ -170,16 +181,15 @@ swalWithBootstrapButtons.fire({
   cancelButtonText: 'No, cancelar!',
   reverseButtons: true
 }).then((result) => {
-  if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire(
-      'Eliminado!',
-      'Pedido de trabajo eliminado con Exioto.',
-      'success'
-    )
-  } else if (
-    /* Read more about handling dismissals below */
-    result.dismiss === Swal.DismissReason.cancel
-  ) {
+  debugger;
+  console.log(result);
+  if (result.value) {
+    console.log('sale por verdadero');
+    EliminarPedidoTrabajo()
+
+
+  } else if (result.dismiss === Swal.DismissReason.cancel) {
+   console.log('sale por falso');
     swalWithBootstrapButtons.fire(
       'Cancelado',
       '',
@@ -187,6 +197,44 @@ swalWithBootstrapButtons.fire({
     )
   }
 })
+
+}
+
+
+function EliminarPedidoTrabajo() {
+
+debugger;
+
+
+ 
+    $.ajax({
+        type: 'GET',
+        data: petr_id, case_id,
+        cache: false,
+        contentType: false,
+        processData: false,
+        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/eliminarPedidoTrabajo/?petr_id=' + petr_id + '&case_id=' + case_id ,
+        success: function(rsp) {
+          debugger;
+          console.log('data trae:'+ rsp)
+
+          linkTo('<?php  echo BPM ?>Pedidotrabajo/');      
+          setTimeout(() => {
+             Swal.fire(
+                
+                    'Perfecto!',
+                    'Se Elimino Pedido Correctamente!',
+                    'success'
+                )
+		  }, 5000);
+ 
+
+        },
+        error: function(rsp) {
+            alert("Error");
+        }
+    });
+
 
 }
    
