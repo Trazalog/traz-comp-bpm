@@ -2,7 +2,7 @@
 <div class="row">
     <div id="bandeja" class="col-md-12">
         <div class="box box-primary">
-            <div class="box-header">
+            <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-list"></i>
                     Bandeja de Tareas
