@@ -65,7 +65,7 @@
         <!-- /.box-body -->
     </div>
     <!-- /. box -->
-    <div id="miniView" class="view col-xs-8">
+    <div id="miniView" class="view col-sm-8">
 
     </div>
 </div>
@@ -85,7 +85,7 @@ $('.item').single_double_click(function() {
     wo()
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
-    $('#bandeja').removeClass().addClass('col-xs-4');
+    $('#bandeja').removeClass().addClass('hidden-xs col-sm-4');
     // $('#miniView').html('<div class="box"><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>');
     $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'), function(){
         wc();   
