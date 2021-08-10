@@ -141,157 +141,157 @@
 
 
 <script>
-//Capturo el evento de apertura del modal
-$(document).ready(function () {
-    $('.select2').select2();
-    clie_id
-    $(window).on('show.bs.modal', function (e) {
-        fecha = new Date();
-        
-        dia = fecha.getDate();
-        mes = fecha.getMonth()+1;
-        anio = fecha.getFullYear();
+	//Capturo el evento de apertura del modal
+	$(document).ready(function () {
+			$('.select2').select2();
+			clie_id
+			$(window).on('show.bs.modal', function (e) {
+					fecha = new Date();
+					
+					dia = fecha.getDate();
+					mes = fecha.getMonth()+1;
+					anio = fecha.getFullYear();
 
-        if(dia<10){dia='0'+dia;} 
-        if(mes<10){mes='0'+mes;}
-        
-        hoy = anio+'-'+mes+'-'+dia;  
-        $("#fec_inicio").val(hoy);
-    });
-    
-    $("#fec_entrega").on("change", function (e) {
-        if($("#fec_entrega").val() < $("#fec_inicio").val()){
-            alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
-            e.preventDefault();
-        }
-    });
-});
+					if(dia<10){dia='0'+dia;} 
+					if(mes<10){mes='0'+mes;}
+					
+					hoy = anio+'-'+mes+'-'+dia;  
+					$("#fec_inicio").val(hoy);
+			});
+			
+			$("#fec_entrega").on("change", function (e) {
+					if($("#fec_entrega").val() < $("#fec_inicio").val()){
+							alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
+							e.preventDefault();
+					}
+			});
+	});
 
-$("#clie_id").change(function() {
-    nuevaDireccion = $(this).children(':selected').data('dir');
-    console.log(nuevaDireccion);
+	$("#clie_id").change(function() {
+			nuevaDireccion = $(this).children(':selected').data('dir');
+			console.log(nuevaDireccion);
 
-    $(this).next('input').focus().val(nuevaDireccion);
-    $('#dir_entrega').val(nuevaDireccion);
-});
+			$(this).next('input').focus().val(nuevaDireccion);
+			$('#dir_entrega').val(nuevaDireccion);
+	});
 
-function cerrarModal() {
-    $('#mdl-peta').modal('hide');
-}
+	function cerrarModal() {
+			$('#mdl-peta').modal('hide');
+	}
 
-$('#minimizar_tarea').click(function() {
-    $('#div_tarea').toggle(1000);
-});
-$('#minimizar_pedido_trabajo').click(function() {
-    $('#div_pedido_trabajo').toggle(1000);
-});
+	$('#minimizar_tarea').click(function() {
+			$('#div_tarea').toggle(1000);
+	});
+	$('#minimizar_pedido_trabajo').click(function() {
+			$('#div_pedido_trabajo').toggle(1000);
+	});
 
-detectarForm();
-initForm();
+	detectarForm();
+	initForm();
 
-var guardarPedidoTrabajo = function() {
-    debugger;
-    $('#mdl-peta').modal('hide');
-  
-    var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-    formData.append('info_id', $('.frm').attr('data-ninfoid'));
+	var guardarPedidoTrabajo = function() {
+			debugger;
+			$('#mdl-peta').modal('hide');
+		
+			var formData = new FormData($('#frm-PedidoTrabajo')[0]);
+			formData.append('info_id', $('.frm').attr('data-ninfoid'));
 
-    wo();
-    $.ajax({
-        type: 'POST',
-        dataType: 'JSON',
-        url: '<?php echo base_url(BPM) ?>Pedidotrabajo/guardarPedidoTrabajo',
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(rsp) {
+			wo();
+			$.ajax({
+					type: 'POST',
+					dataType: 'JSON',
+					url: '<?php echo base_url(BPM) ?>Pedidotrabajo/guardarPedidoTrabajo',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function(rsp) {
 
-         var result = rsp.status.toString(); 
-        
-         console.log('status esta en saliendo por success:' + result);
+					var result = rsp.status.toString(); 
+					
+					console.log('status esta en saliendo por success:' + result);
 
-            if (rsp.status) {
-                console.log("Exito al guardar Formulario");
-                Swal.fire(
-                    'Guardado!',
-                    'El Pedido de Trabajo se Guardo Correctamente',
-                    'success'
-                )
-                $('#frm-PedidoTrabajo')[0].reset();
-                linkTo('<?php echo BPM ?>Proceso/');
-                //lineas del checho #CHUKA
-                //   reload('#pedidos-trabajos');
-                //   $('#mdl-peta').modal('hide');
-                //   reload('#frm-peta')
-                //   detectarForm();
-                //   initForm();
+							if (rsp.status) {
+									console.log("Exito al guardar Formulario");
+									Swal.fire(
+											'Guardado!',
+											'El Pedido de Trabajo se Guardo Correctamente',
+											'success'
+									)
+									$('#frm-PedidoTrabajo')[0].reset();
+									linkTo('<?php echo BPM ?>Proceso/');
+									//lineas del checho #CHUKA
+									//   reload('#pedidos-trabajos');
+									//   $('#mdl-peta').modal('hide');
+									//   reload('#frm-peta')
+									//   detectarForm();
+									//   initForm();
 
-            } else {
-                Swal.fire(
-                    'Oops...',
-                    'No se Guardo Pedido de Trabajo',
-                    'error'
-                )
-                console.log("Error al guardar Formulario de Pedido de trabajo");
-            }
-        },
+							} else {
+									Swal.fire(
+											'Oops...',
+											'No se Guardo Pedido de Trabajo',
+											'error'
+									)
+									console.log("Error al guardar Formulario de Pedido de trabajo");
+							}
+					},
 
-        error: function(rsp) {
+					error: function(rsp) {
 
-            var result = rsp.status.toString(); 
-        
-        console.log('status esta en saliendo por error:' + result);
+							var result = rsp.status.toString(); 
+					
+					console.log('status esta en saliendo por error:' + result);
 
-            console.log("Error al guardar Formulario");
-            Swal.fire(
-                'Oops...',
-                'No se Guardo Formulario',
-                'error'
-            )
-        },
-        complete: function() {
-            wc();
-        }
-    });
-}
-//Se debe validar el formulario antes de cerrar el modal
-// de lo contrario frm_validar() retorna true; y no lo es
-function cierraPedidoTrabajo(){
-    idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+							console.log("Error al guardar Formulario");
+							Swal.fire(
+									'Oops...',
+									'No se Guardo Formulario',
+									'error'
+							)
+					},
+					complete: function() {
+							wc();
+					}
+			});
+	}
+	//Se debe validar el formulario antes de cerrar el modal
+	// de lo contrario frm_validar() retorna true; y no lo es
+	function cierraPedidoTrabajo(){
+			idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
 
-    //valido para obtener los campos con error
-    $(idFormDinamico).bootstrapValidator("validate");
-    $("#frm-PedidoTrabajo").bootstrapValidator("validate");
+			//valido para obtener los campos con error
+			$(idFormDinamico).bootstrapValidator("validate");
+			$("#frm-PedidoTrabajo").bootstrapValidator("validate");
 
-    if($("#objetivo").val() != ""){
-        if($("#unidad_medida_tiempo").val() == null){
-            alert("Si completo objetivo, seleccione medida de tiempo");
-            return;
-        }
-    }
+			if($("#objetivo").val() != ""){
+					if($("#unidad_medida_tiempo").val() == null){
+							alert("Si completo objetivo, seleccione medida de tiempo");
+							return;
+					}
+			}
 
-    if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    
-    if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
-        Swal.fire(
-            'Error..',
-            'Debes completar los campos obligatorios (*)',
-            'error'
-        );
-        return;
-    }
-    debugger;
-    console.log("avance de todas maneras");
-    // frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
-}
+			if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
+					Swal.fire(
+							'Error..',
+							'Debes completar los campos obligatorios (*)',
+							'error'
+					);
+					return;
+			}
+			
+			if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
+					Swal.fire(
+							'Error..',
+							'Debes completar los campos obligatorios (*)',
+							'error'
+					);
+					return;
+			}
+			debugger;
+			console.log("avance de todas maneras");
+			// frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+	}
 </script>
 <script>
 //#HGALLARDO
@@ -331,49 +331,7 @@ function cierraPedidoTrabajo(){
 
 	function armarInfo(arraydatos){
 
-		var d = new Date();
-		var month = d.getMonth()+1;
-		var day = d.getDate();
-		var fecha_actual = ((''+day).length<2 ? '0' : '') + day + '/' +
-				((''+month).length<2 ? '0' : '') + month + '/' +
-				d.getFullYear();
-
-		var num = $('#num_cubiertas').val();
-
-		var html =
-
-					"<div class'row'>" +
-									"<div class='col-md-2'>" +
-										"<p>" + num + "</p>" +
-									"</div>" +
-									//"<div class='col-md-8 col-sm-8 col-xs-12'>" +
-									"<div class='col-md-8 col-sm-8 center-block'>" +
-										"<h3 class='center-block'>YUDICA NEUMATICOS</h3>"+
-									"</div>" +
-									"<div class='col-md-2'>" +
-										"<p>" + fecha_actual + "</p>"+
-									"</div>" +
-							"</div>" +
-					"</div>" +
-					"<table class='table table-bordered table-striped'>"+
-							"<thead class='thead-dark' bgcolor='#eeeeee'>" +
-								"<th>Cliente</th>" +
-								"<th>Medida</th>" +
-								"<th>Marca</th>" +
-								"<th>Serie</th>" +
-							"</thead>" +
-							"<tbody>" +
-								"<tr>" +
-									"<td>" + arraydatos.Cliente + "</td>" +
-									"<td>" + arraydatos.Medida + "</td>" +
-									"<td>" + arraydatos.Marca + "</td>" +
-									"<td>" + arraydatos.Serie + "</td>" +
-								"</tr>" +
-							"</tbody>" +
-					"</table>"
-				;
-
-		$("#infoEtiqueta").append(html);
+		$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/infoCodigo/pedidoTrabajo", arraydatos);
 	}
 
 	function validarImpresion(){
@@ -390,4 +348,61 @@ function cierraPedidoTrabajo(){
 
 
 	}
+
+
+	// REIMPRESION ETIQUETA VIENE DEL LISTADO
+	var bandreimp = 0;
+  // Se peden hacer dos cosas: o un ajax con los datos o directamente
+  // armar con los datos de la pantalla
+  function modalReimpresion(e){
+		 alert('funcionalidad incompleta');
+		 return;
+			if (bandreimp == 0) {
+				petr_id = $(e).closest('tr').attr('id');
+				arraydatos = $(e).closest('tr').attr('data-json');
+				var datos = JSON.parse(arraydatos);
+				datos.tipoImpresion = 'reimpresion';
+				// info para grabar en codigo QR
+				armarInfoReimp(datos);
+				// agrega codigo QR al modal impresion
+				//getQR(config, arraydatos);
+				// llama modal con datos e img de QR ya ingresados
+				verModalImpresion();
+			}
+			bandreimp = 1;
+  }
+
+	function armarInfoReimp(arraydatos){
+		debugger;
+			switch (arraydatos.estado) {
+					case 'estados_yudicaEN_CURSO':
+						//Comprobante 1
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial");
+						break;
+
+					case 'estados_yudicaREPROCESO':
+						//Comprobante 1
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial");
+						break;
+
+					case 'estados_yudicaRECHAZADO ':
+						//Comprobante 2
+						//$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial", arraydatos);
+						break;
+
+					case 'estados_yudicaENTREGADO  ':
+						// Comprobante 3
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/pintadoFinal", arraydatos);
+						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/pintadoFinalFooter");
+						break;
+
+					default:
+						// code...
+						break;
+			}
+
+			return;
+	}
+
+
 </script>
