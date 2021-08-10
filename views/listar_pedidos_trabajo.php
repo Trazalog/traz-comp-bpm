@@ -3,22 +3,24 @@
         <h4 class="box-title">Listado de Pedido Trabajo</h4>
     </div>
     <div class="box-body">
-			<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="$('#mdl-peta').modal('show')">Agregar</button>
-			<div class="box-body table-scroll table-responsive">
-				<table id="tbl-pedidos" class="table table-striped table-hover">
-					<thead>
-							<tr>
-									<th>Acciones</th>
-									<th>Numero de Pedido</th>
-									<th>Cliente</th>
-									<th>Domicilio</th>
-									<th>Tipo de Trabajo</th>
-									<th>Fecha de Inicio</th>
-									<th width="10%">Estado</th>
-							</tr>
-					</thead>
-					<tbody>
-						<?php
+        <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+            onclick="$('#mdl-peta').modal('show')">Agregar</button>
+            <br>
+        <div class="box-body table-scroll table-responsive">
+            <table id="tbl-pedidos" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Acciones</th>
+                        <th>Numero de Pedido</th>
+                        <th>Cliente</th>
+                        <th>Domicilio</th>
+                        <th>Tipo de Trabajo</th>
+                        <th>Fecha de Inicio</th>
+                        <th width="10%">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
 							foreach($pedidos as $rsp){
 
 								$petr_id = $rsp->petr_id;
@@ -61,7 +63,142 @@ switch ($estado) {
         break;
 
         case 'estados_yudicaRECHAZADO':
-          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">ENTREGADO</span></td>';
+          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          </span></td>';
           break;
   
   default:
@@ -73,9 +210,9 @@ switch ($estado) {
 								echo '</tr>';
 						}
 						?>
-					</tbody>
-				</table>
-			</div>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <!-- The Modal -->
@@ -103,131 +240,174 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
 
 <script>
-
-$('#tbl-pedidos').DataTable({
-        "order": [[ 0, "desc" ]]
-	});
-
-
-    function verPedido(e) {
-      petr_id = $(e).closest('tr').attr('id');
-
-      case_id = $(e).closest('tr').attr('case_id');
-
-				console.log('trae pedido N°: '+ petr_id)
-
-        console.log('trae case_id N°: '+ case_id)
-
-      
- var url = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_comentario?petr_id="+petr_id+"&case_id="+case_id;
-  
-
- var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id="+petr_id+"&case_id="+case_id;
-  
-
- var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id="+case_id;
-
- wo();
- wc();
- window.setTimeout(function(){
-    $('#mdl-vista').modal('show');
-  }, 7000);
- 
-   
-     console.log(url);
-     $("#cargar_comentario").empty();
-      $("#cargar_comentario").load(url);
-      
-      console.log(url1);   
-      $("#cargar_form").empty();
-      $("#cargar_form").load(url1);
-
-      console.log(url2);   
-      $("#cargar_trazabilidad").empty();
-      $("#cargar_trazabilidad").load(url2);
-      wc();
-      
-	} 
+// $('#tbl-pedidos').DataTable({
+//         "order": [[ 0, "desc" ]]
+// 	});
 
 
-function Eliminar(e){
+//   $(document).ready(function() {
+//     $('#tbl-pedidos').DataTable( {
+//         dom: 'Bfrtip',
+//         buttons: [
+//             'copy', 'csv', 'excel', 'pdf', 'print'
+//         ]
+//     } );
+// } );
 
-debugger;
 
-  petr_id = $(e).closest('tr').attr('id');
+$(document).ready(function() {
+    $('#tbl-pedidos').DataTable({
+        dom: 'Bfrtip',
+     
+        buttons: [{
+                extend: 'copy',
+                text: 'Copiar al Portapapeles',
+                className: 'btn btn-warning'
+            },
+            {
+                extend: 'pdf',
+                text: 'Exportar pdf',
+                className: 'btn btn-danger'
+            },
+            {
+                extend: 'csv',
+                text: 'Exportar Excel',
+                className: 'btn btn-success'
+            },
+            {
+            extend: 'print',
+            text: 'Imprimir',
+            className: 'btn btn-primary'
+        }
+        ]
+    });
+});
 
-  case_id = $(e).closest('tr').attr('case_id');
 
-  console.log('trae pedido N°: '+ petr_id);
 
-  console.log('trae case_id N°: '+ case_id);
+function verPedido(e) {
+    petr_id = $(e).closest('tr').attr('id');
+
+    case_id = $(e).closest('tr').attr('case_id');
+
+    console.log('trae pedido N°: ' + petr_id)
+
+    console.log('trae case_id N°: ' + case_id)
+
+
+    var url = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_comentario?petr_id=" + petr_id + "&case_id=" +
+        case_id;
+
+
+    var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" +
+        case_id;
+
+
+    var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
+
+    wo();
+    wc();
+    window.setTimeout(function() {
+        $('#mdl-vista').modal('show');
+    }, 7000);
+
+
+    console.log(url);
+    $("#cargar_comentario").empty();
+    $("#cargar_comentario").load(url);
+
+    console.log(url1);
+    $("#cargar_form").empty();
+    $("#cargar_form").load(url1);
+
+    console.log(url2);
+    $("#cargar_trazabilidad").empty();
+    $("#cargar_trazabilidad").load(url2);
+    wc();
+
+}
+
+
+function Eliminar(e) {
+
+    debugger;
+
+    petr_id = $(e).closest('tr').attr('id');
+
+    case_id = $(e).closest('tr').attr('case_id');
+
+    console.log('trae pedido N°: ' + petr_id);
+
+    console.log('trae case_id N°: ' + case_id);
 
 
     const swalWithBootstrapButtons = Swal.mixin({
-  customClass: {
-    confirmButton: 'btn btn-success',
-    cancelButton: 'btn btn-danger'
-  },
-  buttonsStyling: false
-})
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
 
-swalWithBootstrapButtons.fire({
-  
-  title: 'Estas Seguro?',
-  text: "Esta accion no puede ser revertida!",
-  icon: 'warning',
-  showCancelButton: true,
-  confirmButtonText: 'Si, Eliminar!',
-  cancelButtonText: 'No, cancelar!',
-  reverseButtons: true
-}).then((result) => {
-  debugger;
-  console.log(result);
-  if (result.value) {
-    console.log('sale por verdadero');
-    EliminarPedidoTrabajo()
+    swalWithBootstrapButtons.fire({
+
+        title: 'Estas Seguro?',
+        text: "Esta accion no puede ser revertida!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Eliminar!',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+    }).then((result) => {
+        debugger;
+        console.log(result);
+        if (result.value) {
+            console.log('sale por verdadero');
+            EliminarPedidoTrabajo()
 
 
-  } else if (result.dismiss === Swal.DismissReason.cancel) {
-   console.log('sale por falso');
-    swalWithBootstrapButtons.fire(
-      'Cancelado',
-      '',
-      'error'
-    )
-  }
-})
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            console.log('sale por falso');
+            swalWithBootstrapButtons.fire(
+                'Cancelado',
+                '',
+                'error'
+            )
+        }
+    })
 
 }
 
 
 function EliminarPedidoTrabajo() {
 
-debugger;
+    debugger;
 
 
- 
+
     $.ajax({
         type: 'GET',
-        data: petr_id, case_id,
+        data: petr_id,
+        case_id,
         cache: false,
         contentType: false,
         processData: false,
-        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/eliminarPedidoTrabajo/?petr_id=' + petr_id + '&case_id=' + case_id ,
+        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/eliminarPedidoTrabajo/?petr_id=' +
+            petr_id + '&case_id=' + case_id,
         success: function(rsp) {
-          debugger;
-          console.log('data trae:'+ rsp)
+            debugger;
+            console.log('data trae:' + rsp)
 
-          linkTo('<?php  echo BPM ?>Pedidotrabajo/');      
-          setTimeout(() => {
-             Swal.fire(
-                
+            linkTo('<?php  echo BPM ?>Pedidotrabajo/');
+            setTimeout(() => {
+                Swal.fire(
+
                     'Perfecto!',
                     'Se Elimino Pedido Correctamente!',
                     'success'
                 )
-		  }, 5000);
- 
+            }, 5000);
+
 
         },
         error: function(rsp) {
@@ -237,9 +417,4 @@ debugger;
 
 
 }
-   
 </script>
-
-
-
-
