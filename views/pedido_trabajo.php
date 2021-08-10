@@ -331,7 +331,7 @@
 
 	function armarInfo(arraydatos){
 
-		$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/infoCodigo/pedidoTrabajo", arraydatos);
+		$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
 	}
 
 	function validarImpresion(){
@@ -377,23 +377,23 @@
 			switch (arraydatos.estado) {
 					case 'estados_yudicaEN_CURSO':
 						//Comprobante 1
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial");
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial");
 						break;
 
 					case 'estados_yudicaREPROCESO':
 						//Comprobante 1
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial");
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial");
 						break;
 
 					case 'estados_yudicaRECHAZADO ':
 						//Comprobante 2
-						//$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/revisionInicial", arraydatos);
+						//$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial", arraydatos);
 						break;
 
 					case 'estados_yudicaENTREGADO  ':
 						// Comprobante 3
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/pintadoFinal", arraydatos);
-						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>infoCodigo/pintadoFinalFooter");
+						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pintadoFinal", arraydatos);
+						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pintadoFinalFooter");
 						break;
 
 					default:
