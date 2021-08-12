@@ -6,10 +6,7 @@
     margin-bottom: 20px;
 }
 </style>
-<?php
-    // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modal');
-?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
@@ -292,117 +289,4 @@
 			console.log("avance de todas maneras");
 			// frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
 	}
-</script>
-<script>
-//#HGALLARDO
-
-	var band = 0;
-	// Se peden hacer dos cosas: o un ajax con los datos o directamente
-	// armar con los datos de la pantalla
-	function modalCodigos(){
-
-			if (!validarImpresion()) {
-				alert('Complete los campos por favor antes de imprimir');
-				return;
-			}
-
-			if (band == 0) {
-					// configuracion de codigo QR
-					var config = {};
-							config.titulo = "Pedido de Trabajo";
-							config.pixel = "5";
-							config.level = "L";
-							config.framSize = "2";
-					// info para immprimir
-					var arraydatos = {};
-							arraydatos.Cliente = $('#clie_id option:selected').text();
-							arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
-							arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
-							arraydatos.Serie = $('#num_serie').val();
-					// info para grabar en codigo QR
-					armarInfo(arraydatos);
-					//agrega codigo QR al modal impresion
-					getQR(config, arraydatos);
-			}
-			// llama modal con datos e img de QR ya ingresados
-			verModalImpresion();
-			band = 1;
-	}
-
-	function armarInfo(arraydatos){
-
-		$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
-	}
-
-	function validarImpresion(){
-
-		var cli = $('#clie_id option:selected').val();
-		var medida = $('select[name="medidas_yudica"] option:selected').val();
-		var marca = $('select[name="marca_yudica"] option:selected').val();
-		var serie = $('#num_serie').val();
-		if ( cli == "" || medida == "" || marca == "" || serie == "" ) {
-			return false;
-		} else {
-			return true;
-		}
-
-
-	}
-
-
-	// REIMPRESION ETIQUETA VIENE DEL LISTADO
-	var bandreimp = 0;
-  // Se peden hacer dos cosas: o un ajax con los datos o directamente
-  // armar con los datos de la pantalla
-  function modalReimpresion(e){
-		 alert('funcionalidad incompleta');
-		 return;
-			if (bandreimp == 0) {
-				petr_id = $(e).closest('tr').attr('id');
-				arraydatos = $(e).closest('tr').attr('data-json');
-				var datos = JSON.parse(arraydatos);
-				datos.tipoImpresion = 'reimpresion';
-				// info para grabar en codigo QR
-				armarInfoReimp(datos);
-				// agrega codigo QR al modal impresion
-				//getQR(config, arraydatos);
-				// llama modal con datos e img de QR ya ingresados
-				verModalImpresion();
-			}
-			bandreimp = 1;
-  }
-
-	function armarInfoReimp(arraydatos){
-		debugger;
-			switch (arraydatos.estado) {
-					case 'estados_yudicaEN_CURSO':
-						//Comprobante 1
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial");
-						break;
-
-					case 'estados_yudicaREPROCESO':
-						//Comprobante 1
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial");
-						break;
-
-					case 'estados_yudicaRECHAZADO ':
-						//Comprobante 2
-						//$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/revisionInicial", arraydatos);
-						break;
-
-					case 'estados_yudicaENTREGADO  ':
-						// Comprobante 3
-						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pintadoFinal", arraydatos);
-						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pintadoFinalFooter");
-						break;
-
-					default:
-						// code...
-						break;
-			}
-
-			return;
-	}
-
-
 </script>
