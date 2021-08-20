@@ -123,7 +123,14 @@
 
                 </fieldset>
             </form>
-            <div class="frm-new" data-form="35"></div>
+            <!-- <div class="frm-new" data-form="35"></div> -->
+			<?php  
+			
+			$form_id = $this->Pedidotrabajos->procesos()->proceso->form_id;
+
+			echo '<div class="frm-new" data-form="'.$form_id.'"></div>';
+			
+			?>
 
             <div class="form-group">
                 <div class="col-xs-12 col-xs-offset-5 col-sm-12 col-sm-offset-6 col-md-6 col-md-offset-8">
@@ -290,7 +297,7 @@
 			}
 			debugger;
 			console.log("avance de todas maneras");
-			// frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+			 frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
 	}
 </script>
 <script>

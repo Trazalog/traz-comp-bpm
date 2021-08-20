@@ -63,142 +63,7 @@ switch ($estado) {
         break;
 
         case 'estados_yudicaRECHAZADO':
-          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          </span></td>';
+          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
           break;
   
   default:
@@ -240,51 +105,72 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
 
 <script>
-// $('#tbl-pedidos').DataTable({
-//         "order": [[ 0, "desc" ]]
-// 	});
 
-
-//   $(document).ready(function() {
-//     $('#tbl-pedidos').DataTable( {
-//         dom: 'Bfrtip',
-//         buttons: [
-//             'copy', 'csv', 'excel', 'pdf', 'print'
-//         ]
-//     } );
-// } );
-
+//Funcion de datatable para extencion de botones exportar
+//excel, pdf, copiado portapapeles e impresion
 
 $(document).ready(function() {
-    $('#tbl-pedidos').DataTable({
-        dom: 'Bfrtip',
-     
-        buttons: [{
-                extend: 'copy',
-                text: 'Copiar al Portapapeles',
-                className: 'btn btn-warning'
-            },
-            {
-                extend: 'pdf',
-                text: 'Exportar pdf',
-                className: 'btn btn-danger'
-            },
-            {
-                extend: 'csv',
-                text: 'Exportar Excel',
-                className: 'btn btn-success'
-            },
-            {
-            extend: 'print',
-            text: 'Imprimir',
-            className: 'btn btn-primary'
+  $('#tbl-pedidos').DataTable({
+    responsive: true,
+    language: {
+        url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+    },
+    dom: 'lBfrtip',
+    buttons: [{
+        //Botón para Excel
+        extend: 'excel',
+        exportOptions: {
+            columns: [ 1, 2, 3, 4, 5, 6 ]
+                },
+        footer: true,
+        title: 'Pedido de Trabajo',
+        filename: 'pedido_trabajo',
+
+        //Aquí es donde generas el botón personalizado
+        text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+        },
+        // //Botón para PDF
+        {
+          extend: 'pdf',
+          exportOptions: {
+            columns: [ 1, 2, 3, 4, 5, 6 ]
+                },
+          footer: true,
+          title: 'Pedidos de Trabajo',
+          filename: 'Pedidos de Trabajo',
+          text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+        },
+        {
+          extend: 'copy',
+          exportOptions: {
+            columns: [ 1, 2, 3, 4, 5, 6 ]
+                },
+          footer: true,
+          title: 'Pedidos de Trabajo',
+          filename: 'Pedidos de Trabajo',
+          text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+        },
+        {
+          extend: 'print',
+          exportOptions: {
+            columns: [ 1, 2, 3, 4, 5, 6 ]
+                },
+          footer: true,
+          title: 'Pedidos de Trabajo',
+          filename: 'Pedidos de Trabajo',
+          text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
         }
-        ]
-    });
+    ]
+  });
 });
 
 
 
+
+
+//funcion ver pedido
+// parametro petr_id y case_id
+//
 function verPedido(e) {
     petr_id = $(e).closest('tr').attr('id');
 
@@ -327,7 +213,8 @@ function verPedido(e) {
 
 }
 
-
+//funcion boton eliminar
+//
 function Eliminar(e) {
 
     debugger;
@@ -378,7 +265,9 @@ function Eliminar(e) {
 
 }
 
-
+//Elimina un pedido
+//parametro petr_id
+//
 function EliminarPedidoTrabajo() {
 
     debugger;
@@ -411,7 +300,12 @@ function EliminarPedidoTrabajo() {
 
         },
         error: function(rsp) {
-            alert("Error");
+console.log('rsp sale por errro trae: ' + rsp);
+            Swal.fire(
+                'Cancelado!',
+                'No se Elimino Pedido de trabajo',
+                'error'
+            )
         }
     });
 
