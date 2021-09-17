@@ -1,5 +1,9 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
-
+/**
+	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
+	*
+	* @autor Kevin Marchan
+	*/
 class Pedidotrabajo extends CI_Controller
 {
 
@@ -53,8 +57,12 @@ class Pedidotrabajo extends CI_Controller
     }
 
 
-//trae comentarios segun Case_id
-//
+
+/**
+	* Trae comentarios segun Case_id
+	*@param case_id (metodo GET)
+    *@return view componete comentarios
+	*/
 public function cargar_detalle_comentario(){
 
 $case_id = $_GET['case_id'];    
@@ -66,8 +74,12 @@ $data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $
 echo $data['comentarios'];
 }
 
-//trae trazabilidad de un pedido segun case_id
-//y processId.
+
+/**
+	* Trae trazabilidad de un pedido segun case_id
+	*@param case_id ,processId. (metodo GET)
+    *@return array componete BPM trazabilidad
+	*/
 //HARCODECHUKA processId
 public function cargar_detalle_linetiempo(){
 
@@ -82,7 +94,12 @@ public function cargar_detalle_linetiempo(){
  
 }
 
-//trae formularios asociados al pedido de trabajo segun petr_id
+
+/**
+	* Trae formularios asociados al pedido de trabajo segun petr_id
+	*@param case_id ,petr_id, processId. (metodo GET)
+    *@return array forularios
+	*/
 //HARCODECHUKA processId
 public function cargar_detalle_formulario(){
 
@@ -100,9 +117,12 @@ public function cargar_detalle_formulario(){
 }
 
 
-//instancia un formulario asociado
-// info_id
 
+/**
+	* Instancia un formulario asociado
+	*@param info_id (metodo GET)
+    *@return array forulario
+	*/
 public function cargar_formulario_asociado(){
 
     $info_id = $_GET['info_id'];   
@@ -114,7 +134,11 @@ public function cargar_formulario_asociado(){
 
    
   
-
+ /**
+		*Guarda Pedido de Trabajo.
+		* @param array
+		* @return si guarda pedido retorna mensaje de guardado, sino guarda elimina pedido
+		**/
     public function guardarPedidoTrabajo()
     {
        $proccessname = $this->session->userdata('proccessname');
@@ -190,6 +214,12 @@ public function cargar_formulario_asociado(){
 
     }
 
+     /**
+		*Lanza proceso en BPM (en Pedido Trabajos).
+		* @param  petr_id
+		* @return 
+		**/
+
     public function BonitaProccess($petr_id)
     {
       
@@ -215,6 +245,12 @@ public function cargar_formulario_asociado(){
         }
 
     }
+
+    /**
+		*Actualiza Case_id (en Pedido Trabajos).
+		* @param array (case_id , petr_id)
+		* @return 
+		**/
 
     public function ActualizarCaseId($case_id, $petr_id)
     {
@@ -249,7 +285,7 @@ public function cargar_formulario_asociado(){
 
     	/**
 		* Elimina Pedidos Trabajo
-		* @param $petr_id $processId,$case_id
+		* @param array $petr_id $processId,$case_id (metodo GET)
 		* @return 
 		*/
 //HARCODECHUKA processId
@@ -278,28 +314,30 @@ public function cargar_formulario_asociado(){
 
         if (!$rsp) {
 
-            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido  >> ERROR AL ELIMINAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido de trabajo >> Error al Eliminar Pedido de Trabajo');
 
            // $this->eliminarPedidoTrabajo($petr_id);
 
-            return $rsp;
+           // return $rsp;
+           echo json_encode($rsp);
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido  >> Se Elimino pedido');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido de trabajo   >> Se Elimino pedido de Trabajo Correctamente');
             
 
-           //si no falla elimina el caso asociado al pedido de trabajo
+           //si no falla elimina el caso asociado al pedido de trabajo llamando a la API
 
            $rsp = $this->bpm->eliminarCaso($processId, $case_id);
 
            if (!$rsp) {
 
-            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> ERROR AL ELIMINAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
 
-            return $rsp;
+            //return $rsp;
+            echo json_encode($rsp);
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar Caso  >>  se Elimino caso');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
 
             echo json_encode($rsp);
         

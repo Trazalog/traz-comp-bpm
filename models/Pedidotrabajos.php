@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-// Model ABM No Consumibles
+/**
+	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
+	*
+	* @autor Kevin Marchan
+	*/
 class Pedidotrabajos extends CI_Model
 {
 
@@ -9,6 +13,11 @@ class Pedidotrabajos extends CI_Model
         parent::__construct();
     }
 
+      /**
+		*Obtiene datos facha 
+		* @param 
+		* @return array {mes,dia,año}
+		**/
     public function seleccionarUnidadMedidaTiempo()
     {
         $resource = '/tablas/unidad_medida_tiempo';
@@ -16,7 +25,12 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
-   //Obtiene datos de clientes 
+   
+   /**
+		*Obtiene datos de clientes 
+		* @param empr_id
+		* @return lista de clientes por empresa
+		**/
     public function getClientes($empr_id)
     {
         $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
@@ -24,9 +38,12 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);                                
     }
 
-    //Obtiene los formularios asociados a un pedido de trabajo por petr_id
-    // parametro petr_id
-    //
+   
+     /**
+		*Obtiene los formularios asociados a un pedido de trabajo
+		* @param petr_id
+		* @return lista de formularios por petr_id
+		**/
     public function getFormularios($petr_id)
     {
         $resource = "/pedidoTrabajo/petr_id/$petr_id";
@@ -35,7 +52,12 @@ class Pedidotrabajos extends CI_Model
                                    
     }
 
-// Guardar Pedido de Trabajo
+ 
+/**
+		*Guardar Pedido de Trabajo
+		* @param array
+		* @return $rsp de guardado
+		**/
     public function guardarPedidoTrabajo($data)
     {
         $url = REST_PRO . '/pedidoTrabajo';
@@ -43,6 +65,11 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
+    /**
+		*ELimina Pedido de Trabajo
+		* @param array ($petr_id $processId,$case_id)
+		* @return $rsp de eliminado
+		**/
     public function eliminarPedidoTrabajo($data)
     {
         $url = REST_PRO . "/pedidoTrabajo";
@@ -71,6 +98,12 @@ class Pedidotrabajos extends CI_Model
     }
 
 //Luego de crear un pedido de trabajo esta funcion actualiza el caseId del pedido
+  /**
+		*Actualiza Case_id (en Pedido Trabajos).
+		* @param array case_id , petr_id
+		* @return 
+		**/
+
     public function ActualizarCaseId($data)
     {
         $url = REST_PRO . "/pedidoTrabajo";
@@ -79,9 +112,12 @@ class Pedidotrabajos extends CI_Model
 
     }
 
-  //Obtiene lista pedido de trabajo por emprId (todos los pedidos de una empresa)
-    // parametro emprId
-    //
+ 
+     /**
+		*Obtiene lista pedido de trabajo por emprId (todos los pedidos de una empresa)
+		* @param  $emprId
+		* @return lista de pedido de trabajo
+		**/
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";
