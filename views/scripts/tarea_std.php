@@ -73,6 +73,7 @@ function soltarTarea() {
 
 function cerrar() {
     if ($('#miniView').length == 0) {
+        $('#mdl-vista').modal('hide');
         linkTo('<?php echo BPM ?>Proceso');
     } else {
         existFunction('closeView');
