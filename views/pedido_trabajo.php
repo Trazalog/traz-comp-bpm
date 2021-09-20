@@ -130,7 +130,7 @@
 			?>
 
             <div class="form-group">
-                <div class="col-xs-12 col-xs-offset-5 col-sm-12 col-sm-offset-6 col-md-6 col-md-offset-8">
+                <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
                     <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button>
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
@@ -148,7 +148,7 @@
 	//Capturo el evento de apertura del modal
 	$(document).ready(function () {
 			$('.select2').select2();
-			clie_id
+			
 			$(window).on('show.bs.modal', function (e) {
 					fecha = new Date();
 					
@@ -284,16 +284,17 @@
 					return;
 			}
 			
-			if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
-					Swal.fire(
-							'Error..',
-							'Debes completar los campos obligatorios (*)',
-							'error'
-					);
-					return;
+			if(idFormDinamico != "#undefined"){
+				if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
+						Swal.fire(
+								'Error..',
+								'Debes completar los campos obligatorios (*)',
+								'error'
+						);
+						return;
+				}
 			}
-			debugger;
-			console.log("avance de todas maneras");
-			 frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+			
+			frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
 	}
 </script>
