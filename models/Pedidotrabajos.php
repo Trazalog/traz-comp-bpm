@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-// Model ABM No Consumibles
+/**
+	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
+	*
+	* @autor Kevin Marchan
+	*/
 class Pedidotrabajos extends CI_Model
 {
 
@@ -9,6 +13,11 @@ class Pedidotrabajos extends CI_Model
         parent::__construct();
     }
 
+      /**
+		*Obtiene datos facha 
+		* @param 
+		* @return array {mes,dia,año}
+		**/
     public function seleccionarUnidadMedidaTiempo()
     {
         $resource = '/tablas/unidad_medida_tiempo';
@@ -16,14 +25,39 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
-    public function getClientes()
+   
+   /**
+		*Obtiene datos de clientes 
+		* @param empr_id
+		* @return lista de clientes por empresa
+		**/
+    public function getClientes($empr_id)
     {
-        $resource = '/clientes/porEmpresa/1/porEstado/ACTIVO';
+        $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
         $url = REST_CORE . $resource;
-        return wso2($url);
+        return wso2($url);                                
     }
 
-// Guardar guardar Pedido de Trabajo
+   
+     /**
+		*Obtiene los formularios asociados a un pedido de trabajo
+		* @param petr_id
+		* @return lista de formularios por petr_id
+		**/
+    public function getFormularios($petr_id)
+    {
+        $resource = "/pedidoTrabajo/petr_id/$petr_id";
+        $url = REST_PRO . $resource;
+        return wso2($url);     
+                                   
+    }
+
+ 
+/**
+		*Guardar Pedido de Trabajo
+		* @param array
+		* @return $rsp de guardado
+		**/
     public function guardarPedidoTrabajo($data)
     {
         $url = REST_PRO . '/pedidoTrabajo';
@@ -31,38 +65,44 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
+    /**
+		*ELimina Pedido de Trabajo
+		* @param array ($petr_id $processId,$case_id)
+		* @return $rsp de eliminado
+		**/
     public function eliminarPedidoTrabajo($data)
     {
-        //   DELETE http://10.142.0.7:8280/services/PRODataService/pedidoTrabajo
         $url = REST_PRO . "/pedidoTrabajo";
         return wso2($url, 'DELETE', $data);
     }
 
-// Guardar guardar BonitaProccess
-    public function guardarBonitaProccess($data)
+// Guardar BonitaProccess
+    public function guardarBonitaProccess($contract)
     {
-        //REST_PRD  http://10.142.0.7:8280/tools/bpm/proceso/instancia
-        //define('REST_BPM', 'http://10.142.0.7:8280/tools/bpm');
-
-        $url = REST_BPM . '/proceso/instancia';
-        $rsp = $this->rest->callApi('POST', $url, $data);
+        $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
         return $rsp;
-
     }
-
-/// GET
 
     // lanzar proceso
     public function procesos()
     {
-        $proccessname = "YUDI-NEUMATICOS";
-// http://10.142.0.7:8280/services/PRODataService/proceso/nombre/YUDI-NEUMATICOS/empresa/1
+        $proccessname = $this->session->userdata('proccessname');
+
         $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+
         $url = REST_PRO . $resource;
-        //  return wso2($url);
+        
         $array = $this->rest->callApi('GET', $url);
+
         return json_decode($array['data']);
     }
+
+//Luego de crear un pedido de trabajo esta funcion actualiza el caseId del pedido
+  /**
+		*Actualiza Case_id (en Pedido Trabajos).
+		* @param array case_id , petr_id
+		* @return 
+		**/
 
     public function ActualizarCaseId($data)
     {
@@ -72,6 +112,12 @@ class Pedidotrabajos extends CI_Model
 
     }
 
+ 
+     /**
+		*Obtiene lista pedido de trabajo por emprId (todos los pedidos de una empresa)
+		* @param  $emprId
+		* @return lista de pedido de trabajo
+		**/
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";
@@ -110,6 +156,14 @@ class Pedidotrabajos extends CI_Model
         $data['_put_pedidoTrabajo_estado'] = array('estado' => $estado, 'petr_id'=>"$petrId");
         $url = REST_PRO."/pedidoTrabajo/estado";
         return wso2($url, 'PUT', $data);
-    }
+		}
+
+		// AGREGADO DE MERGE DE CHECHO
+			public function obtenerInfoId($petrId)
+			{
+					$url = REST_PRO . "/info_id/$petrId";
+					return wso2($url);
+			}
+		// FIN AGREGADO DE MERGE DE CHECHO
 
 }

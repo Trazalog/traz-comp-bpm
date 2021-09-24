@@ -2,15 +2,22 @@
 <div class="row">
     <div id="bandeja" class="col-md-12">
         <div class="box box-primary">
-            <div class="box-header">
+            <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-list"></i>
                     Bandeja de Tareas
                 </h3>
             </div>
             <div class="box-body table-responsive">
-                <table class="table table-hover table-striped" id="tareas">
+                <table id="tareas" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class='text-center'></th>
+                    </tr>
+                </thead>
+
                     <tbody>
+                   
                         <?php
                             #Validacion de bandeja vacia
                             if(!empty($list)){
@@ -58,7 +65,7 @@
         <!-- /.box-body -->
     </div>
     <!-- /. box -->
-    <div id="miniView" class="view col-xs-8">
+    <div id="miniView" class="view col-sm-8">
 
     </div>
 </div>
@@ -69,11 +76,16 @@
 <!-- /.row -->
 
 <script>
+
+$(document).ready( function () {
+    $('#tareas').DataTable();
+} );
+
 $('.item').single_double_click(function() {
     wo()
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
-    $('#bandeja').removeClass().addClass('col-xs-4');
+    $('#bandeja').removeClass().addClass('hidden-xs col-sm-4');
     // $('#miniView').html('<div class="box"><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>');
     $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'), function(){
         wc();   

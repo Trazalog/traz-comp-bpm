@@ -2,9 +2,14 @@
 <?php 
   $userdata = $this->session->userdata('user_data');
   $usrId = $userdata[0]['usrId'];     // guarda usuario logueado 
-  $usrName =  $userdata[0]['usrName'];
-  $usrLastName = $userdata[0]["usrLastName"];
-  
+  //$usrName =  $userdata[0]['usrName'];
+  $usrName = $this->session->userdata['first_name'].
+  //$usrLastName = $userdata[0]["usrLastName"];
+  $usrLastName = $this->session->userdata['last_name'];
+ 
+
+//$ci->session->userdata('empr_id');
+
   echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
   echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";
 ?>
@@ -13,14 +18,18 @@
     <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
         <ul id="listaComentarios">
             <?php
-				foreach($comentarios as $f){
+            $array = (array) $comentarios;
+
+				foreach($array as $f){
 
 				if(strcmp($f['userId']['userName'],'System')!=0){
+                if($array){
 				echo '<hr/>';
-				echo '<li><h4>'.$f['userId']['firstname'].' '.$f['userId']["lastname"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
-				echo '<p>'.$f['content'].'</p></li>';
+				echo '<li><h4><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i>- '.$f['userId']["userName"].'<small style="float: right">'.date_format(date_create($f['postDate']),'H:i  d/m/Y').'</small></h4>';
+				echo '<p><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i>'.$f['content'].'</p></li>';
 				}
-				}
+			    	}
+                }
 				?>
         </ul>
     </div>
@@ -39,41 +48,108 @@ function ajax(options) {
 
     return $.ajax(options);
 }
+
+
 //Funcion COMENTARIOS
 function guardarComentario() {
+
+    debugger;
+    var comentario = $('#comentario').val();
+    if (comentario.length == 0 ) {
+					
+	Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Asegurate de escribir un comentario!',
+				footer: ''
+				});
+		
+		return;
+
+                }
+				else{
+
     console.log("Guardar Comentarios...");
     var id = $('#case_id').val();
     var comentario = $('#comentario').val();
     var nombUsr = $('#usrName').val();
-    var apellUsr = $('#usrLastName').val();
-
-    var html = '<hr /><li><h4>' + nombUsr + ' ' + apellUsr +
-        '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
-    ajax({
+    var apellUsr = $('#usrLastName').val();;
+    $.ajax({
         type: 'POST',
         data: {
             'processInstanceId': id,
             'content': comentario
         },
-        url: 'index.php/Tarea/GuardarComentario',
+        url: '<?php echo base_url(BPM) ?>Proceso/guardarComentario',
         success: function(result) {
+            console.log("Submit");
             var lista = $('#listaComentarios');
-            lista.prepend(html);
+            lista.prepend('<hr/><li><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>'
+                );
             $('#comentario').val('');
         },
         error: function(result) {
             console.log("Error");
-
-            if (!conexion()) {
-                console.log('Navegador Offline');
-                var task = $('#task').val() + '_comentarios';
-                guardarEstado(task, html);
-                var lista = $('#listaComentarios');
-                lista.prepend(html);
-                $('#comentario').val('');
-            }
-
         }
     });
+    }
 }
+
+
+// //Funcion COMENTARIOS OLD
+// function guardarComentario_old() {
+//     debugger;
+//     var comentario = $('#comentario').val();
+//     if (comentario.length == 0 ) {
+					
+// 	Swal.fire({
+// 				icon: 'error',
+// 				title: 'Error...',
+// 				text: 'Asegurate de escribir un comentario!',
+// 				footer: ''
+// 				});
+		
+// 		return;
+
+//                 }
+// 				else{
+
+   
+//     console.log("Guardar Comentarios...");
+//     var id = $('#case_id').val();
+//     var comentario = $('#comentario').val();
+//     var nombUsr = $('#usrName').val();
+//     var apellUsr = $('#usrLastName').val();
+
+//     var html = '<hr /><li><h4>' + nombUsr + ' ' + apellUsr +
+//         '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>';
+//     ajax({
+//         type: 'POST',
+//         data: {
+//             'processInstanceId': id,
+//             'content': comentario
+//         },
+//         url: 'index.php/Tarea/GuardarComentario',
+//         success: function(result) {
+//             var lista = $('#listaComentarios');
+//             lista.prepend(html);
+//             $('#comentario').val('');
+//         },
+//         error: function(result) {
+//             console.log("Error");
+
+//             if (!conexion()) {
+//                 console.log('Navegador Offline');
+//                 var task = $('#task').val() + '_comentarios';
+//                 guardarEstado(task, html);
+//                 var lista = $('#listaComentarios');
+//                 lista.prepend(html);
+//                 $('#comentario').val('');
+//             }
+
+//         }
+//     });
+//     }
+// }
 </script>

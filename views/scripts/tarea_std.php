@@ -73,6 +73,7 @@ function soltarTarea() {
 
 function cerrar() {
     if ($('#miniView').length == 0) {
+        $('#mdl-vista').modal('hide');
         linkTo('<?php echo BPM ?>Proceso');
     } else {
         existFunction('closeView');
@@ -80,6 +81,21 @@ function cerrar() {
 }
 
 function guardarComentario() {
+    debugger;
+    var comentario = $('#comentario').val();
+    if (comentario.length == 0 ) {
+					
+	Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Asegurate de escribir un comentario!',
+				footer: ''
+				});
+		
+		return;
+
+                }
+				else{
     var nombUsr = $('#usrName').val();
     var apellUsr = $('#usrLastName').val();
     var comentario = $('#comentario').val();
@@ -105,5 +121,6 @@ function guardarComentario() {
             console.log("Error");
         }
     });
+}
 }
 </script>
