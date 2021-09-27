@@ -60,8 +60,11 @@
             </div>
             <hr>
             <div class="text-right">
+                <button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;"
+                onclick="existFunction('cerrarTareaParcial')">Finalizar tarea con Entrega Parcial</button>
                 <button class="btn btn-primary btnNotifEstandar" onclick="cerrar()">Cerrar</button>
-                <button class="btn btn-success btnNotifEstandar" onclick="existFunction('cerrarTarea')">Hecho</button>
+                <button class="btn btn-success btnNotifEstandar" id="btnHecho" style="display:block;"
+                    onclick="existFunction('cerrarTarea')">Hecho</button>
             </div>
 
         </div>
@@ -70,8 +73,127 @@
     <!-- /.tab-content -->
 </div>
 
+<?php $this->load->view('scripts/tarea_std'); ?>
 
 <script>
+debugger;
 var task = <?php echo json_encode($tarea) ?>;
+
+var nombreTarea = task.nombreTarea;
+
+
+if (nombreTarea === "Entrega pedido pendiente") {
+    $("#btncerrarTarea").removeAttr("style");
+    $("#btnHecho").removeAttr("style");
+
+    $("#btnHecho").prop('disabled', false);
+}
+
+$('.fecha').datepicker({
+    autoclose: true
+}).on('change', function(e) {
+    // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
+    console.log('Validando Campo...' + $(this).attr('name'));
+    $('#genericForm').data('bootstrapValidator').resetField($(this), false);
+    $('#genericForm').data('bootstrapValidator').validateField($(this));
+});
+
+
+
+function CerrarTarea() {
+////////////////////////////////////////////////////////
+    //cerrar tarea en notificacion estandar
+    var caseid = task.caseId;
+    var taskid = task.taskId;
+    $.ajax({
+        type: 'POST',
+        data: {
+    		'IdtarBonita': taskid,
+    		'caseid':caseid
+        },
+          url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + taskid,
+        success: function(data) {
+    	  debugger;
+          if(data['status'] == true)
+    	  {
+    		$("#modalaviso").modal("hide");
+    	    linkTo('<?php echo BPM ?>Proceso/');
+
+            setTimeout(() => {
+                Swal.fire(
+
+                    'Perfecto!',
+                    'Se Finalizó la Tarea Correctamente!',
+                    'success'
+                )
+            }, 6000);
+    	  }else{
+    		$("#modalaviso").modal("hide");
+            Swal.fire(
+
+'Error!',
+'NO Se Finalizó la Tarea Correctamente!',
+'error'
+)
+           
+
+    	  }
+        },
+        error: function(result) {
+    		debugger;
+        }
+    });
+
+}
 </script>
-<?php $this->load->view('scripts/tarea_std'); ?>
+
+<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contFormSubtarea">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!---///////--- MODAL AVISO ---///////--->
+<div class="modal fade" id="modalaviso">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-blue">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title" id="exampleModalLabel">AVISO</h5>
+            </div>
+            <input id="circuito_delete" style="display: none;">
+            <div class="modal-body">
+                <center>
+                    <h4>
+                        <p>¿ DESEA CERRAR LA TAREA ?</p>
+                    </h4>
+                </center>
+            </div>
+            <div class="modal-footer">
+                <center>
+                    <button type="button" class="btn btn-primary" onclick="CerrarTarea()">SI</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+<!---///////--- FIN MODAL AVISO ---///////--->
