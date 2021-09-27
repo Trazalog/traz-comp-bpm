@@ -3,7 +3,7 @@
         <h4 class="box-title">Listado de Pedido Trabajo</h4>
     </div>
     <div class="box-body">
-        <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+        <button id="btn-agregarPedido" class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
             onclick="$('#mdl-peta').modal('show')">Agregar</button>
             <br>
         <div class="box-body table-scroll table-responsive">

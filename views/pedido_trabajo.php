@@ -122,10 +122,10 @@
             </form>
             <!-- <div class="frm-new" data-form="35"></div> -->
 			<?php  
-			
-			$form_id = $this->Pedidotrabajos->procesos()->proceso->form_id;
+			$proccessname = $this->session->userdata('proccessname');
+			$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
 
-			echo '<div class="frm-new" data-form="'.$form_id.'"></div>';
+			echo (!empty($form_id)) ? '<div class="frm-new" data-form="'.$form_id.'"></div>' : '<div class="frm-new" data-form="0"></div>';
 			
 			?>
 
@@ -147,28 +147,28 @@
 <script>
 	//Capturo el evento de apertura del modal
 	$(document).ready(function () {
-			$('.select2').select2();
-			
-			$(window).on('show.bs.modal', function (e) {
-					fecha = new Date();
-					
-					dia = fecha.getDate();
-					mes = fecha.getMonth()+1;
-					anio = fecha.getFullYear();
+		$('.select2').select2();
+		
+		//Script setear fecha actual en Fecha Inicio
+		fecha = new Date();
+		
+		dia = fecha.getDate();
+		mes = fecha.getMonth()+1;
+		anio = fecha.getFullYear();
 
-					if(dia<10){dia='0'+dia;} 
-					if(mes<10){mes='0'+mes;}
-					
-					hoy = anio+'-'+mes+'-'+dia;  
-					$("#fec_inicio").val(hoy);
-			});
-			
-			$("#fec_entrega").on("change", function (e) {
-					if($("#fec_entrega").val() < $("#fec_inicio").val()){
-							alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
-							e.preventDefault();
-					}
-			});
+		if(dia<10){dia='0'+dia;} 
+		if(mes<10){mes='0'+mes;}
+		
+		hoy = anio+'-'+mes+'-'+dia;  
+		$("#fec_inicio").val(hoy);
+		//Fin script
+		
+		$("#fec_entrega").on("change", function (e) {
+			if($("#fec_entrega").val() < $("#fec_inicio").val()){
+				alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
+				e.preventDefault();
+			}
+		});
 	});
 
 	$("#clie_id").change(function() {
@@ -198,7 +198,12 @@
 			$('#mdl-peta').modal('hide');
 		
 			var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-			formData.append('info_id', $('.frm').attr('data-ninfoid'));
+
+			if($('.frm').attr('data-ninfoid') != undefined){
+				formData.append('info_id', $('.frm').attr('data-ninfoid'));
+			}else{
+				formData.append('info_id', '');
+			}
 
 			wo();
 			$.ajax({
@@ -265,7 +270,6 @@
 			idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
 
 			//valido para obtener los campos con error
-			$(idFormDinamico).bootstrapValidator("validate");
 			$("#frm-PedidoTrabajo").bootstrapValidator("validate");
 
 			if($("#objetivo").val() != ""){
@@ -285,6 +289,7 @@
 			}
 			
 			if(idFormDinamico != "#undefined"){
+				$(idFormDinamico).bootstrapValidator("validate");
 				if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
 						Swal.fire(
 								'Error..',
@@ -293,8 +298,11 @@
 						);
 						return;
 				}
+				frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+			}else{
+				guardarPedidoTrabajo();
 			}
 			
-			frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+
 	}
 </script>
