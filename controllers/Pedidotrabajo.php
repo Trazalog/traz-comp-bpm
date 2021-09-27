@@ -134,22 +134,30 @@ public function cargar_formulario_asociado(){
 
    
   
- /**
+    /**
 		*Guarda Pedido de Trabajo.
 		* @param array
 		* @return si guarda pedido retorna mensaje de guardado, sino guarda elimina pedido
-		**/
+	**/
     public function guardarPedidoTrabajo()
     {
        $proccessname = $this->session->userdata('proccessname');
 
+       $empr_id = empresa();
+       $user_app = userNick();
 
-        $empr_id = empresa();
-        $user_app = userNick();
-        $esin_id = $this->Pedidotrabajos->procesos()->proceso->esin_id;
+       //Si el proceso viene vacio usamos proceso estandar
+       $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
 
-       $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
-
+        if(isset($proceso->nombre_bpm)){
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }else{
+            $proccessname = PRO_STD;
+            $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }
 
         $data['_post_pedidotrabajo'] = array(
 

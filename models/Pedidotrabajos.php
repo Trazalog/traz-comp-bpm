@@ -83,12 +83,14 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
-    // lanzar proceso
-    public function procesos()
+    /**
+		*Busca el proceso asociado a $processname en la tabla pro.procesos
+		* @param array $processname
+		* @return data del proceso asociado
+    **/
+    public function procesos($proccessname)
     {
-        $proccessname = $this->session->userdata('proccessname');
-
-        $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/" : "/proceso/nombre/$proccessname/empresa/" . empresa();
 
         $url = REST_PRO . $resource;
         
