@@ -82,7 +82,7 @@
     <!-- /.tab-content -->
 </div>
 
-<?php $this->load->view('scripts/tarea_std'); ?>
+
 
 <script>
 debugger;
@@ -176,3 +176,4 @@ function CerrarTarea() {
         </div>
     </div>
 </div>
+<?php $this->load->view('scripts/tarea_std'); ?>
