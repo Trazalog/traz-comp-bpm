@@ -8,8 +8,7 @@ class Proceso extends CI_Controller
 //agrego helper de session para validar usuarios logeados
         $this->load->helper('sesion_helper');
         //verifica si esta iniciado
-        validarSesion();
-
+        validarInactividad();
         $this->load->model('Procesos');
     }
 
