@@ -50,7 +50,7 @@
 
 			echo "<button class='btn btn-success btn-tomar' onclick='tomarTarea()'>Tomar tarea</button>";
 
-			echo "<button class='btn btn-danger  btn-soltar' onclick='soltarTarea()'>Soltar tarea</button><br><br>";	
+			echo "<button class='btn btn-danger  btn-soltar' style='display:none;' onclick='soltarTarea()'>Soltar tarea</button><br><br>";	
 			
 			?>
 
@@ -59,21 +59,30 @@
                 <?php echo $view ?>
             </div>
             <hr>
-            <div class="text-right">
+            <!-- <div class="text-right">
                 <button type="button" class="btn btn-warning" id="btncerrarTarea" style="display:none;"
-                onclick="existFunction('cerrarTareaParcial')">Finalizar tarea con Entrega Parcial</button>
+                onclick="existFunction('cerrarTareaParcial')">Finalizar Pedido con Entrega Parcial</button>
                 <button class="btn btn-primary btnNotifEstandar" onclick="cerrar()">Cerrar</button>
                 <button class="btn btn-success btnNotifEstandar" id="btnHecho" style="display:block;"
                     onclick="existFunction('cerrarTarea')">Hecho</button>
-            </div>
+            </div> -->
+            <div class="btn-group float-right">
 
+
+<button type="button" class="btn btn-warning ml-2 mb-2 mb-2 mt-3" id="btncerrarTarea" style="display:none;" onclick="existFunction('cerrarTareaParcial')">Finalizar Pedido con Entrega Parcial</button>
+<button type="button" class="btn btn-primary ml-2 mb-2 mb-2 mt-3" style="display:block;" onclick="cerrar()">Cerrar</button>
+<button type="button" class="btn btn-success ml-2 mb-2 mb-2 mt-3" id="btnHecho" style="display:block;" onclick="existFunction('cerrarTarea')" style="">Hecho</button>
+
+
+
+        </div>
         </div>
         <!-- /.tab-pane -->
     </div>
     <!-- /.tab-content -->
 </div>
 
-<?php $this->load->view('scripts/tarea_std'); ?>
+
 
 <script>
 debugger;
@@ -167,33 +176,4 @@ function CerrarTarea() {
         </div>
     </div>
 </div>
-
-<!---///////--- MODAL AVISO ---///////--->
-<div class="modal fade" id="modalaviso">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-blue">
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="modal-title" id="exampleModalLabel">AVISO</h5>
-            </div>
-            <input id="circuito_delete" style="display: none;">
-            <div class="modal-body">
-                <center>
-                    <h4>
-                        <p>¿ DESEA CERRAR LA TAREA ?</p>
-                    </h4>
-                </center>
-            </div>
-            <div class="modal-footer">
-                <center>
-                    <button type="button" class="btn btn-primary" onclick="CerrarTarea()">SI</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
-                </center>
-            </div>
-        </div>
-    </div>
-</div>
-<!---///////--- FIN MODAL AVISO ---///////--->
+<?php $this->load->view('scripts/tarea_std'); ?>

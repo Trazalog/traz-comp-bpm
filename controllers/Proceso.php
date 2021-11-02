@@ -5,12 +5,15 @@ class Proceso extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
+//agrego helper de session para validar usuarios logeados
+        $this->load->helper('sesion_helper');
+        //verifica si esta iniciado
+        validarInactividad();
         $this->load->model('Procesos');
     }
 
     public function index()
-    {
+    {  
         $data['device'] = "";
         $rsp =  $this->Procesos->listar();
         if($rsp['status']){
