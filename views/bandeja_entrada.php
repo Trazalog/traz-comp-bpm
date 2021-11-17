@@ -78,7 +78,10 @@
 <script>
 
 $(document).ready( function () {
-    $('#tareas').DataTable();
+    $('#tareas').dataTable({
+        "aaSorting": []
+    });
+// DataTable('#tareas');
 } );
 
 $('.item').single_double_click(function() {
