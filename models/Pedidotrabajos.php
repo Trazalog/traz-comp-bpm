@@ -123,7 +123,10 @@ class Pedidotrabajos extends CI_Model
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId   | Lista Pedidos: ' .json_encode(wso2($url)));
         return wso2($url);
+        
     }
 
     public function obtenerHitosXPedido($petrId)

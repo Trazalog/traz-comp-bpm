@@ -98,8 +98,10 @@ class Procesos extends CI_Model
         $rsp =  $this->bpm->getToDoList();
 
         if(!$rsp['status']) return $rsp;
+        if(empresa() != ''){
+            $rsp['data'] = $this->map($this->mapeo($rsp['data']));
 
-        $rsp['data'] = $this->map($this->mapeo($rsp['data']));
+        }
 
         return $rsp;
     }
