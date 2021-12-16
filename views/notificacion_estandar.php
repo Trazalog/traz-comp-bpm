@@ -70,7 +70,7 @@
 
 
 <button type="button" class="btn btn-warning ml-2 mb-2 mb-2 mt-3" id="btncerrarTarea" style="display:none;" onclick="existFunction('cerrarTareaParcial')">Finalizar Pedido con Entrega Parcial</button>
-<button type="button" class="btn btn-primary ml-2 mb-2 mb-2 mt-3" style="display:block;" onclick="cerrar()">Cerrar</button>
+<button type="button" class="btn btn-primary ml-2 mb-2 mb-2 mt-3" id="btnCerrarVistaNotificacion" style="display:block;" onclick="cerrar()">Cerrar</button>
 <button type="button" class="btn btn-success ml-2 mb-2 mb-2 mt-3" id="btnHecho" style="display:block;" onclick="existFunction('cerrarTarea')" style="">Hecho</button>
 
 
