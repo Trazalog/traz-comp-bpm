@@ -45,7 +45,7 @@
                     <div id="cargar_comentario"></div>
                 </div>
                 <!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_3">
+                <div class="tab-pane active" id="tab_3">
                 <div id="cargar_trazabilidad"></div>
                 </div>
 
