@@ -19,10 +19,7 @@
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <li><a onclick="selectHito('.$o->hito_id.',\''.$o->numero.'\');$(\'#mdl-hito\').modal(\'show\')" href="#">Ver Detalle</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                          
                         </ul>
                         </div></td>';
                 echo "</tr>";
