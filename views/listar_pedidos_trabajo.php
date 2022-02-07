@@ -349,7 +349,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 						// info para grabar en codigo QR
 						armarInfo(arraydatos);
 						//agrega codigo QR al modal impresion
-						getQR(config, arraydatos);
+						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 				}
 				// llama modal con datos e img de QR ya ingresados
 				verModalImpresion();
@@ -386,7 +386,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 			// configuracion de codigo QR
 			var config = {};
 			config.titulo = "Revision Inicial";
-			config.pixel = "5";
+			config.pixel = "3";
 			config.level = "L";
 			config.framSize = "2";
 
@@ -415,7 +415,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 							datMapeado.Trabajo = trabajo;
 							console.log('data mapeado: ');
 							console.table(datMapeado);
-							cargarInfoReimp(datMapeado, estado, config);
+							cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
 				},
 				error: function(result){
 
@@ -427,7 +427,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 
 	}
 	//  carga el modal con cuerpo y codigo QR
-	function cargarInfoReimp(datMapeado, estado, config){
+	function cargarInfoReimp(datMapeado, estado, config, direccion){
 
 			switch (estado) {
 					case 'estados_yudicaEN_CURSO':
@@ -435,28 +435,28 @@ console.log('rsp sale por errro trae: ' + rsp);
 						//agrega cuerpo de la etiqueta
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaREPROCESO':
 						//Comprobante 1
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaRECHAZADO':
 						//Comprobante 2
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/rechazado", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaENTREGADO':
 						// Comprobante 3
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajoFooter");
 						break;
 

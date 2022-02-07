@@ -1,9 +1,9 @@
 <?php// echo $cabecera; ?>
 <style>
-.modal-dialog,.modal-dialog img { 
+#contenedorImageQR img { 
     width:50%;
     height:75%;
-    margin:2 auto;
+    margin:2px auto;
 }
 
 </style>
