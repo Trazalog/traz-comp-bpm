@@ -4,19 +4,19 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Número:</label>
+                        <label>Número<strong style="color: #dd4b39">*</strong>:</label>
                         <input class="form-control" name="numero" <?php echo req() ?>>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Descripción:</label>
+                        <label>Descripción<strong style="color: #dd4b39">*</strong>:</label>
                         <input class="form-control" name="descripcion" <?php echo req() ?>>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Fecha inicio:</label>
+                        <label>Fecha inicio<strong style="color: #dd4b39">*</strong>:</label>
                         <input class="form-control datepicker" name="fec_inicio" <?php echo req() ?>>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Encargado:</label>
+                        <label>Encargado<strong style="color: #dd4b39">*</strong>:</label>
                         <?php 
                             echo selectFromFont('user_id','Seleccionar', REST_CORE.'/users/'.empresa(), array('value'=>'id', 'descripcion'=> 'first_name'), true);
                         ?>
@@ -41,13 +41,13 @@
                 </div>
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label>Objetivo:</label>
+                        <label>Objetivo<strong style="color: #dd4b39">*</strong>:</label>
                         <input type="number" class="form-control" name="objetivo" min="0" <?php echo req() ?>>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>U.Tiempo</label>
+                        <label>U.Tiempo<strong style="color: #dd4b39">*</strong>:</label>
                         <?php
                             echo selectFromCore('unidad_tiempo','Seleccionar', "unidad_medida_tiempo", true);
                         ?>
@@ -55,7 +55,8 @@
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Ubicación:</label>
+                        <label>Ubicación<strong style="color: #dd4b39">*</strong>:</label>
+                        
                         <?php
                             echo selectFromFont('esta_id','Seleccionar', REST_PRD.'/establecimientos/'.empresa(), array('value'=>'esta_id', 'descripcion'=> 'nombre'), true);
                         ?>
