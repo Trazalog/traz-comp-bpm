@@ -1,4 +1,4 @@
-<form id="frm-hito">
+<form id="frm-hito" method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-6">
             <div class="row">
@@ -22,8 +22,8 @@
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="exampleInputFile">Adjuntar Documento</label>
-                        <input type="file" id="exampleInputFile" name="documento">
+                        <label for="documento">Adjuntar Documento</label>
+                        <input type="file" id="documento" name="documento" accept="pdf/*,image/*">
                         <p class="help-block">Adjuntar Documento.</p>
                     </div>
                 </div>
@@ -70,14 +70,20 @@
 initForm();
 
 function guardarHito() {
+    debugger;
     if (!frm_validar('#frm-hito')) return;
-    var data = getForm('#frm-hito');
+  
+  var data = new FormData($('#frm-hito')[0]);
+
     wo();
     $.ajax({
         type: 'POST',
-        dataType: 'JSON',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
         url: '<?php echo base_url(BPM) ?>Pedidotrabajo/hitos/' + s_pema,
-        data,
+      
         success: function(res) {
             if (res.status) {
                 console.log(res);
