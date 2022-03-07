@@ -84,9 +84,12 @@ function guardarHito() {
         processData: false,
         url: '<?php echo base_url(BPM) ?>Pedidotrabajo/hitos/' + s_pema,
       
-        success: function(res) {
-            if (res.status) {
-                console.log(res);
+        success: function(rsp) {
+         
+            resp = JSON.parse(rsp);
+
+            if(resp.status == true) {
+                console.log(resp);
                 $('#mdl-hito').modal('hide');
                 hecho();
                 reload('comp#hitos', s_pema);
@@ -94,7 +97,7 @@ function guardarHito() {
                 // reload('#pnl-hito', id);
             }
         },
-        error: function(res) {
+        error: function(resp) {
             error();
         },
         complete: function() {

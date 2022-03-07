@@ -90,7 +90,7 @@ class Pedidotrabajos extends CI_Model
     **/
     public function procesos($proccessname)
     {
-        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/" : "/proceso/nombre/$proccessname/empresa/" . empresa();
+        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/". empresa() : "/proceso/nombre/$proccessname/empresa/" . empresa();
 
         $url = REST_PRO . $resource;
         
