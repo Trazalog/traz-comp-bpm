@@ -120,11 +120,17 @@
 
                 </fieldset>
             </form>
-            <!-- <div class="frm-new" data-form="35"></div> -->
 			<?php  
 			$proccessname = $this->session->userdata('proccessname');
-			$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
 
+			//Si el proceso viene vacio usamos proceso estandar
+			if(isset($proccessname)){
+				$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
+			}else{
+				$proccessname = PRO_STD;
+				$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
+			}
+		
 			echo (!empty($form_id)) ? '<div class="frm-new" data-form="'.$form_id.'"></div>' : '<div class="frm-new" data-form="0"></div>';
 			
 			?>
