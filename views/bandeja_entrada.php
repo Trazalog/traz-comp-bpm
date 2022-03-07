@@ -40,7 +40,7 @@
                                       }
                                       
                                       // TAREA	
-                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2'><cite style='color: #707069'>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
+                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2 ".($f->tagCase ? $f->tagCase : '')."'><cite style='color: #707069'>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
                                       
                                       foreach ($f->info as $o) {
                                           echo "<p style='$o->estilo' class='label label-$o->color mr-2'>$o->texto</p>";
