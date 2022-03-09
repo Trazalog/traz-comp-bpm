@@ -38,6 +38,11 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);                                
     }
 
+    public function obtenerTabla($tabla)
+    {
+        $url = REST_CORE . "/tablas/$tabla";
+        return wso2($url);
+    }
    
      /**
 		*Obtiene los formularios asociados a un pedido de trabajo

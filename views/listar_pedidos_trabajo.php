@@ -46,30 +46,36 @@
 								echo '<td>'.$dir_entrega.'</td>';
                                 echo '<td>'.$tipo_trabajo.'</td>';
 								echo '<td>'.formatFechaPG($fec_inicio).'</td>';
+
+							if ($estado == NULL) {
+									$estado ="SIN ESTADO";
+								}
 								
-								switch ($estado) {
-									case 'estados_yudicaEN_CURSO':
+			switch ($estado) {
+				case 'estados_procesosPROC_EN_CURSO':
+                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                break;
 
-										echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-										
-										break;
+				case 'estados_yudicaEN_CURSO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+				break;
 
-										case 'estados_yudicaREPROCESO':
-											echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
-											break;
+				case 'estados_yudicaREPROCESO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+				break;
 
-											case 'estados_yudicaENTREGADO':
-												echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
-												break;
+				case 'estados_yudicaENTREGADO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
+				break;
 
-        case 'estados_yudicaRECHAZADO':
-          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
-          break;
-  
-  default:
-  echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-    break;
-}
+				case 'estados_yudicaRECHAZADO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+				break;
+			
+				default:
+				echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+				break;
+			}
                 
 							
 								echo '</tr>';

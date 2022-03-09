@@ -110,7 +110,22 @@
                             <label class=" control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
                             <select id="tipt_id" name="tipt_id" class="form-control" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                                 <option value="" disabled selected> -Seleccionar- </option>
-                                <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option>
+                                <!-- <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option> 
+							-->
+							<?php 
+                                if(is_array($tipo_trabajo)){
+                                
+                                $array = json_decode(json_encode($tipo_trabajo), true);
+
+                                foreach ($array as $i) {
+                                    $tabl_id= $i['tabl_id'];  $valor= $i['valor'];
+
+                                    $valor1= strval ($valor);
+
+                                echo '<option value ="'.$tabl_id.'"> '.$valor1.'</option>';
+                                        }
+                                                                }
+                                ?>
                             </select>
                         </div>
                     </div>  
