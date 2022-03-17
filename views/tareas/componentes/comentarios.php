@@ -84,8 +84,8 @@ function guardarComentario() {
         success: function(result) {
             console.log("Submit");
             var lista = $('#listaComentarios');
-            lista.prepend('<hr/><li><h4>' + nombUsr + ' ' + apellUsr +
-                '<small style="float: right">Hace un momento</small></h4><p>' + comentario + '</p></li>'
+            lista.prepend('<hr/><li><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i><p>' + comentario + '</p></li>'
                 );
             $('#comentario').val('');
         },

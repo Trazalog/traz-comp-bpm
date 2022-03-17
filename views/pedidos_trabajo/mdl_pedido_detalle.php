@@ -1,4 +1,3 @@
-<?php// echo $cabecera; ?>
 <style>
 #contenedorImageQR img { 
     width:50%;
@@ -38,7 +37,7 @@
     <div class="tab-content">
   
         <div class="tab-pane" id="tab_1">
-                    <?php echo $info ?>
+                  <div id="cargar_info_actual"></div>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
@@ -54,10 +53,8 @@
                     <div id="cargar_form"></div>
                 </div>
         </div>
-
-
     </div>
-</div>
+
 <script>
 // $(document).ready(function() { 
    

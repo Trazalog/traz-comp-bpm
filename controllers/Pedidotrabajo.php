@@ -85,8 +85,8 @@ public function cargar_detalle_linetiempo(){
 
     $case_id = $_GET['case_id'];               
         
-   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
-
+  $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+ 
   //LINEA DE TIEMPO
   $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
 
@@ -94,6 +94,25 @@ public function cargar_detalle_linetiempo(){
  
 }
 
+
+/**
+	* Trae el estado actual de la tarea de un pedido segun case_id
+	*@param case_id ,processId. (metodo GET)
+    *@return array componete BPM timelineInfoActual
+	*/
+//HARCODECHUKA processId
+public function cargar_detalle_info_actual(){
+
+    $case_id = $_GET['case_id'];               
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+  //LINEA DE TIEMPO
+  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+  echo timelineInfoActual($data['timeline']);
+ 
+}
 
 /**
 	* Trae formularios asociados al pedido de trabajo segun petr_id

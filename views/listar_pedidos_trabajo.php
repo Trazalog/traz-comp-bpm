@@ -84,18 +84,18 @@
 <div class="modal modal-fade" id="mdl-vista">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="xmodal-body">
+            <div class="modal-body">
                 <?php 
              
              $this->load->view(BPM.'pedidos_trabajo/mdl_pedido_detalle');
     
                 ?>
             </div>
-            <!-- <div class="modal-footer">
+             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>
-            </div> -->
-        </div>
+             <!--   <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>
+          -->  </div> 
+		  </div> 
     </div>
 </div>
 
@@ -197,6 +197,9 @@ function verPedido(e) {
 
 			var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 
+
+			var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+
 			wo();
 			wc();
 			window.setTimeout(function() {
@@ -217,6 +220,12 @@ function verPedido(e) {
 			$("#cargar_trazabilidad").load(url2);
 			wc();
 
+			console.log(url3);
+			$("#cargar_info_actual").empty();
+			$("#cargar_info_actual").load(url3);
+			wc();
+
+			
 	}
 
 //funcion boton eliminar
@@ -336,8 +345,8 @@ console.log('rsp sale por errro trae: ' + rsp);
 						// configuracion de codigo QR
 						var config = {};
 								config.titulo = "Pedido de Trabajo";
-								config.pixel = "5";
-								config.level = "L";
+								config.pixel = "2";
+								config.level = "S";
 								config.framSize = "2";
 						// info para immprimir
 						var arraydatos = {};
@@ -346,6 +355,9 @@ console.log('rsp sale por errro trae: ' + rsp);
 								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
 								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
 								arraydatos.Serie = $('#num_serie').val();
+
+						// si la etiqueta es derechazo
+						arraydatos.Motivo = $('#motivo_rechazo').val();			
 						// info para grabar en codigo QR
 						armarInfo(arraydatos);
 						//agrega codigo QR al modal impresion
@@ -379,15 +391,16 @@ console.log('rsp sale por errro trae: ' + rsp);
 
 	// REIMPRESION ETIQUETA VIENE DEL LISTADO
   function modalReimpresion(e){
+	  debugger;
 
 			$("#infoEtiqueta").empty();
 			$("#contenedorCodigo").empty();
 			$("#infoFooter").empty();
 			// configuracion de codigo QR
 			var config = {};
-			config.titulo = "Revision Inicial";
+			config.titulo = "Reimpresion de Etiqueta";
 			config.pixel = "3";
-			config.level = "L";
+			config.level = "S";
 			config.framSize = "2";
 
 			arraydatos = $(e).closest('tr').attr('data-json');
@@ -397,13 +410,17 @@ console.log('rsp sale por errro trae: ' + rsp);
 			// levanta modal completo para su impresion
 			verModalImpresion();
   }
-	// obtine datos ya mapeados para QR y cuerpo de a etiqueta
+	
+ 
+ 
+  // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 	function getDatos(datos, config){
 
 		var infoid = datos.info_id;
 		var estado = datos.estado;
 		var cliente = datos.nombre;
 		var trabajo = datos.tipo_trabajo;
+		var N_orden = datos.petr_id;
 
 		$.ajax({
 				type: 'GET',
@@ -413,6 +430,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 							var datMapeado = JSON.parse(result);
 							datMapeado.Cliente = cliente;
 							datMapeado.Trabajo = trabajo;
+							datMapeado.N_orden = N_orden;
 							console.log('data mapeado: ');
 							console.table(datMapeado);
 							cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
@@ -428,7 +446,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 	}
 	//  carga el modal con cuerpo y codigo QR
 	function cargarInfoReimp(datMapeado, estado, config, direccion){
-
+debugger;
 			switch (estado) {
 					case 'estados_yudicaEN_CURSO':
 						//Comprobante 1
