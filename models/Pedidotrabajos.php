@@ -149,7 +149,7 @@ class Pedidotrabajos extends CI_Model
     public function mapHito($data)
     {
         $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
-      //  $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+        $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
 
       if(!empty($_FILES['documento']['tmp_name'])){
       $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));

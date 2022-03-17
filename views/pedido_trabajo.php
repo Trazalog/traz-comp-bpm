@@ -18,8 +18,8 @@
                     <!-- Codigo proyecto-->
                     <div class="col-md-6 espaciado" style="margin-bottom:5px">
                         <div class="form-group">
-                            <label class="control-label" for="cod_proyecto">Número Pedido <strong style="color: #dd4b39">*</strong>:</label>
-                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código proyecto" class="form-control input-md" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                            <label class="control-label" for="cod_proyecto">Código Pedido <strong style="color: #dd4b39">*</strong>:</label>
+                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código proyecto"  minlength="4" maxlength="10" size="12" class="form-control input-md" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                         </div>
                     </div>
                     <!-- ***************** -->

@@ -28,7 +28,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" id="tab_1">
-            <?php echo $info ?>
+            <?php echo timelineInfoActual($timeline) ?>
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_2">
