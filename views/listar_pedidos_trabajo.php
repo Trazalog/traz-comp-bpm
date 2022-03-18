@@ -11,7 +11,8 @@
                 <thead>
                     <tr>
                         <th>Acciones</th>
-                        <th>Numero de Pedido</th>
+                        <th>Número de Pedido</th>
+						<th>Código de Pedido</th>
                         <th>Cliente</th>
                         <th>Domicilio</th>
                         <th>Tipo de Trabajo</th>
@@ -28,11 +29,12 @@
 								$tipo = $rsp->tipo;
 								$descripcion = $rsp->descripcion;
 								$fec_inicio = $rsp->fec_inicio;
-                $estado = $rsp->estado;
-                $case_id = $rsp->case_id;
-                $proc_id = $rsp->proc_id;
-                $tipo_trabajo = $rsp->tipo_trabajo;
-                $dir_entrega = $rsp->dir_entrega;
+								$estado = $rsp->estado;
+								$case_id = $rsp->case_id;
+								$proc_id = $rsp->proc_id;
+								$tipo_trabajo = $rsp->tipo_trabajo;
+								$dir_entrega = $rsp->dir_entrega;
+								$cod_proyecto = $rsp->cod_proyecto;
 
 								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
 
@@ -42,6 +44,7 @@
 								echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
 								echo "</td>";
 								echo '<td>'.$petr_id.'</td>';
+								echo '<td>'.$cod_proyecto.'</td>';
                                 echo '<td>'.$nombre_cliente.'</td>';
 								echo '<td>'.$dir_entrega.'</td>';
                                 echo '<td>'.$tipo_trabajo.'</td>';
@@ -65,7 +68,7 @@
 				break;
 
 				case 'estados_yudicaENTREGADO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
+				echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
 				break;
 
 				case 'estados_yudicaRECHAZADO':
@@ -356,6 +359,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 								config.framSize = "2";
 						// info para immprimir
 						var arraydatos = {};
+								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
 								arraydatos.Trabajo = $('#tipt_id option:selected').val();
 								arraydatos.Cliente = $('#clie_id option:selected').text();
 								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
@@ -427,6 +431,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 		var cliente = datos.nombre;
 		var trabajo = datos.tipo_trabajo;
 		var N_orden = datos.petr_id;
+		var Cod_proyecto = datos.cod_proyecto;
 
 		$.ajax({
 				type: 'GET',
@@ -437,6 +442,7 @@ console.log('rsp sale por errro trae: ' + rsp);
 							datMapeado.Cliente = cliente;
 							datMapeado.Trabajo = trabajo;
 							datMapeado.N_orden = N_orden;
+							datMapeado.Cod_proyecto = Cod_proyecto;
 							console.log('data mapeado: ');
 							console.table(datMapeado);
 							cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
