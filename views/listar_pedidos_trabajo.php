@@ -264,7 +264,7 @@ function Eliminar(e) {
 
 					title: 'Estas Seguro?',
 					text: "Esta accion no puede ser revertida!",
-					icon: 'warning',
+					type: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Si, Eliminar!',
 					cancelButtonText: 'No, cancelar!',
@@ -344,11 +344,11 @@ console.log('rsp sale por errro trae: ' + rsp);
 		// Se peden hacer dos cosas: o un ajax con los datos o directamente
 		// armar con los datos de la pantalla
 		function modalCodigos(){
-
-				if (!validarImpresion()) {
-					alert('Complete los campos por favor antes de imprimir');
-					return;
-				}
+debugger;
+				// if (!validarImpresion()) {
+				// 	alert('Complete los campos por favor antes de imprimir');
+				// 	return;
+				// }
 
 				if (band == 0) {
 						// configuracion de codigo QR

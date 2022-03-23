@@ -12,6 +12,7 @@
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
     </div>
     <div class="panel-body" id="div_pedido_trabajo">
+	<input type="hidden" id="petr_id" value=""  readonly>
         <div class="row">
             <form class="form-inline" id="frm-PedidoTrabajo">
                 <fieldset>
@@ -153,7 +154,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
-                    <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button>
+                    <!-- <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button> -->
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
                 </div>
 
@@ -236,26 +237,60 @@
 					contentType: false,
 					processData: false,
 					success: function(rsp) {
-
+debugger;
 					var result = rsp.status.toString(); 
+
+					var pedido = rsp.data
+						var num_pedido = JSON.parse(pedido);
+				
 					
 					console.log('status esta en saliendo por success:' + result);
 
+					console.log('se genero pedido numero:' + num_pedido);
+
+					var petr_id = num_pedido.respuesta['petr_id'];
+
+					$('#petr_id').val(petr_id);
+				
+
 							if (rsp.status) {
 									console.log("Exito al guardar Formulario");
-									Swal.fire(
-											'Guardado!',
-											'El Pedido de Trabajo se Guardo Correctamente',
-											'success'
-									)
-									$('#frm-PedidoTrabajo')[0].reset();
-									linkTo('<?php echo BPM ?>Proceso/');
-									//lineas del checho #CHUKA
-									//   reload('#pedidos-trabajos');
-									//   $('#mdl-peta').modal('hide');
-									//   reload('#frm-peta')
-									//   detectarForm();
-									//   initForm();
+
+									const swalWithBootstrapButtons = Swal.mixin({
+										customClass: {
+											confirmButton: 'btn btn-success',
+											cancelButton: 'btn btn-danger'
+										},
+										buttonsStyling: false
+										})
+
+										swalWithBootstrapButtons.fire({
+										title: 'Exito!',
+										text: 'Desea imprimir el pedido Número: ' +petr_id+' antes de salir?',
+										type: 'success',
+										showCancelButton: true,
+										confirmButtonText: 'SI, Imprimir!',
+										cancelButtonText: 'No, cancelar!',
+										reverseButtons: true
+										}).then((result) => {
+										if (result.value) {
+											debugger;
+											modalCodigos()
+										} else if (
+											/* Read more about handling dismissals below */
+											result.dismiss === Swal.DismissReason.cancel
+										) {
+											swalWithBootstrapButtons.fire(
+											'Cancelado',
+											'Recuerda que puedes imprimir el pedido luego',
+											'info'
+											)
+
+											 $('#frm-PedidoTrabajo')[0].reset();
+											 linkTo('<?php  echo BPM ?>Proceso/');
+										}
+										})
+						
 
 							} else {
 									Swal.fire(
@@ -285,6 +320,50 @@
 					}
 			});
 	}
+
+	function modalCodigos(){
+debugger;
+				// if (!validarImpresion()) {
+				// 	alert('Complete los campos por favor antes de imprimir');
+				// 	return;
+				// }
+
+				if (band == 0) {
+						// configuracion de codigo QR
+						var config = {};
+								config.titulo = "Pedido de Trabajo";
+								config.pixel = "2";
+								config.level = "S";
+								config.framSize = "2";
+						// info para immprimir
+						var arraydatos = {};
+								arraydatos.N_orden = $('#petr_id').val();
+								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
+								arraydatos.Cliente = $('#clie_id option:selected').text();
+								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
+								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
+								arraydatos.Serie = $('#num_serie').val();
+								arraydatos.Num = $('#num_cubiertas').val();
+								arraydatos.Zona = $('#zona').val();
+								arraydatos.Trabajo = $('select[name="tipt_id"] option:selected').val();
+								arraydatos.Banda = $('select[name="banda_yudica"] option:selected').val();
+
+
+						// si la etiqueta es derechazo
+						arraydatos.Motivo = $('#motivo_rechazo').val();			
+						// info para grabar en codigo QR
+						armarInfo(arraydatos);
+						//agrega codigo QR al modal impresion
+						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
+				}
+				// llama modal con datos e img de QR ya ingresados
+				verModalImpresion();
+				band = 1;
+		}
+
+
+
+
 	//Se debe validar el formulario antes de cerrar el modal
 	// de lo contrario frm_validar() retorna true; y no lo es
 	function cierraPedidoTrabajo(){

@@ -153,6 +153,9 @@ class Pedidotrabajos extends CI_Model
 
       if(!empty($_FILES['documento']['tmp_name'])){
       $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+/////////// nombre documento
+      $data['nombre_documento'] = $_FILES['documento']['name'];
+
       }
         return payToStr($data);
     }
