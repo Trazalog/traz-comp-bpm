@@ -41,18 +41,34 @@ class Procesos extends CI_Model
         return $array;
         
     }
-
+    /**
+	* Funcion para obtener desde el modelo especificado en el constants la configuracion en bandeja de entrada
+	* @param array informacion de tareas enviados por bonita 
+	* @return array con informacion parseada para armar las notificaiones en bandeja de entrada
+	*/
     public function map($data)
     {
         foreach ($data as $key => $o) {
 
             $process = $this->mapProcess($o->processId);
             if($process){
-                $model = $process['model'];
-                $this->load->model($process['proyecto'].$model);
-                $res = $this->{$model}->map($o);
-                $data[$key]->info = isset($res['info'])?$res['info']:[];
-                $data[$key]->descripcion = isset($res['descripcion'])?$res['descripcion']:'Sin Descripción';
+                if($process['proyecto'] != TST){
+                    $model = $process['model'];
+                    $this->load->model($process['proyecto'].$model);
+                    $res = $this->{$model}->map($o);
+                    $data[$key]->info = isset($res['info'])?$res['info']:[];
+                    $data[$key]->descripcion = isset($res['descripcion'])?$res['descripcion']:'Sin Descripción';
+                    $data[$key]->tagCase = isset($res['tagCase']) ? $res['tagCase'] : '';
+                }else{
+                    $model = $process['model'];
+                    $this->load->model($process['proyecto'].$model);
+                    $res = $this->{$model}->map($o);
+                    $data[$key]->info = isset($res['info'])?$res['info']:[];
+                    $data[$key]->descripcion = isset($res['descripcion'])?$res['descripcion']:'Sin Descripción';
+                    $data[$key]->nombreTarea = isset($res['nombreTarea'])?$res['nombreTarea']:'';
+                    $data[$key]->nombreProceso = isset($res['nombreProceso'])?$res['nombreProceso']:'';
+                    $data[$key]->tagCase = isset($res['tagCase']) ? $res['tagCase'] : '';
+                }
             }
         }
 
@@ -84,8 +100,10 @@ class Procesos extends CI_Model
         $rsp =  $this->bpm->getToDoList();
 
         if(!$rsp['status']) return $rsp;
+        if(empresa() != ''){
+            $rsp['data'] = $this->map($this->mapeo($rsp['data']));
 
-        $rsp['data'] = $this->map($this->mapeo($rsp['data']));
+        }
 
         return $rsp;
     }

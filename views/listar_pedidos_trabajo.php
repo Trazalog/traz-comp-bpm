@@ -3,7 +3,7 @@
         <h4 class="box-title">Listado de Pedido Trabajo</h4>
     </div>
     <div class="box-body">
-        <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+        <button id="btn-agregarPedido" class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
             onclick="$('#mdl-peta').modal('show')">Agregar</button>
             <br>
         <div class="box-body table-scroll table-responsive">
@@ -11,7 +11,8 @@
                 <thead>
                     <tr>
                         <th>Acciones</th>
-                        <th>Numero de Pedido</th>
+                        <th>Número de Pedido</th>
+						<th>Código de Pedido</th>
                         <th>Cliente</th>
                         <th>Domicilio</th>
                         <th>Tipo de Trabajo</th>
@@ -28,11 +29,12 @@
 								$tipo = $rsp->tipo;
 								$descripcion = $rsp->descripcion;
 								$fec_inicio = $rsp->fec_inicio;
-                $estado = $rsp->estado;
-                $case_id = $rsp->case_id;
-                $proc_id = $rsp->proc_id;
-                $tipo_trabajo = $rsp->tipo_trabajo;
-                $dir_entrega = $rsp->dir_entrega;
+								$estado = $rsp->estado;
+								$case_id = $rsp->case_id;
+								$proc_id = $rsp->proc_id;
+								$tipo_trabajo = $rsp->tipo_trabajo;
+								$dir_entrega = $rsp->dir_entrega;
+								$cod_proyecto = $rsp->cod_proyecto;
 
 								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
 
@@ -42,34 +44,41 @@
 								echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
 								echo "</td>";
 								echo '<td>'.$petr_id.'</td>';
+								echo '<td>'.$cod_proyecto.'</td>';
                                 echo '<td>'.$nombre_cliente.'</td>';
 								echo '<td>'.$dir_entrega.'</td>';
                                 echo '<td>'.$tipo_trabajo.'</td>';
 								echo '<td>'.formatFechaPG($fec_inicio).'</td>';
+
+							if ($estado == NULL) {
+									$estado ="SIN ESTADO";
+								}
 								
-								switch ($estado) {
-									case 'estados_yudicaEN_CURSO':
+			switch ($estado) {
+				case 'estados_procesosPROC_EN_CURSO':
+                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                break;
 
-										echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-										
-										break;
+				case 'estados_yudicaEN_CURSO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+				break;
 
-										case 'estados_yudicaREPROCESO':
-											echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
-											break;
+				case 'estados_yudicaREPROCESO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+				break;
 
-											case 'estados_yudicaENTREGADO':
-												echo '<td><span data-toggle="tooltip" title="" class="badge bg-blue">ENTREGADO</span></td>';
-												break;
+				case 'estados_yudicaENTREGADO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+				break;
 
-        case 'estados_yudicaRECHAZADO':
-          echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
-          break;
-  
-  default:
-  echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-    break;
-}
+				case 'estados_yudicaRECHAZADO':
+				echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+				break;
+			
+				default:
+				echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+				break;
+			}
                 
 							
 								echo '</tr>';
@@ -84,18 +93,18 @@
 <div class="modal modal-fade" id="mdl-vista">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="xmodal-body">
+            <div class="modal-body">
                 <?php 
              
              $this->load->view(BPM.'pedidos_trabajo/mdl_pedido_detalle');
     
                 ?>
             </div>
-            <!-- <div class="modal-footer">
+             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
-                <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>
-            </div> -->
-        </div>
+             <!--   <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>
+          -->  </div> 
+		  </div> 
     </div>
 </div>
 
@@ -197,6 +206,9 @@ function verPedido(e) {
 
 			var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 
+
+			var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+
 			wo();
 			wc();
 			window.setTimeout(function() {
@@ -217,6 +229,12 @@ function verPedido(e) {
 			$("#cargar_trazabilidad").load(url2);
 			wc();
 
+			console.log(url3);
+			$("#cargar_info_actual").empty();
+			$("#cargar_info_actual").load(url3);
+			wc();
+
+			
 	}
 
 //funcion boton eliminar
@@ -246,7 +264,7 @@ function Eliminar(e) {
 
 					title: 'Estas Seguro?',
 					text: "Esta accion no puede ser revertida!",
-					icon: 'warning',
+					type: 'warning',
 					showCancelButton: true,
 					confirmButtonText: 'Si, Eliminar!',
 					cancelButtonText: 'No, cancelar!',
@@ -326,30 +344,34 @@ console.log('rsp sale por errro trae: ' + rsp);
 		// Se peden hacer dos cosas: o un ajax con los datos o directamente
 		// armar con los datos de la pantalla
 		function modalCodigos(){
-
-				if (!validarImpresion()) {
-					alert('Complete los campos por favor antes de imprimir');
-					return;
-				}
+debugger;
+				// if (!validarImpresion()) {
+				// 	alert('Complete los campos por favor antes de imprimir');
+				// 	return;
+				// }
 
 				if (band == 0) {
 						// configuracion de codigo QR
 						var config = {};
 								config.titulo = "Pedido de Trabajo";
-								config.pixel = "5";
-								config.level = "L";
+								config.pixel = "2";
+								config.level = "S";
 								config.framSize = "2";
 						// info para immprimir
 						var arraydatos = {};
+								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
 								arraydatos.Trabajo = $('#tipt_id option:selected').val();
 								arraydatos.Cliente = $('#clie_id option:selected').text();
 								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
 								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
 								arraydatos.Serie = $('#num_serie').val();
+
+						// si la etiqueta es derechazo
+						arraydatos.Motivo = $('#motivo_rechazo').val();			
 						// info para grabar en codigo QR
 						armarInfo(arraydatos);
 						//agrega codigo QR al modal impresion
-						getQR(config, arraydatos);
+						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 				}
 				// llama modal con datos e img de QR ya ingresados
 				verModalImpresion();
@@ -379,15 +401,16 @@ console.log('rsp sale por errro trae: ' + rsp);
 
 	// REIMPRESION ETIQUETA VIENE DEL LISTADO
   function modalReimpresion(e){
+	  debugger;
 
 			$("#infoEtiqueta").empty();
 			$("#contenedorCodigo").empty();
 			$("#infoFooter").empty();
 			// configuracion de codigo QR
 			var config = {};
-			config.titulo = "Revision Inicial";
-			config.pixel = "5";
-			config.level = "L";
+			config.titulo = "Reimpresion de Etiqueta";
+			config.pixel = "3";
+			config.level = "S";
 			config.framSize = "2";
 
 			arraydatos = $(e).closest('tr').attr('data-json');
@@ -397,13 +420,18 @@ console.log('rsp sale por errro trae: ' + rsp);
 			// levanta modal completo para su impresion
 			verModalImpresion();
   }
-	// obtine datos ya mapeados para QR y cuerpo de a etiqueta
+	
+ 
+ 
+  // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 	function getDatos(datos, config){
 
 		var infoid = datos.info_id;
 		var estado = datos.estado;
 		var cliente = datos.nombre;
 		var trabajo = datos.tipo_trabajo;
+		var N_orden = datos.petr_id;
+		var Cod_proyecto = datos.cod_proyecto;
 
 		$.ajax({
 				type: 'GET',
@@ -413,9 +441,11 @@ console.log('rsp sale por errro trae: ' + rsp);
 							var datMapeado = JSON.parse(result);
 							datMapeado.Cliente = cliente;
 							datMapeado.Trabajo = trabajo;
+							datMapeado.N_orden = N_orden;
+							datMapeado.Cod_proyecto = Cod_proyecto;
 							console.log('data mapeado: ');
 							console.table(datMapeado);
-							cargarInfoReimp(datMapeado, estado, config);
+							cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
 				},
 				error: function(result){
 
@@ -427,36 +457,36 @@ console.log('rsp sale por errro trae: ' + rsp);
 
 	}
 	//  carga el modal con cuerpo y codigo QR
-	function cargarInfoReimp(datMapeado, estado, config){
-
+	function cargarInfoReimp(datMapeado, estado, config, direccion){
+debugger;
 			switch (estado) {
 					case 'estados_yudicaEN_CURSO':
 						//Comprobante 1
 						//agrega cuerpo de la etiqueta
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaREPROCESO':
 						//Comprobante 1
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaRECHAZADO':
 						//Comprobante 2
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/rechazado", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						//getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaENTREGADO':
 						// Comprobante 3
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado);
+						getQR(config, datMapeado, direccion);
 						$("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajoFooter");
 						break;
 

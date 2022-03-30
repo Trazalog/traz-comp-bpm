@@ -38,6 +38,11 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);                                
     }
 
+    public function obtenerTabla($tabla)
+    {
+        $url = REST_CORE . "/tablas/$tabla";
+        return wso2($url);
+    }
    
      /**
 		*Obtiene los formularios asociados a un pedido de trabajo
@@ -83,12 +88,14 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
-    // lanzar proceso
-    public function procesos()
+    /**
+		*Busca el proceso asociado a $processname en la tabla pro.procesos
+		* @param array $processname
+		* @return data del proceso asociado
+    **/
+    public function procesos($proccessname)
     {
-        $proccessname = $this->session->userdata('proccessname');
-
-        $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/". empresa() : "/proceso/nombre/$proccessname/empresa/" . empresa();
 
         $url = REST_PRO . $resource;
         
@@ -121,7 +128,10 @@ class Pedidotrabajos extends CI_Model
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId   | Lista Pedidos: ' .json_encode(wso2($url)));
         return wso2($url);
+        
     }
 
     public function obtenerHitosXPedido($petrId)
@@ -140,6 +150,13 @@ class Pedidotrabajos extends CI_Model
     {
         $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
         $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+
+      if(!empty($_FILES['documento']['tmp_name'])){
+      $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+/////////// nombre documento
+      $data['nombre_documento'] = $_FILES['documento']['name'];
+
+      }
         return payToStr($data);
     }
 
@@ -147,6 +164,14 @@ class Pedidotrabajos extends CI_Model
     {
         $data['petr_id'] = $petrId;
         $xdata['_post_hitos'] = $this->mapHito($data);
+
+            
+            // if(!empty($_FILES['documento']['tmp_name'])){
+            //  //  $xdata = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+            
+            // //   return;
+            // }
+
         $url = REST_TST."/hitos";
         return wso2($url, 'POST', $xdata);
     }

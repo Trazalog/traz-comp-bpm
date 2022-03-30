@@ -1,9 +1,8 @@
-<?php// echo $cabecera; ?>
 <style>
-.modal-dialog,.modal-dialog img { 
+#contenedorImageQR img { 
     width:50%;
     height:75%;
-    margin:2 auto;
+    margin:2px auto;
 }
 
 </style>
@@ -38,14 +37,14 @@
     <div class="tab-content">
   
         <div class="tab-pane" id="tab_1">
-                    <?php echo $info ?>
+                  <div id="cargar_info_actual"></div>
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
                     <div id="cargar_comentario"></div>
                 </div>
                 <!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_3">
+                <div class="tab-pane active" id="tab_3">
                 <div id="cargar_trazabilidad"></div>
                 </div>
 
@@ -54,10 +53,8 @@
                     <div id="cargar_form"></div>
                 </div>
         </div>
-
-
     </div>
-</div>
+
 <script>
 // $(document).ready(function() { 
    

@@ -109,12 +109,15 @@ function guardarComentario() {
         url: '<?php echo BPM ?>Proceso/guardarComentario',
         success: function(result) {
             var lista = $('#listaComentarios');
-            lista.prepend(
-                '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
-                nombUsr + ' ' + apellUsr +
-                '</a><br><br>' + comentario + '</p></div>'
+            // lista.prepend(
+            //     '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
+            //     nombUsr + ' ' + apellUsr +
+            //     '</a><br><br>' + comentario + '</p></div>'
 
-            );
+            // );
+            lista.prepend('<li><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i><p>' + comentario + '</p></li>'
+                );
             $('#comentario').val('');
         },
         error: function(result) {

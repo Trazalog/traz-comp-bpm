@@ -44,7 +44,7 @@ class Pedidotrabajo extends CI_Controller
        
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
-
+        $data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTabla('tipos_pedidos_trabajo')['data'];
 
         $url_info= $_SERVER["REQUEST_URI"];
 
@@ -85,8 +85,8 @@ public function cargar_detalle_linetiempo(){
 
     $case_id = $_GET['case_id'];               
         
-   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
-
+  $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+ 
   //LINEA DE TIEMPO
   $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
 
@@ -94,6 +94,25 @@ public function cargar_detalle_linetiempo(){
  
 }
 
+
+/**
+	* Trae el estado actual de la tarea de un pedido segun case_id
+	*@param case_id ,processId. (metodo GET)
+    *@return array componete BPM timelineInfoActual
+	*/
+//HARCODECHUKA processId
+public function cargar_detalle_info_actual(){
+
+    $case_id = $_GET['case_id'];               
+        
+   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+  //LINEA DE TIEMPO
+  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+  echo timelineInfoActual($data['timeline']);
+ 
+}
 
 /**
 	* Trae formularios asociados al pedido de trabajo segun petr_id
@@ -134,22 +153,30 @@ public function cargar_formulario_asociado(){
 
    
   
- /**
+    /**
 		*Guarda Pedido de Trabajo.
 		* @param array
 		* @return si guarda pedido retorna mensaje de guardado, sino guarda elimina pedido
-		**/
+	**/
     public function guardarPedidoTrabajo()
     {
        $proccessname = $this->session->userdata('proccessname');
 
+       $empr_id = empresa();
+       $user_app = userNick();
 
-        $empr_id = empresa();
-        $user_app = userNick();
-        $esin_id = $this->Pedidotrabajos->procesos()->proceso->esin_id;
+       //Si el proceso viene vacio usamos proceso estandar
+       $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
 
-       $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
-
+        if(isset($proceso->nombre_bpm)){
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }else{
+            $proccessname = PRO_STD;
+            $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }
 
         $data['_post_pedidotrabajo'] = array(
 
