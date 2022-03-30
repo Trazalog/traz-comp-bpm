@@ -87,6 +87,7 @@
 <script>
 debugger;
 var task = <?php echo json_encode($tarea) ?>;
+debugger;
 
 var nombreTarea = task.nombreTarea;
 
@@ -96,6 +97,14 @@ if (nombreTarea === "Entrega pedido pendiente") {
     $("#btnHecho").removeAttr("style");
 
     $("#btnHecho").prop('disabled', false);
+
+} else if (nombreTarea ==="Tarea Generica"){
+    console.log("tarea generica")
+    // $("#btncerrarTarea").removeAttr("style");
+    // $("#btnHecho").removeAttr("style");
+
+    // $("#btnHecho").prop('disabled', false);
+
 }
 
 $('.fecha').datepicker({

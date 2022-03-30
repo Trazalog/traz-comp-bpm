@@ -479,7 +479,7 @@ debugger;
 						//Comprobante 2
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/rechazado", datMapeado);
 						// agrega codigo QR al modal impresion
-						getQR(config, datMapeado, direccion);
+						//getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaENTREGADO':
