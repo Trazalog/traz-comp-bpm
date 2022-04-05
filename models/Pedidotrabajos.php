@@ -150,6 +150,7 @@ class Pedidotrabajos extends CI_Model
     {
         $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
         $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+        $data['nombre_documento'] = isset($_FILES['documento']['name']) ? $data['nombre_documento'] : '';
 
       if(!empty($_FILES['documento']['tmp_name'])){
       $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
