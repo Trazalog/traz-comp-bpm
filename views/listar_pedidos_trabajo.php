@@ -356,7 +356,7 @@ debugger;
 								config.titulo = "Pedido de Trabajo";
 								config.pixel = "2";
 								config.level = "S";
-								config.framSize = "2";
+								config.framSize = "3";
 						// info para immprimir
 						var arraydatos = {};
 								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
@@ -401,7 +401,7 @@ debugger;
 
 	// REIMPRESION ETIQUETA VIENE DEL LISTADO
   function modalReimpresion(e){
-	  debugger;
+	//   debugger;
 
 			$("#infoEtiqueta").empty();
 			$("#contenedorCodigo").empty();
@@ -409,9 +409,9 @@ debugger;
 			// configuracion de codigo QR
 			var config = {};
 			config.titulo = "Reimpresion de Etiqueta";
-			config.pixel = "3";
+			config.pixel = "2";
 			config.level = "S";
-			config.framSize = "2";
+			config.framSize = "3";
 
 			arraydatos = $(e).closest('tr').attr('data-json');
 			var datos = JSON.parse(arraydatos);
@@ -458,7 +458,7 @@ debugger;
 	}
 	//  carga el modal con cuerpo y codigo QR
 	function cargarInfoReimp(datMapeado, estado, config, direccion){
-debugger;
+// debugger;
 			switch (estado) {
 					case 'estados_yudicaEN_CURSO':
 						//Comprobante 1
