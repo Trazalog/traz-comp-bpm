@@ -362,8 +362,8 @@ debugger;
 								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
 								arraydatos.Trabajo = $('#tipt_id option:selected').val();
 								arraydatos.Cliente = $('#clie_id option:selected').text();
-								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
-								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
+								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
 								arraydatos.Serie = $('#num_serie').val();
 
 						// si la etiqueta es derechazo
