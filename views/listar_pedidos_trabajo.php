@@ -365,7 +365,7 @@ debugger;
 								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
 								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
 								arraydatos.Serie = $('#num_serie').val();
-
+								arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
 						// si la etiqueta es derechazo
 						arraydatos.Motivo = $('#motivo_rechazo').val();			
 						// info para grabar en codigo QR

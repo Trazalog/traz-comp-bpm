@@ -108,8 +108,8 @@
                     <!-- tipo trabajo -->
                     <div class="col-md-12 espaciado">
                         <div class="form-group">
-                            <label class=" control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
-                            <select id="tipt_id" name="tipt_id" class="form-control" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                            <label class="control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
+                            <select id="tipt_id" name="tipt_id" style="width: 100%;" class="select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                                 <option value="" disabled selected> -Seleccionar- </option>
                                 <!-- <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option> 
 							-->
@@ -340,13 +340,13 @@ debugger;
 								arraydatos.N_orden = $('#petr_id').val();
 								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
 								arraydatos.Cliente = $('#clie_id option:selected').text();
-								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
-								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
+								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
 								arraydatos.Serie = $('#num_serie').val();
 								arraydatos.Num = $('#num_cubiertas').val();
 								arraydatos.Zona = $('#zona').val();
-								arraydatos.Trabajo = $('select[name="tipt_id"] option:selected').val();
-								arraydatos.Banda = $('select[name="banda_yudica"] option:selected').val();
+								arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
+								arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
 
 
 						// si la etiqueta es derechazo
