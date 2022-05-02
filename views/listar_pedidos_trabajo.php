@@ -356,16 +356,16 @@ debugger;
 								config.titulo = "Pedido de Trabajo";
 								config.pixel = "2";
 								config.level = "S";
-								config.framSize = "2";
+								config.framSize = "3";
 						// info para immprimir
 						var arraydatos = {};
 								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
 								arraydatos.Trabajo = $('#tipt_id option:selected').val();
 								arraydatos.Cliente = $('#clie_id option:selected').text();
-								arraydatos.Medida = $('select[name="medidas_yudica"] option:selected').val();
-								arraydatos.Marca = $('select[name="marca_yudica"] option:selected').val();
+								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
 								arraydatos.Serie = $('#num_serie').val();
-
+								arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
 						// si la etiqueta es derechazo
 						arraydatos.Motivo = $('#motivo_rechazo').val();			
 						// info para grabar en codigo QR
@@ -401,7 +401,7 @@ debugger;
 
 	// REIMPRESION ETIQUETA VIENE DEL LISTADO
   function modalReimpresion(e){
-	  debugger;
+	//   debugger;
 
 			$("#infoEtiqueta").empty();
 			$("#contenedorCodigo").empty();
@@ -409,9 +409,9 @@ debugger;
 			// configuracion de codigo QR
 			var config = {};
 			config.titulo = "Reimpresion de Etiqueta";
-			config.pixel = "3";
+			config.pixel = "2";
 			config.level = "S";
-			config.framSize = "2";
+			config.framSize = "3";
 
 			arraydatos = $(e).closest('tr').attr('data-json');
 			var datos = JSON.parse(arraydatos);
@@ -458,7 +458,7 @@ debugger;
 	}
 	//  carga el modal con cuerpo y codigo QR
 	function cargarInfoReimp(datMapeado, estado, config, direccion){
-debugger;
+// debugger;
 			switch (estado) {
 					case 'estados_yudicaEN_CURSO':
 						//Comprobante 1
@@ -479,7 +479,7 @@ debugger;
 						//Comprobante 2
 						$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/rechazado", datMapeado);
 						// agrega codigo QR al modal impresion
-						//getQR(config, datMapeado, direccion);
+						getQR(config, datMapeado, direccion);
 						break;
 
 					case 'estados_yudicaENTREGADO':

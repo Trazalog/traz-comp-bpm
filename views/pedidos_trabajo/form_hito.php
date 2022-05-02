@@ -85,7 +85,7 @@ function guardarHito() {
         url: '<?php echo base_url(BPM) ?>Pedidotrabajo/hitos/' + s_pema,
       
         success: function(rsp) {
-         
+         debugger;
             resp = JSON.parse(rsp);
 
             if(resp.status == true) {

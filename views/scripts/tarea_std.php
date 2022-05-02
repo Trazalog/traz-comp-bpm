@@ -12,6 +12,18 @@ function evaluarEstado() {
     }
 }
 
+function habilitarInicioTareaEstandar() {
+    wo();
+$(".btn-soltar").show();
+$(".btn-tomar").hide();
+//la vista se habilita luego de iniciar la tarea.
+$("#btnIniciar_tarea").show();
+
+    
+wc();
+}
+
+
 function habilitar() {
 
     $(".btn-soltar").show();
@@ -35,13 +47,21 @@ function tomarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/tomarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+     if (nombreTarea ==="Tarea Generica"){    
+            if (data['status']) {
+                habilitarInicioTareaEstandar();
+            } else {
+                alert(data['msj']);
+            }
+         } else {
             if (data['status']) {
                 habilitar();
             } else {
                 alert(data['msj']);
             }
-
+         }
         },
         error: function(result) {
             alert('Error');
@@ -58,7 +78,16 @@ function soltarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/soltarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+     if (nombreTarea ==="Tarea Generica"){    
+        if (data['status']) {
+            $("#btnIniciar_tarea").hide();
+            $("#btnHecho").removeAttr("style");
+            $("#btnHecho").prop('disabled', true);
+                deshabilitar();
+            }
+        }
             // toma a tarea exitosamente
             if (data['status']) {
                 deshabilitar();
