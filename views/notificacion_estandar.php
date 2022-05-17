@@ -124,29 +124,18 @@ var case_id = task.caseId;
     var fec_fin = String(date.format("YYYY-MM-DD HH:MM:s")); 
     console.log(fec_fin);
 
-function IniciarTarea() {
-    debugger;
 ////////////////////////////////////////////////////////
-    //Inicia la tarea tomada en notificacion estandar
-   url = '<?php echo TST ?>Tarea/iniciarTareaPlanificada/'+fec_inicio+'/'+case_id,
+//Inicia la tarea tomada en notificacion estandar
+function IniciarTarea() {
+    url = '<?php echo TST ?>Tarea/iniciarTareaPlanificada/'+fec_inicio+'/'+case_id;
     $.ajax({
         type: 'POST',
         url: url,
         success: function(data) {
-    	  debugger;
+            rsp = JSON.parse(data);
 
-          rsp = JSON.parse(data);
-
-          if(rsp.status == true)
-    	  {
-            setTimeout(() => {
-                Swal.fire(
-
-                    'Perfecto!',
-                    'Se Inicio la Tarea Correctamente!',
-                    'success'
-                )
-            }, 6000);
+            if(rsp.status == true){
+            hecho('Perfecto!', 'Se inicio la tarea correctamente!');
             
             // $("#btnIniciar_tarea").prop('disabled', true);
             // $("#btnTerminar_tarea").prop('disabled', false);
@@ -154,22 +143,16 @@ function IniciarTarea() {
             $('#view').find('.overlay').remove();
             $("#btnIniciar_tarea").hide();
             $("#btnHecho").prop('disabled', false);
-    	  }else{
-    	
-            Swal.fire(
-
-'Error!',
-'NO Se Inicio la Tarea Correctamente!',
-'error'
-)
-           
-    	  }
+            $("#listadoSubtareas").show();
+            $("#formularioTarea").show();
+            }else{
+                error('Error!','No se inicio la tarea correctamente!');
+            }
         },
         error: function(result) {
-    		debugger;
+            debugger;
         }
     });
-
 }
 
 function TerminarTarea() {
