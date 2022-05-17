@@ -12,14 +12,15 @@
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
     </div>
     <div class="panel-body" id="div_pedido_trabajo">
+	<input type="hidden" id="petr_id" value=""  readonly>
         <div class="row">
             <form class="form-inline" id="frm-PedidoTrabajo">
                 <fieldset>
                     <!-- Codigo proyecto-->
                     <div class="col-md-6 espaciado" style="margin-bottom:5px">
                         <div class="form-group">
-                            <label class="control-label" for="cod_proyecto">Número Pedido <strong style="color: #dd4b39">*</strong>:</label>
-                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código proyecto" class="form-control input-md" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                            <label class="control-label" for="cod_proyecto">Código Pedido <strong style="color: #dd4b39">*</strong>:</label>
+                            <input id="cod_proyecto" name="cod_proyecto" type="text" placeholder="Código Pedido"  minlength="4" maxlength="10" size="12" class="form-control input-md" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                         </div>
                     </div>
                     <!-- ***************** -->
@@ -107,10 +108,25 @@
                     <!-- tipo trabajo -->
                     <div class="col-md-12 espaciado">
                         <div class="form-group">
-                            <label class=" control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
-                            <select id="tipt_id" name="tipt_id" class="form-control" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                            <label class="control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
+                            <select id="tipt_id" name="tipt_id" style="width: 100%;" class="select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                                 <option value="" disabled selected> -Seleccionar- </option>
-                                <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option>
+                                <!-- <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option> 
+							-->
+							<?php 
+                                if(is_array($tipo_trabajo)){
+                                
+                                $array = json_decode(json_encode($tipo_trabajo), true);
+
+                                foreach ($array as $i) {
+                                    $tabl_id= $i['tabl_id'];  $valor= $i['valor'];
+
+                                    $valor1= strval ($valor);
+
+                                echo '<option value ="'.$tabl_id.'"> '.$valor1.'</option>';
+                                        }
+                                                                }
+                                ?>
                             </select>
                         </div>
                     </div>  
@@ -120,11 +136,17 @@
 
                 </fieldset>
             </form>
-            <!-- <div class="frm-new" data-form="35"></div> -->
 			<?php  
 			$proccessname = $this->session->userdata('proccessname');
-			$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
 
+			//Si el proceso viene vacio usamos proceso estandar
+			if(isset($proccessname)){
+				$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
+			}else{
+				$proccessname = PRO_STD;
+				$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
+			}
+		
 			echo (!empty($form_id)) ? '<div class="frm-new" data-form="'.$form_id.'"></div>' : '<div class="frm-new" data-form="0"></div>';
 			
 			?>
@@ -132,7 +154,7 @@
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
-                    <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button>
+                    <!-- <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button> -->
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
                 </div>
 
@@ -215,26 +237,60 @@
 					contentType: false,
 					processData: false,
 					success: function(rsp) {
-
+debugger;
 					var result = rsp.status.toString(); 
+
+					var pedido = rsp.data
+						var num_pedido = JSON.parse(pedido);
+				
 					
 					console.log('status esta en saliendo por success:' + result);
 
+					console.log('se genero pedido numero:' + num_pedido);
+
+					var petr_id = num_pedido.respuesta['petr_id'];
+
+					$('#petr_id').val(petr_id);
+				
+
 							if (rsp.status) {
 									console.log("Exito al guardar Formulario");
-									Swal.fire(
-											'Guardado!',
-											'El Pedido de Trabajo se Guardo Correctamente',
-											'success'
-									)
-									$('#frm-PedidoTrabajo')[0].reset();
-									linkTo('<?php echo BPM ?>Proceso/');
-									//lineas del checho #CHUKA
-									//   reload('#pedidos-trabajos');
-									//   $('#mdl-peta').modal('hide');
-									//   reload('#frm-peta')
-									//   detectarForm();
-									//   initForm();
+
+									const swalWithBootstrapButtons = Swal.mixin({
+										customClass: {
+											confirmButton: 'btn btn-success',
+											cancelButton: 'btn btn-danger'
+										},
+										buttonsStyling: false
+										})
+
+										swalWithBootstrapButtons.fire({
+										title: 'Exito!',
+										text: 'Desea imprimir el pedido Número: ' +petr_id+' antes de salir?',
+										type: 'success',
+										showCancelButton: true,
+										confirmButtonText: 'SI, Imprimir!',
+										cancelButtonText: 'No, cancelar!',
+										reverseButtons: true
+										}).then((result) => {
+										if (result.value) {
+											debugger;
+											modalCodigos()
+										} else if (
+											/* Read more about handling dismissals below */
+											result.dismiss === Swal.DismissReason.cancel
+										) {
+											swalWithBootstrapButtons.fire(
+											'Cancelado',
+											'Recuerda que puedes imprimir el pedido luego',
+											'info'
+											)
+
+											 $('#frm-PedidoTrabajo')[0].reset();
+											 linkTo('<?php  echo BPM ?>Proceso/');
+										}
+										})
+						
 
 							} else {
 									Swal.fire(
@@ -264,6 +320,50 @@
 					}
 			});
 	}
+
+	function modalCodigos(){
+debugger;
+				// if (!validarImpresion()) {
+				// 	alert('Complete los campos por favor antes de imprimir');
+				// 	return;
+				// }
+
+				if (band == 0) {
+						// configuracion de codigo QR
+						var config = {};
+								config.titulo = "Pedido de Trabajo";
+								config.pixel = "2";
+								config.level = "S";
+								config.framSize = "2";
+						// info para immprimir
+						var arraydatos = {};
+								arraydatos.N_orden = $('#petr_id').val();
+								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
+								arraydatos.Cliente = $('#clie_id option:selected').text();
+								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
+								arraydatos.Serie = $('#num_serie').val();
+								arraydatos.Num = $('#num_cubiertas').val();
+								arraydatos.Zona = $('#zona').val();
+								arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
+								arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
+
+
+						// si la etiqueta es derechazo
+						arraydatos.Motivo = $('#motivo_rechazo').val();			
+						// info para grabar en codigo QR
+						armarInfo(arraydatos);
+						//agrega codigo QR al modal impresion
+						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
+				}
+				// llama modal con datos e img de QR ya ingresados
+				verModalImpresion();
+				band = 1;
+		}
+
+
+
+
 	//Se debe validar el formulario antes de cerrar el modal
 	// de lo contrario frm_validar() retorna true; y no lo es
 	function cierraPedidoTrabajo(){

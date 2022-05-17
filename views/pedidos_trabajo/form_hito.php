@@ -4,8 +4,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Número<strong style="color: #dd4b39">*</strong>:</label>
-                        <input class="form-control" name="numero" <?php echo req() ?>>
+                        <label>Código<strong style="color: #dd4b39">*</strong>:</label>
+                        <input class="form-control" name="numero" minlength="4" maxlength="10" size="12" <?php echo req() ?>>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -23,7 +23,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label for="documento">Adjuntar Documento</label>
-                        <input type="file" id="documento" name="documento" accept="pdf/*,image/*">
+                        <input type="file" id="documento" name="documento" accept="pdf/*,image/*" class="form-control">
                         <p class="help-block">Adjuntar Documento.</p>
                     </div>
                 </div>
@@ -84,9 +84,12 @@ function guardarHito() {
         processData: false,
         url: '<?php echo base_url(BPM) ?>Pedidotrabajo/hitos/' + s_pema,
       
-        success: function(res) {
-            if (res.status) {
-                console.log(res);
+        success: function(rsp) {
+         debugger;
+            resp = JSON.parse(rsp);
+
+            if(resp.status == true) {
+                console.log(resp);
                 $('#mdl-hito').modal('hide');
                 hecho();
                 reload('comp#hitos', s_pema);
@@ -94,7 +97,7 @@ function guardarHito() {
                 // reload('#pnl-hito', id);
             }
         },
-        error: function(res) {
+        error: function(resp) {
             error();
         },
         complete: function() {

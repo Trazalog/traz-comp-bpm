@@ -12,6 +12,18 @@ function evaluarEstado() {
     }
 }
 
+function habilitarInicioTareaEstandar() {
+    wo();
+$(".btn-soltar").show();
+$(".btn-tomar").hide();
+//la vista se habilita luego de iniciar la tarea.
+$("#btnIniciar_tarea").show();
+
+    
+wc();
+}
+
+
 function habilitar() {
 
     $(".btn-soltar").show();
@@ -35,13 +47,21 @@ function tomarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/tomarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+     if (nombreTarea ==="Tarea Generica"){    
+            if (data['status']) {
+                habilitarInicioTareaEstandar();
+            } else {
+                alert(data['msj']);
+            }
+         } else {
             if (data['status']) {
                 habilitar();
             } else {
                 alert(data['msj']);
             }
-
+         }
         },
         error: function(result) {
             alert('Error');
@@ -58,7 +78,16 @@ function soltarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/soltarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+     if (nombreTarea ==="Tarea Generica"){    
+        if (data['status']) {
+            $("#btnIniciar_tarea").hide();
+            $("#btnHecho").removeAttr("style");
+            $("#btnHecho").prop('disabled', true);
+                deshabilitar();
+            }
+        }
             // toma a tarea exitosamente
             if (data['status']) {
                 deshabilitar();
@@ -109,12 +138,15 @@ function guardarComentario() {
         url: '<?php echo BPM ?>Proceso/guardarComentario',
         success: function(result) {
             var lista = $('#listaComentarios');
-            lista.prepend(
-                '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
-                nombUsr + ' ' + apellUsr +
-                '</a><br><br>' + comentario + '</p></div>'
+            // lista.prepend(
+            //     '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
+            //     nombUsr + ' ' + apellUsr +
+            //     '</a><br><br>' + comentario + '</p></div>'
 
-            );
+            // );
+            lista.prepend('<li><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i><p>' + comentario + '</p></li>'
+                );
             $('#comentario').val('');
         },
         error: function(result) {

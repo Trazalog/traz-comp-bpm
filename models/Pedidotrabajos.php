@@ -38,6 +38,11 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);                                
     }
 
+    public function obtenerTabla($tabla)
+    {
+        $url = REST_CORE . "/tablas/$tabla";
+        return wso2($url);
+    }
    
      /**
 		*Obtiene los formularios asociados a un pedido de trabajo
@@ -90,7 +95,7 @@ class Pedidotrabajos extends CI_Model
     **/
     public function procesos($proccessname)
     {
-        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/" : "/proceso/nombre/$proccessname/empresa/" . empresa();
+        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/". empresa() : "/proceso/nombre/$proccessname/empresa/" . empresa();
 
         $url = REST_PRO . $resource;
         
@@ -144,10 +149,14 @@ class Pedidotrabajos extends CI_Model
     public function mapHito($data)
     {
         $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
-      //  $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+        $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+        $data['nombre_documento'] = isset($_FILES['documento']['name']) ? $data['nombre_documento'] : '';
 
       if(!empty($_FILES['documento']['tmp_name'])){
       $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+/////////// nombre documento
+      $data['nombre_documento'] = $_FILES['documento']['name'];
+
       }
         return payToStr($data);
     }
