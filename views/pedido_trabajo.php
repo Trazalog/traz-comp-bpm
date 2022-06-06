@@ -27,9 +27,9 @@
                     <!-- Objetivo -->
                     <div class="col-md-6 espaciado">
                         <div class="form-group" style="display:inline-flex">
-                            <label class="control-label" for="objetivo">Objetivo:</label>
+                            <label class="control-label" for="objetivo">Objetivo<strong style="color: #dd4b39">*</strong>:</label>
                             <div class="input-group" style="display:inline-flex;">
-                                <input id="objetivo" name="objetivo" type="number" placeholder="" class="form-control input-md" data-bv-notempty="false">
+                                <input id="objetivo" name="objetivo" type="number" placeholder="" class="form-control input-md" min="1" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                             
                                 <select name="unidad_medida_tiempo" id="unidad_medida_tiempo" class="form-control" style="width: auto" data-bv-notempty="false">
                                     <option value="" disabled selected> -Seleccionar- </option>
@@ -187,7 +187,13 @@
 		
 		$("#fec_entrega").on("change", function (e) {
 			if($("#fec_entrega").val() < $("#fec_inicio").val()){
-				alert("La fecha de entrega no puede ser anterior a la fecha de inicio");
+				
+				Swal.fire(
+						'Error...',
+						'La fecha de entrega no puede ser anterior a la fecha de inicio',
+						'error'
+							);
+
 				e.preventDefault();
 			}
 		});
@@ -374,7 +380,13 @@ debugger;
 
 			if($("#objetivo").val() != ""){
 					if($("#unidad_medida_tiempo").val() == null){
-							alert("Si completo objetivo, seleccione medida de tiempo");
+
+						Swal.fire(
+							'Error..',
+							'Si completo objetivo, seleccione medida de tiempo',
+							'error'
+					);
+	
 							return;
 					}
 			}
