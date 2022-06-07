@@ -22,7 +22,6 @@
         </thead>
         <style>
           .tarea {
-                    display:inline-block;
                     text-align: left;
                     white-space: none;
                 }
