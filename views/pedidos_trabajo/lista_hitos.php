@@ -12,7 +12,7 @@
             foreach ($hitos as $key => $o) {
                 echo "<tr>";
                 echo '<td><div class="btn-group">
-                        <button onclick="reload(\'#tareas_planificadas\','.$o->hito_id.');" type="button" class="btn code"><h5 class="box-title pull-right">'.$o->numero.'</h5></button>
+                        <button onclick="reload(\'#tareas_planificadas\','.$o->hito_id.');" type="button" class="btn code" style="max-width: 100%;"><span class="box-title pull-right">'.$o->numero.'</span></button>
                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class=""><i class="fa fa-ellipsis-v"></i></span>
                             <span class="sr-only">Toggle Dropdown</span>
