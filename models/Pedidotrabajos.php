@@ -43,6 +43,16 @@ class Pedidotrabajos extends CI_Model
         $url = REST_CORE . "/tablas/$tabla";
         return wso2($url);
     }
+    /**
+	* Obtiene los datos cargados en core.tablas por empr_id
+	* @param string columna tabla a buscar
+	* @return array listado de coincidencias
+	*/
+    public function obtenerTablaEmpr_id($tabla)
+    {
+        $url = REST_CORE."/tabla/$tabla/empresa/".empresa();
+        return wso2($url);
+    }
    
      /**
 		*Obtiene los formularios asociados a un pedido de trabajo

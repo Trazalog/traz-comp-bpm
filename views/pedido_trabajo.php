@@ -401,8 +401,8 @@ debugger;
 			}
 			
 			if(idFormDinamico != "#undefined"){
-				$(idFormDinamico).bootstrapValidator("validate");
-				if(!$(idFormDinamico).data("bootstrapValidator").isValid()){
+				frm_validar(idFormDinamico)
+				if(!frm_validar(idFormDinamico)){
 						Swal.fire(
 								'Error..',
 								'Debes completar los campos obligatorios (*)',
