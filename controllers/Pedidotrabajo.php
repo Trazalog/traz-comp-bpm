@@ -44,8 +44,9 @@ class Pedidotrabajo extends CI_Controller
        
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
-        $data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTabla('tipos_pedidos_trabajo')['data'];
-
+        //$data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTabla('tipos_pedidos_trabajo')['data'];
+        $data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTablaEmpr_id('tipos_pedidos_trabajo')['data'];
+        
         $url_info= $_SERVER["REQUEST_URI"];
 
         $components = parse_url($url_info);
