@@ -12,15 +12,14 @@ function evaluarEstado() {
     }
 }
 
+//Habilita el boton de iniciar tarea
 function habilitarInicioTareaEstandar() {
     wo();
-$(".btn-soltar").show();
-$(".btn-tomar").hide();
-//la vista se habilita luego de iniciar la tarea.
-$("#btnIniciar_tarea").show();
-
-    
-wc();
+    $(".btn-soltar").show();
+    $(".btn-tomar").hide();
+    //la vista se habilita luego de iniciar la tarea.
+    $("#btnIniciar_tarea").show();
+    wc();
 }
 
 
