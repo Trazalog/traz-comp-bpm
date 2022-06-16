@@ -5,9 +5,9 @@
 .petr-finalizado{
     color: #00a65a !important
 }
-.table{
+/* .table{
     table-layout: fixed;
-}
+} */
 .tarea {
     text-align: left;
     flex-grow: 1;
