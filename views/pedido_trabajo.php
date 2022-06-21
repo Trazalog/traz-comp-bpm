@@ -279,9 +279,9 @@ debugger;
 										cancelButtonText: 'No, cancelar!',
 										reverseButtons: true
 										}).then((result) => {
-										if (result.value) {
 											debugger;
-											modalCodigos()
+										if (result.value) {
+											modalCodigos();
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
