@@ -139,6 +139,55 @@ public function cargar_detalle_formulario(){
 
 
 /**
+	* Trae formularios asociados al pedido de trabajo segun petr_id
+	*@param case_id ,petr_id, processId. (metodo GET)
+    *@return array forularios
+	*/
+
+public function cargar_detalle_formularioJson(){
+   
+    $this->load->model(FRM . 'Forms');
+
+    $case_id = $_GET['case_id'];        
+    
+    $petr_id = $_GET['petr_id'];
+        
+
+   $data = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+
+   $prueba = $data[0]->forms->form;
+   
+   foreach ($prueba as $value) {
+
+    switch ($value->nom_form) {
+
+        case 'Rechazo de Tarea':
+            
+            $info_id = $value->info_id;
+
+            $res = $this->Forms->obtener($info_id);
+
+
+              $motivo['motivo_rechazo'] = $res->items[0]->valor;
+     
+
+            break;
+
+            default:
+
+            break;
+    }
+
+}
+
+
+   echo json_encode($motivo);
+
+}
+
+
+
+/**
 	* Instancia un formulario asociado
 	*@param info_id (metodo GET)
     *@return array forulario
