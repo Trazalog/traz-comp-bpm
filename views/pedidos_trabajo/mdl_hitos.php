@@ -13,10 +13,10 @@
                     <div class="modal-body">
                         <?php echo comp('pnl-hito', base_url(BPM.'Pedidotrabajo/hito')) ?>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                    <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-success" onclick="guardarHito()">Guardar</button>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
@@ -31,7 +31,7 @@
                         <?php  echo comp('pnl-nuevo-pema', base_url(ALM.'notapedido/nuevo/HITOS')); ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-success" onclick="guardarPedido2()">Guardar</button>
                     </div>
 
@@ -48,6 +48,10 @@
                 <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="guardarHito()">Guardar</button>
+            </div>
         </div>
     </div>
 </div>
