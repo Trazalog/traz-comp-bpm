@@ -118,7 +118,27 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
     // carga el modal de impresion de QR
     $this->load->view( COD.'componentes/modal');
 ?>
+<!-- The Modal -->
+<div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <br>
+                        <div class="xmodal-body">
+                            <br>
+                            <div id="form-dinamico" data-frm-id="">
 
+/-                        </div>
+<br>
+                        </div>
+                        <br>
+                        <div class="modal-footer">
+                            <br>
+                            <button type="button" class="btn" onclick="cerrarModalform()">Cerrar</button>
+                            <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
 <script>
 
 //Funcion de datatable para extencion de botones exportar
@@ -187,55 +207,42 @@ $(document).ready(function() {
 // parametro petr_id y case_id
 //
 function verPedido(e) {
-    petr_id = $(e).closest('tr').attr('id');
+	wo();
+	petr_id = $(e).closest('tr').attr('id');
+	case_id = $(e).closest('tr').attr('case_id');
+	console.log('trae pedido N°: ' + petr_id)
+	console.log('trae case_id N°: ' + case_id)
 
-			case_id = $(e).closest('tr').attr('case_id');
+	var url = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_comentario?petr_id=" + petr_id + "&case_id=" + case_id;
+	var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" + case_id;
+	var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
+	var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
 
-			console.log('trae pedido N°: ' + petr_id)
+	$("#cargar_comentario").empty();
+	$("#cargar_comentario").load(url, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
 
-			console.log('trae case_id N°: ' + case_id)
+	$("#cargar_form").empty();
+	$("#cargar_form").load(url1, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
 
+	$("#cargar_trazabilidad").empty();
+	$("#cargar_trazabilidad").load(url2, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
 
-			var url = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_comentario?petr_id=" + petr_id + "&case_id=" +
-					case_id;
-
-
-			var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" +
-					case_id;
-
-
-			var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
-
-
-			var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
-
-			wo();
-			wc();
-			window.setTimeout(function() {
-					$('#mdl-vista').modal('show');
-			}, 7000);
-
-
-			console.log(url);
-			$("#cargar_comentario").empty();
-			$("#cargar_comentario").load(url);
-
-			console.log(url1);
-			$("#cargar_form").empty();
-			$("#cargar_form").load(url1);
-
-			console.log(url2);
-			$("#cargar_trazabilidad").empty();
-			$("#cargar_trazabilidad").load(url2);
-			wc();
-
-			console.log(url3);
-			$("#cargar_info_actual").empty();
-			$("#cargar_info_actual").load(url3);
-			wc();
-
-			
-	}
+	$("#cargar_info_actual").empty();
+	$("#cargar_info_actual").load(url3, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
+	
+}
 
 //funcion boton eliminar
 //
