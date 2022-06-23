@@ -1,17 +1,26 @@
-    <style>
-        .srow {
-            background-color: #82E0AA
-        }
-        .petr-finalizado{
-            color: #00a65a !important
-        }
-        /* .block-disabled{
-            background 
-        } */
-        .table{
-            table-layout: fixed;
-        }
-    </style>
+<style>
+.srow {
+    background-color: #82E0AA
+}
+.petr-finalizado{
+    color: #00a65a !important
+}
+/* .table{
+    table-layout: fixed;
+} */
+.tarea {
+    text-align: left;
+    flex-grow: 1;
+}
+.btnPedidoTrabajo {
+    border-radius: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-width: 1px;
+    width: auto;
+}
+</style>
 <div class="table-wrapper-scroll-y my-custom-scrollbar">
     <table id="tbl-pedidos" class="table table-hover text-center t-btn">
         <thead>
@@ -21,19 +30,6 @@
                 </button></th>
         </thead>
         <style>
-          .tarea {
-                    text-align: left;
-                    white-space: none;
-                }
-
-        .btnPedidoTrabajo {
-            border-radius: 0;
-            -webkit-box-shadow: none;
-            -moz-box-shadow: none;
-            box-shadow: none;
-            border-width: 1px;
-            width: auto;
-             }
         </style>
 
         <tbody>
@@ -42,7 +38,7 @@
                 echo "<tr class='block-disabled'>";
                 echo '<td>
                 <div class="btn-group">
-                        <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="tarea"><cite><h5 class="box-title pull-left">'.$o->cod_proyecto.'</h5></cite></button>
+                        <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn code"><cite><h5 class="box-title pull-left">'.$o->cod_proyecto.'</h5></cite></button>
                         <button style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class=""><i class="fa fa-ellipsis-v"></i></span>
                             <span class="sr-only">Toggle Dropdown</span>
