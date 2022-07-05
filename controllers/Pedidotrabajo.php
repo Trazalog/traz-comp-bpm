@@ -483,4 +483,28 @@ public function cargar_formulario_asociado(){
         $rsp = $this->Pedidotrabajos->cambiarEstado($post['petrId'], $post['estado']);
         echo json_encode($rsp);
     }
+    
+    /**
+        * Trae cabecera relacionada con el proceso
+        *@param $case_id (metodo GET)
+        *@return array forularios
+    */
+    public function cargar_detalle_cabecera(){
+        $this->load->model(YUDIPROC.'Yudiproctareas');
+
+        $case_id = $this->input->get('case_id');
+        $proccessname = $this->session->userdata('proccessname');
+
+        //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+
+        $tarea = new StdClass();
+        $tarea->caseId = $case_id;
+        $tarea->processId = $processId;
+        $tarea->nombreTarea = '';
+
+        $cabecera = $this->Yudiproctareas->desplegarCabecera($tarea);
+
+        echo $cabecera;
+    }
 }
