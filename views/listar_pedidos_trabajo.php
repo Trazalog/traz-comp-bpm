@@ -111,7 +111,7 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 <?php
 //HGallardo
     // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modal');
+    $this->load->view( COD.'componentes/modalYudica');
 ?>
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
