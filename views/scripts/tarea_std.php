@@ -19,6 +19,7 @@ function habilitarInicioTareaEstandar() {
     $(".btn-tomar").hide();
     //la vista se habilita luego de iniciar la tarea.
     $("#btnIniciar_tarea").show();
+    $("btnIniciar_tarea").prop("disabled", false);
     wc();
 }
 
