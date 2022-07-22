@@ -93,17 +93,11 @@
 <div class="modal modal-fade" id="mdl-vista">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body">
-                <?php 
-             
-             $this->load->view(BPM.'pedidos_trabajo/mdl_pedido_detalle');
-    
-                ?>
+            <div class="xmodal-body">
+                <?php $this->load->view(BPM.'pedidos_trabajo/mdl_pedido_detalle'); ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
-                <!--   <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>
-          -->
             </div>
         </div>
     </div>
@@ -117,7 +111,7 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 <?php
 //HGallardo
     // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modal');
+    $this->load->view( COD.'componentes/modalYudica');
 ?>
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
@@ -217,6 +211,10 @@ function verPedido(e) {
 	var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" + case_id;
 	var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 	var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+    header = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_cabecera?case_id=" + case_id;
+
+    $("#cabecera").empty();
+    $("#cabecera").load(header);
 
 	$("#cargar_comentario").empty();
 	$("#cargar_comentario").load(url, () => {

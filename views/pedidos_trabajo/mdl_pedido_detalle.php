@@ -6,6 +6,7 @@
 }
 
 </style>
+<div id="cabecera"></div>
 <input id="tarea" data-info="" class="hidden">
 <input type="text" class="form-control hidden" id="asignado" value="">
 <input type="text" class="form-control hidden" id="taskId" value="">
