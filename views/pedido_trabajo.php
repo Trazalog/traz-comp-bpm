@@ -79,23 +79,7 @@
                         </div>
                     </div>
                     <!-- ***************** --> 
-					 <!-- Direccion Entrega -->
-					 <div class="col-md-6 espaciado">                                            
-                        <div class="form-group">
-                            <label class=" control-label" for="email" name="">Email:</label>
-                            <input type="text" class="form-control habilitar" id="email" value="" readonly>
-                        </div>
-                    </div>
-                    <!-- ***************** --> 
-					 <!-- Direccion Entrega -->
-					 <div class="col-md-6 espaciado">                                            
-                        <div class="form-group">
-                            <label class=" control-label" for="email_alternativo" name="">Email alternativo:</label>
-                            <input type="text" class="form-control habilitar" id="email_alternativo" value="" readonly>
-                        </div>
-                    </div>
-                    <!-- ***************** --> 
-                    <!-- Fecha Inicio-->
+					<!-- Fecha Inicio-->
                     <div class="col-md-6 espaciado">
                         <div class="form-group">
                             <label class="control-label" for="fec_inicio">Fecha inicio <strong style="color: #dd4b39">*</strong>:</label>
