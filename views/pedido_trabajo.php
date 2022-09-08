@@ -79,16 +79,22 @@
                         </div>
                     </div>
                     <!-- ***************** --> 
-                    <!-- Descripción -->
-                    <div class="col-md-12 espaciado">
-                        <div class="form-group" style="width: 100%">                                       
-                            <label class="control-label" for="descripcion">Descripción <strong style="color: #dd4b39">*</strong>:</label>
-                            <div class="input-group" style="width:100%">
-                                <textarea class="form-control" id="descripcion" name="descripcion" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required></textarea>
-                            </div>
+					 <!-- Direccion Entrega -->
+					 <div class="col-md-6 espaciado">                                            
+                        <div class="form-group">
+                            <label class=" control-label" for="email" name="">Email:</label>
+                            <input type="text" class="form-control habilitar" id="email" value="" readonly>
                         </div>
                     </div>
-                    <!-- ***************** -->
+                    <!-- ***************** --> 
+					 <!-- Direccion Entrega -->
+					 <div class="col-md-6 espaciado">                                            
+                        <div class="form-group">
+                            <label class=" control-label" for="email_alternativo" name="">Email alternativo:</label>
+                            <input type="text" class="form-control habilitar" id="email_alternativo" value="" readonly>
+                        </div>
+                    </div>
+                    <!-- ***************** --> 
                     <!-- Fecha Inicio-->
                     <div class="col-md-6 espaciado">
                         <div class="form-group">
@@ -108,8 +114,8 @@
                     <!-- tipo trabajo -->
                     <div class="col-md-12 espaciado">
                         <div class="form-group">
-                            <label class="control-label" for="tipt_id">Trabajo <strong style="color: #dd4b39">*</strong>:</label>
-                            <select id="tipt_id" name="tipt_id" style="width: 100%;" class="select2" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
+                            <label class="control-label" for="tipt_id">Tipo de trabajo <strong style="color: #dd4b39">*</strong>:</label>
+                            <select id="tipt_id" name="tipt_id" style="width: 100%;" class="select2 col-md-6" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required>
                                 <option value="" disabled selected> -Seleccionar- </option>
                                 <!-- <option value="tipos_pedidos_trabajoneumaticos">Reparacion Neumaticos</option> 
 							-->
@@ -130,14 +136,26 @@
                             </select>
                         </div>
                     </div>  
+					 <!-- Descripción -->
+					 <div class="col-md-12 espaciado">
+                        <div class="form-group" style="width: 100%">                                       
+                            <label class="control-label" for="descripcion">Descripción <strong style="color: #dd4b39">*</strong>:</label>
+                            <div class="input-group" style="width:100%">
+                                <textarea class="form-control" id="descripcion" name="descripcion" data-bv-notempty data-bv-notempty-message="Campo Obligatorio *" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ***************** -->
                     <br>
 
                     <!-- Button -->
 
                 </fieldset>
             </form>
+
+			<div class="col-md-12 espaciado">
 			<?php  
-			$proccessname = $this->session->userdata('proccessname');
+			 $proccessname = $this->session->userdata('proccessname');
 
 			//Si el proceso viene vacio usamos proceso estandar
 			if(isset($proccessname)){
@@ -151,6 +169,7 @@
 			
 			?>
 
+ </div>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
                     <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
@@ -312,7 +331,7 @@ debugger;
 
 							var result = rsp.status.toString(); 
 					
-					console.log('status esta en saliendo por error:' + result);
+					console.log('status esta saliendo por error:' + result);
 
 							console.log("Error al guardar Formulario");
 							Swal.fire(

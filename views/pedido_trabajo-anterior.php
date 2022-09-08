@@ -9,7 +9,7 @@
 
 <?php
     // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modal');
+    $this->load->view( COD.'componentes/modalYudica');
 ?>
 
 <div class="panel panel-default">
