@@ -94,10 +94,21 @@ class Pedidotrabajos extends CI_Model
 // Guardar BonitaProccess
     public function guardarBonitaProccess($contract)
     {
-        $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
-        return $rsp;
-    }
 
+        //obtengo processname
+        $proccessname = $this->session->userdata('proccessname');
+
+         //Si el proceso viene vacio usamos proceso estandar
+       $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+
+       if(isset($proceso->nombre_bpm)){
+         
+        $nombre_bpm = $proceso->nombre_bpm;
+
+       $rsp =  $this->bpm->lanzarProceso($nombre_bpm, $contract);
+        return $rsp;
+      }
+}
     /**
 		*Busca el proceso asociado a $processname en la tabla pro.procesos
 		* @param array $processname
