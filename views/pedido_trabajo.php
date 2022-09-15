@@ -224,16 +224,12 @@
 	detectarForm();
 	initForm();
 
-	var guardarPedidoTrabajo = function() {
-			debugger;
+	var guardarPedidoTrabajo = function(info_id = '') {
 			$('#mdl-peta').modal('hide');
-		
+			debugger;
 			var formData = new FormData($('#frm-PedidoTrabajo')[0]);
-
-			if($('.frm').attr('data-ninfoid') != undefined){
-				formData.append('info_id', $('.frm').attr('data-ninfoid'));
-			}else{
-				formData.append('info_id', '');
+			if(_isset(info_id)){
+				formData.append('info_id', info_id);
 			}
 
 			wo();
@@ -246,7 +242,6 @@
 					contentType: false,
 					processData: false,
 					success: function(rsp) {
-debugger;
 					var result = rsp.status.toString(); 
 
 					var pedido = rsp.data
@@ -375,7 +370,7 @@ debugger;
 
 	//Se debe validar el formulario antes de cerrar el modal
 	// de lo contrario frm_validar() retorna true; y no lo es
-	function cierraPedidoTrabajo(){
+	async function cierraPedidoTrabajo(){
 			idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
 
 			//valido para obtener los campos con error
@@ -413,7 +408,11 @@ debugger;
 						);
 						return;
 				}
-				frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+				// frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
+				//Guardo formulario de escaneo documentacion, se valido en cerrarTarea()
+				debugger;
+				var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+				guardarPedidoTrabajo(newInfoID)
 			}else{
 				guardarPedidoTrabajo();
 			}
