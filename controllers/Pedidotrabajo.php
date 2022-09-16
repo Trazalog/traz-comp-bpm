@@ -83,16 +83,52 @@ echo $data['comentarios'];
 	*/
 //HARCODECHUKA processId
 public function cargar_detalle_linetiempo(){
+   
+    $url_info= $_SERVER["REQUEST_URI"];
 
-    $case_id = $_GET['case_id'];               
-        
-  $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+    $components = parse_url($url_info);
+
+    parse_str($components['query'], $results);
+
+    $case_id =$results['id'];
+   
+    $proccessname =$results['proccessname'];
+       
+    
+      
+        if (isset($_GET['case_id'])) {
+            $case_id = $_GET['case_id'];        
+          
+        }else {
+            $case_id = $this->input->get('case_id');
+            // $processId = $this->input->get('proccessname');
+        }
+
+
+        if ($proccessname !=''){
+
+    //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+
+          //LINEA DE TIEMPO
+      $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+      echo timeline($data['timeline']);
  
-  //LINEA DE TIEMPO
+    }else {
+        $processId = $_GET['proccessname'];
+        // $processId = BPM_PROCESS_ID_PROCESO_PRODUCTIVO;
+
+        //LINEA DE TIEMPO
   $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
 
   echo timeline($data['timeline']);
  
+    }
+        
+
+ 
+
 }
 
 
