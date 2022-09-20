@@ -156,7 +156,6 @@
  </div>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
-                    <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
                     <!-- <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button> -->
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
                 </div>
@@ -279,7 +278,7 @@
 										}).then((result) => {
 											debugger;
 										if (result.value) {
-											modalCodigos();
+											modalCodigosPedido();
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
@@ -325,7 +324,7 @@
 			});
 	}
 
-	function modalCodigos(){
+	function modalCodigosPedido(){
 debugger;
 				// if (!validarImpresion()) {
 				// 	alert('Complete los campos por favor antes de imprimir');
