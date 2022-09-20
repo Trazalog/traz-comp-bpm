@@ -86,8 +86,9 @@
     </div>
 </div>
 <script>
-$('.sidebar-toggle').click();
-
+if(!$("body").hasClass('sidebar-collapse')){
+    $('.sidebar-toggle').click();
+}
 function collapse(e) {
     e = $(e).closest('.box');
 
