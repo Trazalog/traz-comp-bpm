@@ -361,7 +361,7 @@ debugger;
 						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 				}
 				// llama modal con datos e img de QR ya ingresados
-				verModalImpresion();
+				verModalImpresionPedido();
 				band = 1;
 		}
 
