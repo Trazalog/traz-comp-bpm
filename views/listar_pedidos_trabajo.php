@@ -22,6 +22,14 @@
                 </thead>
                 <tbody>
                     <?php
+
+        //obtengo processname
+        $proccessname = $this->session->userdata('proccessname');
+
+      
+      $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+
+
 							foreach($pedidos as $rsp){
 
 								$petr_id = $rsp->petr_id;
@@ -53,32 +61,63 @@
 							if ($estado == NULL) {
 									$estado ="SIN ESTADO";
 								}
-								
-			switch ($estado) {
-				case 'estados_procesosPROC_EN_CURSO':
-                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-                break;
 
-				case 'estados_yudicaEN_CURSO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-				break;
 
-				case 'estados_yudicaREPROCESO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
-				break;
+					 if ($proccessname == 'YUDI-NEUMATICOS') {
+                        switch ($estado) {
+                            case 'estados_procesosPROC_EN_CURSO':
+                            echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                            break;
+            
+                            case 'estados_yudicaEN_CURSO':
+                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                            break;
+            
+                            case 'estados_yudicaREPROCESO':
+                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                            break;
+            
+                            case 'estados_yudicaENTREGADO':
+                            echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                            break;
+            
+                            case 'estados_yudicaRECHAZADO':
+                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                            break;
+                        
+                            default:
+                            echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                            break;
+                                 }
+                          }	
 
-				case 'estados_yudicaENTREGADO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
-				break;
-
-				case 'estados_yudicaRECHAZADO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
-				break;
-			
-				default:
-				echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-				break;
-			}
+                         else{
+                            switch ($estado) {
+                                case 'estados_seinEN_CURSO':
+                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                
+                                case 'estados_seinA':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                
+                                case 'estados_seinB':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                break;
+                
+                                case 'estados_seinC':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                break;
+                
+                                case 'estados_seind':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                break;
+                            
+                                default:
+                                echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                break;
+                                     }
+                              }	
                 
 							
 								echo '</tr>';
@@ -111,7 +150,7 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 <?php
 //HGallardo
     // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modalYudica');
+    $this->load->view( COD.'componentes/modalPedidoTrabajo');
 ?>
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
