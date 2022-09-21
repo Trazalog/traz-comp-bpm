@@ -3,11 +3,8 @@
     background-color: #82E0AA
 }
 .petr-finalizado{
-    color: #00a65a !important
+    display: none
 }
-/* .table{
-    table-layout: fixed;
-} */
 .tarea {
     text-align: left;
     flex-grow: 1;
@@ -29,24 +26,19 @@
                    <cite> Nuevo Pedido Trabajo</cite>
                 </button></th>
         </thead>
-        <style>
-        </style>
-
         <tbody>
             <?php
             foreach ($ots as $key => $o) {
                 echo "<tr class='block-disabled'>";
-                echo '<td>
-                <div class="btn-group">
+                echo "<td class='".((strpos($o->estado,'FINALIZADO') !== FALSE)?'petr-finalizado':'')."' data-json='".json_encode($o)."'>";
+                echo '<div class="btn-group">
                         <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn code"><cite><h5 class="box-title pull-left">'.$o->cod_proyecto.'</h5></cite></button>
                         <button style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class=""><i class="fa fa-ellipsis-v"></i></span>
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>';
                 echo '<ul class="dropdown-menu" role="menu">';
-      
-                echo "<li><a class='".((strpos($o->estado,'FINALIZADO') !== FALSE)?'petr-finalizado':'')."' href='#' onclick='cambiarEstado($o->petr_id, this)'><i class='fa fa-check mr-2'></i><estado>".((strpos($o->estado,'FINALIZADO') !== FALSE)?'Finalizado':'Marcar como Finalizado')."</estado></a></li>";
-            
+                echo "<li><a href='#' onclick='finalizarTrabajo(this)'><i class='fa fa-check mr-2'></i><estado>".((strpos($o->estado,'FINALIZADO') !== FALSE)?'Finalizado':'Trabajo Terminado')."</estado></a></li>";
                 echo '</ul> </div></td>';
                 echo "</tr>";
             }
@@ -55,17 +47,19 @@
     </table>
 </div>
 <script>
-function cambiarEstado(petrId, obj) {
-    var estado = $(obj).hasClass('petr-finalizado') ? 'EN CURSO' : 'FINALIZADO';
+function finalizarTrabajo(obj) {
+    var data = {};
+    var datos = JSON.parse($(obj).closest('td').attr('data-json'));
+    data.estado = 'estados_procesosTRABAJO_TERMINADO';
+    data.case_id = datos.case_id;
+    data.proc_id = datos.proc_id;
+    data.petr_id = datos.petr_id;
     wo();
     $.ajax({
         type: 'POST',
         dataType: 'JSON',
-        url: `<?php echo base_url(BPM)?>Pedidotrabajo/cambiarEstado`,
-        data: {
-            petrId,
-            estado
-        },
+        url: `<?php echo base_url(BPM)?>Pedidotrabajo/finalizarTrabajo`,
+        data: data,
         success: function(res) {
             if (res.status) {
                 if ($(obj).hasClass('petr-finalizado')) {

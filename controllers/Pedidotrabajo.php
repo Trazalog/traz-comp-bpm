@@ -522,10 +522,24 @@ public function cargar_formulario_asociado(){
         }
     }
 
-    public function cambiarEstado()
-    {
+    /**
+        * Busca en el case especificado, que el proceso se encuentre parado actualmente sobre la tarea enviada y la cierra
+        *@param array $post con estado, case_id, proc_id y petr_id
+        *@return array respuesta según servicio
+    */
+    public function finalizarTrabajo(){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-BPM | Pedidotrabajo | finalizarTrabajo()');
         $post  = $this->input->post();
-        $rsp = $this->Pedidotrabajos->cambiarEstado($post['petrId'], $post['estado']);
+        $proceso = $this->Pedidotrabajos->procesos($post['proc_id'])->proceso;
+        $taskObtenido = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$post['case_id'], TAREA_IT);
+        if(!empty($taskObtenido)){
+            $aux = $this->bpm->setUsuario($taskObtenido,userId());
+            $auxi = $this->bpm->cerrarTarea($taskObtenido);
+            $rsp = $this->Pedidotrabajos->cambiarEstado($post['petr_id'], $post['estado']);
+        }else{
+            $rsp['status'] = false;
+            $rsp['msj'] = "El case especificado no se encuentra en el paso de la TAREA IT";
+        }
         echo json_encode($rsp);
     }
     
