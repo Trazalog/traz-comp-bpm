@@ -3,7 +3,7 @@
     background-color: #82E0AA
 }
 .petr-finalizado{
-    color: #00a65a !important
+    display: none
 }
 .tarea {
     text-align: left;
@@ -30,7 +30,7 @@
             <?php
             foreach ($ots as $key => $o) {
                 echo "<tr class='block-disabled'>";
-                echo "<td data-json='".json_encode($o)."'>";
+                echo "<td class='".((strpos($o->estado,'FINALIZADO') !== FALSE)?'petr-finalizado':'')."' data-json='".json_encode($o)."'>";
                 echo '<div class="btn-group">
                         <button onclick="selectPeta('.$o->petr_id.',\''.$o->cod_proyecto.'\')" style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn code"><cite><h5 class="box-title pull-left">'.$o->cod_proyecto.'</h5></cite></button>
                         <button style="color:#FFFFFF; background-color:'.stringColor($o->cod_proyecto, (strpos($o->estado,'FINALIZADO') !== FALSE)?0.3:1).'" type="button" class="btn dropdown-toggle" data-toggle="dropdown">
@@ -38,7 +38,7 @@
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>';
                 echo '<ul class="dropdown-menu" role="menu">';
-                echo "<li><a class='".((strpos($o->estado,'FINALIZADO') !== FALSE)?'petr-finalizado':'')."' href='#' onclick='finalizarTrabajo(this)'><i class='fa fa-check mr-2'></i><estado>".((strpos($o->estado,'FINALIZADO') !== FALSE)?'Finalizado':'Trabajo Terminado')."</estado></a></li>";
+                echo "<li><a href='#' onclick='finalizarTrabajo(this)'><i class='fa fa-check mr-2'></i><estado>".((strpos($o->estado,'FINALIZADO') !== FALSE)?'Finalizado':'Trabajo Terminado')."</estado></a></li>";
                 echo '</ul> </div></td>';
                 echo "</tr>";
             }
