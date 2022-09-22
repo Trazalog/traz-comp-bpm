@@ -90,7 +90,7 @@ public function cargar_detalle_linetiempo(){
 
     parse_str($components['query'], $results);
 
-    $case_id =$results['id'];
+    // $petr_id =$results['id'];
    
    if (isset($results['proccessname'])) {
     $proccessname =$results['proccessname'];
@@ -166,8 +166,9 @@ public function cargar_detalle_info_actual(){
 //HARCODECHUKA processId
 public function cargar_detalle_formulario(){
 
-    $case_id = $_GET['case_id'];        
-    
+    $url_info= $_SERVER["REQUEST_URI"];
+
+   
     $petr_id = $_GET['petr_id'];
 
     $proccessname = $this->session->userdata('proccessname');
@@ -551,7 +552,8 @@ public function cargar_formulario_asociado(){
     public function cargar_detalle_cabecera(){
 
 
-        $case_id = $this->input->get('case_id');
+         $case_id = $this->input->get('case_id');
+        // $case_id = $this->input->post('case_id');
         $proccessname = $this->session->userdata('proccessname');
 
         if ($proccessname == 'YUDI-NEUMATICOS') {
