@@ -12,16 +12,7 @@
 
 $proccessname = $this->session->userdata('proccessname'); 
 
-//dependiendo de el prccessename
-    // carga el modal de impresion de QR
-if ($proccessname == 'YUDI-NEUMATICOS') {
-   
-    $this->load->view( COD.'componentes/modalPedidoTrabajo');
 
-} elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  
-	$this->load->view( COD.'componentes/modalPedidoTrabajo');   
-}
 ?>
 
 <div class="panel panel-default">
@@ -428,7 +419,7 @@ debugger;
 						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 				}
 				// llama modal con datos e img de QR ya ingresados
-				verModalImpresionPedido();
+				verModalImpresion();
 				band = 1;
 	
 		
@@ -545,7 +536,7 @@ debugger;
           var arraydatos = {};
               arraydatos.N_orden = $('#petr_id').val();
               arraydatos.Fabricado = 'Servicios Industriales';
-              arraydatos.Cliente = $('#cliente').val();
+              arraydatos.Cliente = $('#clie_id option:selected').text();
               arraydatos.fec_fabricacion = $('#fec_fabricacion').val();
               arraydatos.fec_entrega = $('#fec_entrega').val();
               arraydatos.dato_linck =   $('#url_link').val();
@@ -563,6 +554,21 @@ debugger;
 
   function armarInfo(arraydatos){
 
+	proccesname = $('#proccessname').val();
+	console.log('el proceso es de armarInfo es: '+proccesname);
+
+
+		if(proccesname == 'YUDI-NEUMATICOS'){
+
+	$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
+
+} 
+	if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+
     $("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>/Infocodigo/pedidoTrabajoFinal", arraydatos);
   }
+
+}
+
+
 </script>

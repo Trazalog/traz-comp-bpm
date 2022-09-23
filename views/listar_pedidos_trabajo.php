@@ -8,7 +8,7 @@ $proccessname = $this->session->userdata('proccessname');
     // carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
    
-    $this->load->view( COD.'componentes/modalPedidoTrabajo');
+    $this->load->view( COD.'componentes/modalYudica');
 
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
   
@@ -500,7 +500,7 @@ function modalReimpresion(e) {
                                     // llama modal con datos e img de QR
                                     getDatos(datos, config);
                                     // levanta modal completo para su impresion
-                                    verModalImpresionPedido();
+                                    verModalImpresion();
                         },
 
                         error: function(rsp) {
@@ -520,11 +520,6 @@ function modalReimpresion(e) {
             
                 }
 
-                    // llama modal con datos e img de QR
-                    getDatos(datos, config);
-                    // levanta modal completo para su impresion
-                    // verModalImpresion();
-                    verModalImpresionPedido();
             
                 }
                 
@@ -538,9 +533,24 @@ debugger;
 
                 }
 
+                if(proccesname == 'YUDI-NEUMATICOS'){
+        // llama modal con datos e img de QR
+        getDatos(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresion();
+            
 
+                }
 
+  if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+  // llama modal con datos e img de QR
+  getDatosSein(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresionPedido();
 
+                }
 }
 
 
