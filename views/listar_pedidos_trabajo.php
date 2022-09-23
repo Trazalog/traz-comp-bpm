@@ -8,7 +8,7 @@ $proccessname = $this->session->userdata('proccessname');
     // carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
    
-    $this->load->view( COD.'componentes/modalPedidoTrabajo');
+    $this->load->view( COD.'componentes/modalYudica');
 
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
   
@@ -26,7 +26,6 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
         <button id="btn-agregarPedido" class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
             onclick="$('#mdl-peta').modal('show')">Agregar</button>
         <br>
-        <input  id="url_link" name="url_link" type="text"   class="form-control input-md">
         <div class="box-body table-scroll table-responsive">
             <table id="tbl-pedidos" class="table table-striped table-hover">
                 <thead>
@@ -120,15 +119,15 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                                 echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
                                 break;
                 
-                                case 'estados_seinB':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                case 'estados_seinENTREGA_PENDIENTE':
+                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-yellow">ENTREGA PENDIENTE</span></td>';                               
                                 break;
                 
                                 case 'estados_seinC':
                                 echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
                                 break;
                 
-                                case 'estados_seind':
+                                case 'estados_seinRECHAZADO':
                                 echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
                                 break;
                             
@@ -501,7 +500,7 @@ function modalReimpresion(e) {
                                     // llama modal con datos e img de QR
                                     getDatos(datos, config);
                                     // levanta modal completo para su impresion
-                                    verModalImpresionPedido();
+                                    verModalImpresion();
                         },
 
                         error: function(rsp) {
@@ -521,11 +520,6 @@ function modalReimpresion(e) {
             
                 }
 
-                    // llama modal con datos e img de QR
-                    getDatos(datos, config);
-                    // levanta modal completo para su impresion
-                    // verModalImpresion();
-                    verModalImpresionPedido();
             
                 }
                 
@@ -539,9 +533,24 @@ debugger;
 
                 }
 
+                if(proccesname == 'YUDI-NEUMATICOS'){
+        // llama modal con datos e img de QR
+        getDatos(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresion();
+            
 
+                }
 
+  if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+  // llama modal con datos e img de QR
+  getDatosSein(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresionPedido();
 
+                }
 }
 
 
