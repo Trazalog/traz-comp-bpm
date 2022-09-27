@@ -7,12 +7,21 @@
 }
 </style>
 
+<?php 
+        //obtengo processname
+
+$proccessname = $this->session->userdata('proccessname'); 
+
+
+?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Nuevo Pedido de Trabajo</h3>
     </div>
     <div class="panel-body" id="div_pedido_trabajo">
 	<input type="hidden" id="petr_id" value=""  readonly>
+	<input type="hidden" id="proccessname" value="<?php echo $proccessname;?>"  readonly>
         <div class="row">
             <form class="form-inline" id="frm-PedidoTrabajo">
                 <fieldset>
@@ -139,7 +148,7 @@
 
 			<div class="col-md-12 espaciado">
 			<?php  
-			 $proccessname = $this->session->userdata('proccessname');
+			
 
 			//Si el proceso viene vacio usamos proceso estandar
 			if(isset($proccessname)){
@@ -156,7 +165,6 @@
  </div>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
-                    <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cerrar</button>
                     <!-- <button type="button" id="btn-accion" class="btn btn-success btn-guardar" onclick="modalCodigos()">Imprimir</button> -->
                     <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="cierraPedidoTrabajo()">Guardar</button>
                 </div>
@@ -173,6 +181,10 @@
 	//Capturo el evento de apertura del modal
 	$(document).ready(function () {
 		$('.select2').select2();
+
+		proccesname = $('#proccessname').val();
+		console.log('el proceso es :'+proccesname);
+
 		
 		//Script setear fecha actual en Fecha Inicio
 		fecha = new Date();
@@ -256,8 +268,56 @@
 
 					$('#petr_id').val(petr_id);
 				
-
 							if (rsp.status) {
+							
+							
+								if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+										
+									console.log("Exito al guardar Formulario");
+
+									const swalWithBootstrapButtons1 = Swal.mixin({
+									customClass: {
+										confirmButton: 'btn btn-success',
+										cancelButton: 'btn btn-danger'
+									},
+									buttonsStyling: false
+									})
+
+									swalWithBootstrapButtons1.fire({
+									title: 'Exito!',
+									text: 'Pedido de trabajo Número: ' +petr_id+ ' generado y enviado por correo con éxito'+'¿Desea imprimir codigo QR?',
+									type: 'success',
+									showCancelButton: true,
+									confirmButtonText: 'Imprimir',
+									cancelButtonText: 'Cerrar',
+									reverseButtons: true
+									}).then((result) => {
+										debugger;
+									if (result.value) {
+										crearUrlQr();  
+									
+										setTimeout(function(){
+											modalCodigosSein();
+									}, 2000);
+																		
+									} else if (
+										/* Read more about handling dismissals below */
+										result.dismiss === Swal.DismissReason.cancel
+									) {
+										swalWithBootstrapButtons1.fire(
+										'Cancelado',
+										'Recuerda que puedes imprimir el pedido luego',
+										'info'
+										)
+
+										$('#frm-PedidoTrabajo')[0].reset();
+										linkTo('<?php  echo BPM ?>Proceso/');
+									}
+									})
+											} 
+								if(proccesname == 'YUDI-NEUMATICOS'){
+										
+
 									console.log("Exito al guardar Formulario");
 
 									const swalWithBootstrapButtons = Swal.mixin({
@@ -273,13 +333,13 @@
 										text: 'Desea imprimir el pedido Número: ' +petr_id+' antes de salir?',
 										type: 'success',
 										showCancelButton: true,
-										confirmButtonText: 'SI, Imprimir!',
-										cancelButtonText: 'No, cancelar!',
+										confirmButtonText: 'Imprimir',
+										cancelButtonText: 'Cerrar',
 										reverseButtons: true
 										}).then((result) => {
 											debugger;
 										if (result.value) {
-											modalCodigos();
+											modalCodigosPedido();
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
@@ -290,11 +350,12 @@
 											'info'
 											)
 
-											 $('#frm-PedidoTrabajo')[0].reset();
-											 linkTo('<?php  echo BPM ?>Proceso/');
+											$('#frm-PedidoTrabajo')[0].reset();
+											linkTo('<?php  echo BPM ?>Proceso/');
 										}
 										})
-						
+
+											}
 
 							} else {
 									Swal.fire(
@@ -325,14 +386,11 @@
 			});
 	}
 
-	function modalCodigos(){
-debugger;
-				// if (!validarImpresion()) {
-				// 	alert('Complete los campos por favor antes de imprimir');
-				// 	return;
-				// }
 
-				if (band == 0) {
+
+	function modalCodigosPedido(){
+debugger;
+			if (band == 0) {
 						// configuracion de codigo QR
 						var config = {};
 								config.titulo = "Pedido de Trabajo";
@@ -361,9 +419,12 @@ debugger;
 						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 				}
 				// llama modal con datos e img de QR ya ingresados
-				verModalImpresionPedido();
+				verModalImpresion();
 				band = 1;
-		}
+	
+		
+	
+			}
 
 
 
@@ -419,4 +480,95 @@ debugger;
 			
 
 	}
+
+
+	
+	function crearUrlQr() {
+    debugger;
+    var datos = {};
+
+   petr_id = $('#petr_id').val();
+    // case_id = $('#caseId').val();
+
+
+    datos.id = petr_id;
+    datos.funcion= 'PRO.verEstadoPedidoTrabajo';
+
+
+    $.ajax({
+        type: 'POST',
+        data: datos,
+        url: '<?php echo COD ?>Url/generarLink',
+        success: function(data) {
+            url = JSON.parse(data)
+            console.log("la url es:"+ url.url);
+
+            dato_linck = url.url;
+
+            $('#url_link').val(dato_linck);
+        },
+        error: function(data) {
+            wc();
+            error('',"Se produjo un error al cerrar la tarea");
+        }
+    });
+}
+
+
+
+  var band = 0;
+  // Se peden hacer dos cosas: o un ajax buscando datos o directamente
+  // armar con los datos de la pantalla  
+
+  function modalCodigosSein(){
+debugger;
+  
+
+      if (band == 0) {
+        debugger;
+          // configuracion de codigo QR
+          var config = {};
+              config.titulo = "Servicios Industriales";
+              config.pixel = "3";
+              config.level = "S";
+              config.framSize = "2";
+          // info para immprimir  
+          var arraydatos = {};
+              arraydatos.N_orden = $('#petr_id').val();
+              arraydatos.Fabricado = 'Servicios Industriales';
+              arraydatos.Cliente = $('#clie_id option:selected').text();
+              arraydatos.fec_fabricacion = $('#fec_fabricacion').val();
+              arraydatos.fec_entrega = $('#fec_entrega').val();
+              arraydatos.dato_linck =   $('#url_link').val();
+          // info para grabar en codigo QR
+          armarInfo(arraydatos);
+
+          getQR(config, arraydatos, 'codigosQR/Sein-almpantar');
+
+      }
+      // llama modal con datos e img de QR ya ingresados
+      verModalImpresionPedido();
+
+      band = 1;
+  }
+
+  function armarInfo(arraydatos){
+
+	proccesname = $('#proccessname').val();
+	console.log('el proceso es de armarInfo es: '+proccesname);
+
+
+		if(proccesname == 'YUDI-NEUMATICOS'){
+
+	$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
+
+} 
+	if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+
+    $("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>/Infocodigo/pedidoTrabajoFinal", arraydatos);
+  }
+
+}
+
+
 </script>
