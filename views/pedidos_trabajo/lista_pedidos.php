@@ -81,19 +81,23 @@ function finalizarTrabajo(obj) {
         }
     });
 }
-var s_pema_row = false
+var s_pema_row = false;
 var s_pema = false;
+var case_id_pedido_trabajo = '';
+var proc_id_pedido_trabajo = '';
 $('#tbl-pedidos tbody').find('tr').click(function() {
     $(s_pema_row).removeClass('srow');
     s_pema_row = this;
+    var data = getJson($(s_pema_row).find('td'));
+    case_id_pedido_trabajo = data.case_id;
+    proc_id_pedido_trabajo = data.proc_id;
     $(this).addClass('srow');
 });
 
 function selectPeta(id, codigo) {
-	debugger;
     s_pema = id;
     $('peta').html(codigo);
     reload('comp#hitos', id);
-    emptyTareas()
+    emptyTareas();
 }
 </script>
