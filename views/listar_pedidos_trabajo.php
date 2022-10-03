@@ -1,20 +1,15 @@
 
 <?php 
-        //obtengo processname
-
+//obtengo processname
 $proccessname = $this->session->userdata('proccessname'); 
 
 //dependiendo de el prccessename
-    // carga el modal de impresion de QR
+// carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
-   
     $this->load->view( COD.'componentes/modalYudica');
-
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  
     // $this->load->view( COD.'componentes/modalGenerico');
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
-
 }
 ?>
 <div class="box box-primary">
@@ -42,74 +37,65 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                 </thead>
                 <tbody>
                     <?php
+                    $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+                    foreach($pedidos as $rsp){
 
+                        $petr_id = $rsp->petr_id;
+                        $nombre_cliente = $rsp->nombre;
+                        $tipo = $rsp->tipo;
+                        $descripcion = $rsp->descripcion;
+                        $fec_inicio = $rsp->fec_inicio;
+                        $estado = $rsp->estado;
+                        $case_id = $rsp->case_id;
+                        $proc_id = $rsp->proc_id;
+                        $tipo_trabajo = $rsp->tipo_trabajo;
+                        $dir_entrega = $rsp->dir_entrega;
+                        $cod_proyecto = $rsp->cod_proyecto;
 
-      
-      $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+                        echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
 
+                        echo "<td class='text-center text-light-blue'>";
+                        echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
+                        echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
+                        echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
+                        echo "</td>";
+                        echo '<td>'.$petr_id.'</td>';
+                        echo '<td>'.$cod_proyecto.'</td>';
+                        echo '<td>'.$nombre_cliente.'</td>';
+                        echo '<td>'.$dir_entrega.'</td>';
+                        echo '<td>'.$tipo_trabajo.'</td>';
+                        echo '<td>'.formatFechaPG($fec_inicio).'</td>';
 
-							foreach($pedidos as $rsp){
-
-								$petr_id = $rsp->petr_id;
-								$nombre_cliente = $rsp->nombre;
-								$tipo = $rsp->tipo;
-								$descripcion = $rsp->descripcion;
-								$fec_inicio = $rsp->fec_inicio;
-								$estado = $rsp->estado;
-								$case_id = $rsp->case_id;
-								$proc_id = $rsp->proc_id;
-								$tipo_trabajo = $rsp->tipo_trabajo;
-								$dir_entrega = $rsp->dir_entrega;
-								$cod_proyecto = $rsp->cod_proyecto;
-
-								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
-
-								echo "<td class='text-center text-light-blue'>";
-								echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
-								echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
-								echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
-								echo "</td>";
-								echo '<td>'.$petr_id.'</td>';
-								echo '<td>'.$cod_proyecto.'</td>';
-                                echo '<td>'.$nombre_cliente.'</td>';
-								echo '<td>'.$dir_entrega.'</td>';
-                                echo '<td>'.$tipo_trabajo.'</td>';
-								echo '<td>'.formatFechaPG($fec_inicio).'</td>';
-
-							if ($estado == NULL) {
-									$estado ="SIN ESTADO";
-								}
-
-
-					 if ($proccessname == 'YUDI-NEUMATICOS') {
-                        switch ($estado) {
-                            case 'estados_procesosPROC_EN_CURSO':
-                            echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-                            break;
-            
-                            case 'estados_yudicaEN_CURSO':
-                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-                            break;
-            
-                            case 'estados_yudicaREPROCESO':
-                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
-                            break;
-            
-                            case 'estados_yudicaENTREGADO':
-                            echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
-                            break;
-            
-                            case 'estados_yudicaRECHAZADO':
-                            echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
-                            break;
-                        
-                            default:
-                            echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-                            break;
-                                 }
-                          }	
-
-                         else{
+                        if ($estado == NULL) {
+                            $estado ="SIN ESTADO";
+                        }
+                        if ($proccessname == 'YUDI-NEUMATICOS') {
+                            switch ($estado) {
+                                case 'estados_procesosPROC_EN_CURSO':
+                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaEN_CURSO':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaREPROCESO':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaENTREGADO':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaRECHAZADO':
+                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                break;
+                            
+                                default:
+                                echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                break;
+                            }
+                        }else{
                             switch ($estado) {
                                 case 'estados_seinEN_CURSO':
                                 echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
@@ -134,11 +120,9 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                                 default:
                                 echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
                                 break;
-                                     }
-                              }	
-                
-							
-								echo '</tr>';
+                            }
+                        }
+                        echo '</tr>';
 						}
 						?>
                 </tbody>
@@ -159,32 +143,29 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
         </div>
     </div>
 </div>
-
-
 <?php
-$this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
+    $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
-
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
-                <div class="modal-dialog modal-md">
-                    <div class="modal-content">
-                        <br>
-                        <div class="xmodal-body">
-                            <br>
-                            <div id="form-dinamico" data-frm-id="">
-                      </div>
-<br>
-                        </div>
-                        <br>
-                        <div class="modal-footer">
-                            <br>
-                            <button type="button" class="btn" onclick="cerrarModalform()">Cerrar</button>
-                            <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
-                        </div>
-                    </div>
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <br>
+            <div class="xmodal-body">
+                <br>
+                <div id="form-dinamico" data-frm-id="">
                 </div>
+                <br>
             </div>
+            <br>
+            <div class="modal-footer">
+                <br>
+                <button type="button" class="btn" onclick="cerrarModalform()">Cerrar</button>
+                <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 //Funcion de datatable para extencion de botones exportar
 //excel, pdf, copiado portapapeles e impresion
@@ -244,10 +225,6 @@ $(document).ready(function() {
     });
 });
 
-
-
-
-
 //funcion ver pedido
 // parametro petr_id y case_id
 //
@@ -298,13 +275,9 @@ function verPedido(e) {
 function Eliminar(e) {
 
     petr_id = $(e).closest('tr').attr('id');
-
     case_id = $(e).closest('tr').attr('case_id');
-
     console.log('trae pedido N°: ' + petr_id);
-
     console.log('trae case_id N°: ' + case_id);
-
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -360,7 +333,6 @@ function EliminarPedidoTrabajo() {
         success: function(rsp) {
             debugger;
             console.log('data trae:' + rsp)
-
             linkTo('<?php  echo BPM ?>Pedidotrabajo/');
             setTimeout(() => {
                 Swal.fire(
@@ -370,8 +342,6 @@ function EliminarPedidoTrabajo() {
                     'success'
                 )
             }, 5000);
-
-
         },
         error: function(rsp) {
             console.log('rsp sale por errro trae: ' + rsp);
@@ -382,8 +352,6 @@ function EliminarPedidoTrabajo() {
             )
         }
     });
-
-
 }
 </script>
 
@@ -466,15 +434,10 @@ function modalReimpresion(e) {
     arraydatos = $(e).closest('tr').attr('data-json');
 
     var datos = JSON.parse(arraydatos);
-
     petr_id = datos.petr_id;
-
 	case_id = datos.case_id;
-
     estado_pedido = datos.estado;
-
 	proccesname = $('#proccessname').val();
-
 
     if(proccesname == 'YUDI-NEUMATICOS'){
                 if (estado_pedido == "estados_yudicaRECHAZADO") {
@@ -553,8 +516,6 @@ debugger;
                 }
 }
 
-
-
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
@@ -570,7 +531,6 @@ function getDatos(datos, config) {
         type: 'GET',
         url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + infoid,
         success: function(result) {
-debugger;
             var datMapeado = JSON.parse(result);
              datMapeado.Cliente = cliente;
              datMapeado.Trabajo = trabajo;
@@ -591,48 +551,40 @@ debugger;
     });
 
 }
-
-
-
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatosSein(datos, config) {
 
-var infoid = datos.info_id;
-var estado = datos.estado;
-var cliente = datos.nombre;
-var trabajo = datos.tipo_trabajo;
-var N_orden = datos.petr_id;
-var Cod_proyecto = datos.cod_proyecto;
-var motivo = datos.motivo_rechazo;
+    var infoid = datos.info_id;
+    var estado = datos.estado;
+    var cliente = datos.nombre;
+    var trabajo = datos.tipo_trabajo;
+    var N_orden = datos.petr_id;
+    var Cod_proyecto = datos.cod_proyecto;
+    var motivo = datos.motivo_rechazo;
 
-$.ajax({
-    type: 'GET',
-    url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
-    success: function(result) {
-debugger;
-        var datMapeado = JSON.parse(result);
-        // datMapeado.Cliente = cliente;
-        // datMapeado.Trabajo = trabajo;
-        // datMapeado.N_orden = N_orden;
-        // datMapeado.Motivo = motivo;
+    $.ajax({
+        type: 'GET',
+        url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
+        success: function(result) {
+            var datMapeado = JSON.parse(result);
+            // datMapeado.Cliente = cliente;
+            // datMapeado.Trabajo = trabajo;
+            // datMapeado.N_orden = N_orden;
+            // datMapeado.Motivo = motivo;
 
-        console.log('data mapeado: ');
-        console.table(datMapeado);
-        cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
-    },
-    error: function(result) {
+            console.log('data mapeado: ');
+            console.table(datMapeado);
+            cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
+        },
+        error: function(result) {
 
-    },
-    complete: function() {
+        },
+        complete: function() {
 
-    }
-});
+        }
+    });
 
 }
-
-
-
-
 
 //  carga el modal con cuerpo y codigo QR
 function cargarInfoReimp(datMapeado, estado, config, direccion) {
