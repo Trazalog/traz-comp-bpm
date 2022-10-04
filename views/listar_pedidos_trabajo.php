@@ -1,15 +1,20 @@
 
 <?php 
-//obtengo processname
+        //obtengo processname
+
 $proccessname = $this->session->userdata('proccessname'); 
 
 //dependiendo de el prccessename
-// carga el modal de impresion de QR
+    // carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
+   
     $this->load->view( COD.'componentes/modalYudica');
+
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+  
     // $this->load->view( COD.'componentes/modalGenerico');
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
+
 }
 ?>
 <div class="box box-primary">
@@ -53,7 +58,6 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                         $cod_proyecto = $rsp->cod_proyecto;
 
                         echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
-
                         echo "<td class='text-center text-light-blue'>";
                         echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
                         echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
@@ -65,66 +69,72 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                         echo '<td>'.$dir_entrega.'</td>';
                         echo '<td>'.$tipo_trabajo.'</td>';
                         echo '<td>'.formatFechaPG($fec_inicio).'</td>';
-
                         if ($estado == NULL) {
                             $estado ="SIN ESTADO";
                         }
                         if ($proccessname == 'YUDI-NEUMATICOS') {
                             switch ($estado) {
                                 case 'estados_procesosPROC_EN_CURSO':
-                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
                                 break;
                 
                                 case 'estados_yudicaEN_CURSO':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
                                 break;
                 
                                 case 'estados_yudicaREPROCESO':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
                                 break;
                 
                                 case 'estados_yudicaENTREGADO':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
                                 break;
                 
                                 case 'estados_yudicaRECHAZADO':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
                                 break;
                             
                                 default:
-                                echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                    echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
                                 break;
                             }
                         }else{
                             switch ($estado) {
                                 case 'estados_seinEN_CURSO':
-                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
                                 break;
-                
-                                case 'estados_seinA':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                case 'estados_seinCOTIZACION_ENVIADA':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-navy">COTIZACION ENVIADA</span></td>';
                                 break;
-                
                                 case 'estados_seinENTREGA_PENDIENTE':
-                                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-yellow">ENTREGA PENDIENTE</span></td>';                               
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-orange">ENTREGA PENDIENTE</span></td>';                               
                                 break;
-                
-                                case 'estados_seinC':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                case 'estados_seinCORRECCION_NC':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-teal">CORRECCION NC</span></td>';
                                 break;
-                
                                 case 'estados_seinRECHAZADO':
-                                echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
                                 break;
-                            
+                                case 'estados_seinCANCELADO_NC':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">CANCELADO NC</span></td>';
+                                break;
+                                case 'estados_seinCONTRATADA':
+                                    echo '<td class="text-center"><span style="background-color:#0b5a36 !important" data-toggle="tooltip" title="" class="badge">CONTRATADO</span></td>';
+                                break;
+                                case 'estados_procesosTRABAJO_TERMINADO':
+                                    echo '<td class="text-center"><span style="background-color: #818387 !important;" data-toggle="tooltip" title="" class="badge">TRABAJO TERMINADO</span></td>';
+                                break;
+                                case 'estados_seinENTREGADO':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-gray">ENTREGADO</span></td>';
+                                break;
                                 default:
-                                echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                    echo '<td class="text-center"><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
                                 break;
                             }
                         }
                         echo '</tr>';
-						}
-						?>
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -224,7 +234,6 @@ $(document).ready(function() {
         ]
     });
 });
-
 //funcion ver pedido
 // parametro petr_id y case_id
 //
@@ -278,7 +287,6 @@ function Eliminar(e) {
     case_id = $(e).closest('tr').attr('case_id');
     console.log('trae pedido N°: ' + petr_id);
     console.log('trae case_id N°: ' + case_id);
-
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-success',
@@ -333,10 +341,10 @@ function EliminarPedidoTrabajo() {
         success: function(rsp) {
             debugger;
             console.log('data trae:' + rsp)
+
             linkTo('<?php  echo BPM ?>Pedidotrabajo/');
             setTimeout(() => {
                 Swal.fire(
-
                     'Perfecto!',
                     'Se Elimino Pedido Correctamente!',
                     'success'
@@ -352,9 +360,10 @@ function EliminarPedidoTrabajo() {
             )
         }
     });
+
+
 }
 </script>
-
 <script>
 //#HGALLARDO
 //Impresion Pedido Trabajo
@@ -412,11 +421,7 @@ function validarImpresion() {
     } else {
         return true;
     }
-
-
 }
-
-
 // REIMPRESION ETIQUETA VIENE DEL LISTADO
 function modalReimpresion(e) {
     debugger;
@@ -438,7 +443,6 @@ function modalReimpresion(e) {
 	case_id = datos.case_id;
     estado_pedido = datos.estado;
 	proccesname = $('#proccessname').val();
-
     if(proccesname == 'YUDI-NEUMATICOS'){
                 if (estado_pedido == "estados_yudicaRECHAZADO") {
                     debugger;
@@ -516,6 +520,8 @@ debugger;
                 }
 }
 
+
+
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
@@ -531,6 +537,7 @@ function getDatos(datos, config) {
         type: 'GET',
         url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + infoid,
         success: function(result) {
+debugger;
             var datMapeado = JSON.parse(result);
              datMapeado.Cliente = cliente;
              datMapeado.Trabajo = trabajo;
@@ -551,40 +558,48 @@ function getDatos(datos, config) {
     });
 
 }
+
+
+
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatosSein(datos, config) {
 
-    var infoid = datos.info_id;
-    var estado = datos.estado;
-    var cliente = datos.nombre;
-    var trabajo = datos.tipo_trabajo;
-    var N_orden = datos.petr_id;
-    var Cod_proyecto = datos.cod_proyecto;
-    var motivo = datos.motivo_rechazo;
+var infoid = datos.info_id;
+var estado = datos.estado;
+var cliente = datos.nombre;
+var trabajo = datos.tipo_trabajo;
+var N_orden = datos.petr_id;
+var Cod_proyecto = datos.cod_proyecto;
+var motivo = datos.motivo_rechazo;
 
-    $.ajax({
-        type: 'GET',
-        url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
-        success: function(result) {
-            var datMapeado = JSON.parse(result);
-            // datMapeado.Cliente = cliente;
-            // datMapeado.Trabajo = trabajo;
-            // datMapeado.N_orden = N_orden;
-            // datMapeado.Motivo = motivo;
+$.ajax({
+    type: 'GET',
+    url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
+    success: function(result) {
+debugger;
+        var datMapeado = JSON.parse(result);
+        // datMapeado.Cliente = cliente;
+        // datMapeado.Trabajo = trabajo;
+        // datMapeado.N_orden = N_orden;
+        // datMapeado.Motivo = motivo;
 
-            console.log('data mapeado: ');
-            console.table(datMapeado);
-            cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
-        },
-        error: function(result) {
+        console.log('data mapeado: ');
+        console.table(datMapeado);
+        cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
+    },
+    error: function(result) {
 
-        },
-        complete: function() {
+    },
+    complete: function() {
 
-        }
-    });
+    }
+});
 
 }
+
+
+
+
 
 //  carga el modal con cuerpo y codigo QR
 function cargarInfoReimp(datMapeado, estado, config, direccion) {
