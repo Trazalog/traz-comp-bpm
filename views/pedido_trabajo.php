@@ -181,14 +181,10 @@ $proccessname = $this->session->userdata('proccessname');
 	//Capturo el evento de apertura del modal
 	$(document).ready(function () {
 		$('.select2').select2();
-
 		proccesname = $('#proccessname').val();
 		console.log('el proceso es :'+proccesname);
-
-		
 		//Script setear fecha actual en Fecha Inicio
 		fecha = new Date();
-		
 		dia = fecha.getDate();
 		mes = fecha.getMonth()+1;
 		anio = fecha.getFullYear();
@@ -199,7 +195,6 @@ $proccessname = $this->session->userdata('proccessname');
 		hoy = anio+'-'+mes+'-'+dia;  
 		$("#fec_inicio").val(hoy);
 		//Fin script
-		
 		$("#fec_entrega").on("change", function (e) {
 			if($("#fec_entrega").val() < $("#fec_inicio").val()){
 				
@@ -238,13 +233,11 @@ $proccessname = $this->session->userdata('proccessname');
 
 	var guardarPedidoTrabajo = function(info_id = '') {
 			$('#mdl-peta').modal('hide');
-			debugger;
 			var formData = new FormData($('#frm-PedidoTrabajo')[0]);
 			if(_isset(info_id)){
 				formData.append('info_id', info_id);
 			}
 
-			wo();
 			$.ajax({
 					type: 'POST',
 					dataType: 'JSON',
@@ -292,7 +285,6 @@ $proccessname = $this->session->userdata('proccessname');
 									cancelButtonText: 'Cerrar',
 									reverseButtons: true
 									}).then((result) => {
-										debugger;
 									if (result.value) {
 										crearUrlQr();  
 									
@@ -337,7 +329,6 @@ $proccessname = $this->session->userdata('proccessname');
 										cancelButtonText: 'Cerrar',
 										reverseButtons: true
 										}).then((result) => {
-											debugger;
 										if (result.value) {
 											modalCodigosPedido();
 										} else if (
@@ -389,42 +380,38 @@ $proccessname = $this->session->userdata('proccessname');
 
 
 	function modalCodigosPedido(){
-debugger;
-			if (band == 0) {
-						// configuracion de codigo QR
-						var config = {};
-								config.titulo = "Pedido de Trabajo";
-								config.pixel = "2";
-								config.level = "S";
-								config.framSize = "2";
-						// info para immprimir
-						var arraydatos = {};
-								arraydatos.N_orden = $('#petr_id').val();
-								arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
-								arraydatos.Cliente = $('#clie_id option:selected').text();
-								arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
-								arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
-								arraydatos.Serie = $('#num_serie').val();
-								arraydatos.Num = $('#num_cubiertas').val();
-								arraydatos.Zona = $('#zona').val();
-								arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
-								arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
+		if (band == 0) {
+			// configuracion de codigo QR
+			var config = {};
+			config.titulo = "Pedido de Trabajo";
+			config.pixel = "2";
+			config.level = "S";
+			config.framSize = "2";
+			// info para immprimir
+			var arraydatos = {};
+			arraydatos.N_orden = $('#petr_id').val();
+			arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
+			arraydatos.Cliente = $('#clie_id option:selected').text();
+			arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+			arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
+			arraydatos.Serie = $('#num_serie').val();
+			arraydatos.Num = $('#num_cubiertas').val();
+			arraydatos.Zona = $('#zona').val();
+			arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
+			arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
 
 
-						// si la etiqueta es derechazo
-						arraydatos.Motivo = $('#motivo_rechazo').val();			
-						// info para grabar en codigo QR
-						armarInfo(arraydatos);
-						//agrega codigo QR al modal impresion
-						getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
-				}
-				// llama modal con datos e img de QR ya ingresados
-				verModalImpresion();
-				band = 1;
-	
-		
-	
-			}
+			// si la etiqueta es derechazo
+			arraydatos.Motivo = $('#motivo_rechazo').val();			
+			// info para grabar en codigo QR
+			armarInfo(arraydatos);
+			//agrega codigo QR al modal impresion
+			getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
+		}
+		// llama modal con datos e img de QR ya ingresados
+		verModalImpresion();
+		band = 1;
+	}
 
 
 
@@ -432,143 +419,95 @@ debugger;
 	//Se debe validar el formulario antes de cerrar el modal
 	// de lo contrario frm_validar() retorna true; y no lo es
 	async function cierraPedidoTrabajo(){
-			idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
-
-			//valido para obtener los campos con error
-			$("#frm-PedidoTrabajo").bootstrapValidator("validate");
-
-			if($("#objetivo").val() != ""){
-					if($("#unidad_medida_tiempo").val() == null){
-
-						Swal.fire(
-							'Error..',
-							'Si completo objetivo, seleccione medida de tiempo',
-							'error'
-					);
-	
-							return;
-					}
+		idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+		//valido para obtener los campos con error
+		$("#frm-PedidoTrabajo").bootstrapValidator("validate");
+		if($("#objetivo").val() != ""){
+			if($("#unidad_medida_tiempo").val() == null){
+				error('Error..','Si completo objetivo, seleccione medida de tiempo');
+				return;
 			}
+		}
 
-			if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
-					Swal.fire(
-							'Error..',
-							'Debes completar los campos obligatorios (*)',
-							'error'
-					);
+		if(!$("#frm-PedidoTrabajo").data("bootstrapValidator").isValid()){
+			error('Error..','Debes completar los campos obligatorios (*)');
+			return;
+		}
+		
+		if(idFormDinamico != "#undefined"){
+			frm_validar(idFormDinamico)
+			if(!frm_validar(idFormDinamico)){
+					error('Error..','Debes completar los campos obligatorios (*)');
 					return;
 			}
-			
-			if(idFormDinamico != "#undefined"){
-				frm_validar(idFormDinamico)
-				if(!frm_validar(idFormDinamico)){
-						Swal.fire(
-								'Error..',
-								'Debes completar los campos obligatorios (*)',
-								'error'
-						);
-						return;
-				}
-				// frmGuardar($('.frm-new').find('form'),guardarPedidoTrabajo);
-				//Guardo formulario de escaneo documentacion, se valido en cerrarTarea()
-				debugger;
-				var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
-				guardarPedidoTrabajo(newInfoID)
-			}else{
-				guardarPedidoTrabajo();
-			}
-			
-
+			wo();
+			var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+			guardarPedidoTrabajo(newInfoID)
+		}else{
+			guardarPedidoTrabajo();
+		}
 	}
 
-
-	
 	function crearUrlQr() {
-    debugger;
-    var datos = {};
+    	var datos = {};
+   		petr_id = $('#petr_id').val();
+		// case_id = $('#caseId').val();
+		datos.id = petr_id;
+		datos.funcion= 'PRO.verEstadoPedidoTrabajo';
+		$.ajax({
+			type: 'POST',
+			data: datos,
+			url: '<?php echo COD ?>Url/generarLink',
+			success: function(data) {
+				url = JSON.parse(data)
+				console.log("la url es:"+ url.url);
 
-   petr_id = $('#petr_id').val();
-    // case_id = $('#caseId').val();
+				dato_linck = url.url;
 
+				$('#url_link').val(dato_linck);
+			},
+			error: function(data) {
+				wc();
+				error('',"Se produjo un error al cerrar la tarea");
+			}
+		});
+	}
+  	var band = 0;// Esta variable esta para que no repita el QR en el modal
+	// Se peden hacer dos cosas: o un ajax buscando datos o directamente
+	// armar con los datos de la pantalla  
+  	function modalCodigosSein(){
+		if (band == 0) {
+			// configuracion de codigo QR
+			var config = {};
+				config.titulo = "Servicios Industriales";
+				config.pixel = "3";
+				config.level = "S";
+				config.framSize = "2";
+			// info para immprimir  
+			var arraydatos = {};
+				arraydatos.N_orden = $('#petr_id').val();
+				arraydatos.Fabricado = 'Servicios Industriales';
+				arraydatos.Cliente = $('#clie_id option:selected').text();
+				arraydatos.fec_fabricacion = $('#fec_fabricacion').val();
+				arraydatos.fec_entrega = $('#fec_entrega').val();
+				arraydatos.dato_linck =   $('#url_link').val();
+			// info para grabar en codigo QR
+			armarInfo(arraydatos);
+			getQR(config, arraydatos, 'codigosQR/Sein-almpantar');
+      	}
+		// llama modal con datos e img de QR ya ingresados
+		verModalImpresionPedido();
+      	band = 1;
+  	}
 
-    datos.id = petr_id;
-    datos.funcion= 'PRO.verEstadoPedidoTrabajo';
-
-
-    $.ajax({
-        type: 'POST',
-        data: datos,
-        url: '<?php echo COD ?>Url/generarLink',
-        success: function(data) {
-            url = JSON.parse(data)
-            console.log("la url es:"+ url.url);
-
-            dato_linck = url.url;
-
-            $('#url_link').val(dato_linck);
-        },
-        error: function(data) {
-            wc();
-            error('',"Se produjo un error al cerrar la tarea");
-        }
-    });
-}
-
-
-
-  var band = 0;
-  // Se peden hacer dos cosas: o un ajax buscando datos o directamente
-  // armar con los datos de la pantalla  
-
-  function modalCodigosSein(){
-debugger;
-  
-
-      if (band == 0) {
-        debugger;
-          // configuracion de codigo QR
-          var config = {};
-              config.titulo = "Servicios Industriales";
-              config.pixel = "3";
-              config.level = "S";
-              config.framSize = "2";
-          // info para immprimir  
-          var arraydatos = {};
-              arraydatos.N_orden = $('#petr_id').val();
-              arraydatos.Fabricado = 'Servicios Industriales';
-              arraydatos.Cliente = $('#clie_id option:selected').text();
-              arraydatos.fec_fabricacion = $('#fec_fabricacion').val();
-              arraydatos.fec_entrega = $('#fec_entrega').val();
-              arraydatos.dato_linck =   $('#url_link').val();
-          // info para grabar en codigo QR
-          armarInfo(arraydatos);
-
-          getQR(config, arraydatos, 'codigosQR/Sein-almpantar');
-
-      }
-      // llama modal con datos e img de QR ya ingresados
-      verModalImpresionPedido();
-
-      band = 1;
-  }
-
-  function armarInfo(arraydatos){
-
-	proccesname = $('#proccessname').val();
-	console.log('el proceso es de armarInfo es: '+proccesname);
-
-
+  	function armarInfo(arraydatos){
+		proccesname = $('#proccessname').val();
+		console.log('el proceso es de armarInfo es: '+proccesname);
 		if(proccesname == 'YUDI-NEUMATICOS'){
-
-	$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
-
-} 
-	if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-
-    $("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>/Infocodigo/pedidoTrabajoFinal", arraydatos);
-  }
-
-}
-
-
+			$("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
+		} 
+		if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+    		$("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>/Infocodigo/pedidoTrabajoFinal", arraydatos);
+  		}
+	}
 </script>
