@@ -83,16 +83,57 @@ echo $data['comentarios'];
 	*/
 //HARCODECHUKA processId
 public function cargar_detalle_linetiempo(){
+   
+    $url_info= $_SERVER["REQUEST_URI"];
 
-    $case_id = $_GET['case_id'];               
-        
-  $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+    $components = parse_url($url_info);
+
+    parse_str($components['query'], $results);
+
+    // $petr_id =$results['id'];
+   
+   if (isset($results['proccessname'])) {
+    $proccessname =$results['proccessname'];
+   } else {
+    $proccessname = $this->session->userdata('proccessname');
+   }
+    
+   
+       
+
+        if (isset($_GET['case_id'])) {
+            $case_id = $_GET['case_id'];        
+          
+        }else {
+            $case_id = $this->input->get('case_id');
+            // $processId = $this->input->get('proccessname');
+        }
+
+
+        if ($proccessname !=''){
+
+    //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+
+          //LINEA DE TIEMPO
+      $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+
+      echo timeline($data['timeline']);
  
-  //LINEA DE TIEMPO
+    }else {
+        $processId = $_GET['proccessname'];
+        // $processId = BPM_PROCESS_ID_PROCESO_PRODUCTIVO;
+
+        //LINEA DE TIEMPO
   $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
 
   echo timeline($data['timeline']);
  
+    }
+        
+
+ 
+
 }
 
 
@@ -104,10 +145,12 @@ public function cargar_detalle_linetiempo(){
 //HARCODECHUKA processId
 public function cargar_detalle_info_actual(){
 
+    $proccessname = $this->session->userdata('proccessname');
+
+   $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+
     $case_id = $_GET['case_id'];               
         
-   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
-
   //LINEA DE TIEMPO
   $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
 
@@ -123,11 +166,14 @@ public function cargar_detalle_info_actual(){
 //HARCODECHUKA processId
 public function cargar_detalle_formulario(){
 
-    $case_id = $_GET['case_id'];        
-    
+    $url_info= $_SERVER["REQUEST_URI"];
+
+   
     $petr_id = $_GET['petr_id'];
-        
-   $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+    $proccessname = $this->session->userdata('proccessname');
+
+    $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
 
    $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
 
@@ -477,10 +523,24 @@ public function cargar_formulario_asociado(){
         }
     }
 
-    public function cambiarEstado()
-    {
+    /**
+        * Busca en el case especificado, que el proceso se encuentre parado actualmente sobre la tarea enviada y la cierra
+        *@param array $post con estado, case_id, proc_id y petr_id
+        *@return array respuesta según servicio
+    */
+    public function finalizarTrabajo(){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-BPM | Pedidotrabajo | finalizarTrabajo()');
         $post  = $this->input->post();
-        $rsp = $this->Pedidotrabajos->cambiarEstado($post['petrId'], $post['estado']);
+        $proceso = $this->Pedidotrabajos->procesos($post['proc_id'])->proceso;
+        $taskObtenido = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$post['case_id'], TAREA_IT);
+        if(!empty($taskObtenido)){
+            $aux = $this->bpm->setUsuario($taskObtenido,userId());
+            $auxi = $this->bpm->cerrarTarea($taskObtenido);
+            $rsp = $this->Pedidotrabajos->cambiarEstado($post['petr_id'], $post['estado']);
+        }else{
+            $rsp['status'] = false;
+            $rsp['msj'] = "El case especificado no se encuentra en el paso de la TAREA IT";
+        }
         echo json_encode($rsp);
     }
     
@@ -490,10 +550,15 @@ public function cargar_formulario_asociado(){
         *@return array forularios
     */
     public function cargar_detalle_cabecera(){
-        $this->load->model(YUDIPROC.'Yudiproctareas');
 
-        $case_id = $this->input->get('case_id');
+
+         $case_id = $this->input->get('case_id');
+        // $case_id = $this->input->post('case_id');
         $proccessname = $this->session->userdata('proccessname');
+
+        if ($proccessname == 'YUDI-NEUMATICOS') {
+            $this->load->model(YUDIPROC.'Yudiproctareas');
+        }
 
         //Id del proceso desde la tabla pro.procesos
         $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
@@ -503,7 +568,14 @@ public function cargar_formulario_asociado(){
         $tarea->processId = $processId;
         $tarea->nombreTarea = '';
 
-        $cabecera = $this->Yudiproctareas->desplegarCabecera($tarea);
+        if ($proccessname == 'YUDI-NEUMATICOS') {
+            $cabecera = $this->Yudiproctareas->desplegarCabecera($tarea);
+        }
+            else{
+                $this->load->model(SEIN.'Proceso_tareas');
+                $cabecera = $this->Proceso_tareas->desplegarCabecera($tarea);
+            }
+                
 
         echo $cabecera;
     }

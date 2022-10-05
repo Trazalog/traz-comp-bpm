@@ -112,4 +112,14 @@ class Proceso extends CI_Controller
         $data = $this->input->post();
         echo $this->bpm->guardarComentario($data);
     }
+
+
+	public function VistaCliente()
+    {
+		
+
+		return $this->load->view(BPM . 'cliente/vista_cliente');
+    }
+   
+
 }

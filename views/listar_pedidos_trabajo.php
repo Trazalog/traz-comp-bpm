@@ -1,5 +1,25 @@
+
+<?php 
+        //obtengo processname
+
+$proccessname = $this->session->userdata('proccessname'); 
+
+//dependiendo de el prccessename
+    // carga el modal de impresion de QR
+if ($proccessname == 'YUDI-NEUMATICOS') {
+   
+    $this->load->view( COD.'componentes/modalYudica');
+
+} elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+  
+    // $this->load->view( COD.'componentes/modalGenerico');
+    $this->load->view( COD.'componentes/modalPedidoTrabajo');
+
+}
+?>
 <div class="box box-primary">
     <div class="box-header with-border">
+    <input type="hidden" id="proccessname" value="<?php echo $proccessname;?>"  readonly>
         <h4 class="box-title">Listado de Pedido Trabajo</h4>
     </div>
     <div class="box-body">
@@ -22,68 +42,99 @@
                 </thead>
                 <tbody>
                     <?php
-							foreach($pedidos as $rsp){
+                    $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+                    foreach($pedidos as $rsp){
 
-								$petr_id = $rsp->petr_id;
-								$nombre_cliente = $rsp->nombre;
-								$tipo = $rsp->tipo;
-								$descripcion = $rsp->descripcion;
-								$fec_inicio = $rsp->fec_inicio;
-								$estado = $rsp->estado;
-								$case_id = $rsp->case_id;
-								$proc_id = $rsp->proc_id;
-								$tipo_trabajo = $rsp->tipo_trabajo;
-								$dir_entrega = $rsp->dir_entrega;
-								$cod_proyecto = $rsp->cod_proyecto;
+                        $petr_id = $rsp->petr_id;
+                        $nombre_cliente = $rsp->nombre;
+                        $tipo = $rsp->tipo;
+                        $descripcion = $rsp->descripcion;
+                        $fec_inicio = $rsp->fec_inicio;
+                        $estado = $rsp->estado;
+                        $case_id = $rsp->case_id;
+                        $proc_id = $rsp->proc_id;
+                        $tipo_trabajo = $rsp->tipo_trabajo;
+                        $dir_entrega = $rsp->dir_entrega;
+                        $cod_proyecto = $rsp->cod_proyecto;
 
-								echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
-
-								echo "<td class='text-center text-light-blue'>";
-								echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
-								echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
-								echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
-								echo "</td>";
-								echo '<td>'.$petr_id.'</td>';
-								echo '<td>'.$cod_proyecto.'</td>';
-                                echo '<td>'.$nombre_cliente.'</td>';
-								echo '<td>'.$dir_entrega.'</td>';
-                                echo '<td>'.$tipo_trabajo.'</td>';
-								echo '<td>'.formatFechaPG($fec_inicio).'</td>';
-
-							if ($estado == NULL) {
-									$estado ="SIN ESTADO";
-								}
-								
-			switch ($estado) {
-				case 'estados_procesosPROC_EN_CURSO':
-                echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-                break;
-
-				case 'estados_yudicaEN_CURSO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
-				break;
-
-				case 'estados_yudicaREPROCESO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
-				break;
-
-				case 'estados_yudicaENTREGADO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
-				break;
-
-				case 'estados_yudicaRECHAZADO':
-				echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
-				break;
-			
-				default:
-				echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-				break;
-			}
+                        echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
+                        echo "<td class='text-center text-light-blue'>";
+                        echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
+                        echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
+                        echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
+                        echo "</td>";
+                        echo '<td>'.$petr_id.'</td>';
+                        echo '<td>'.$cod_proyecto.'</td>';
+                        echo '<td>'.$nombre_cliente.'</td>';
+                        echo '<td>'.$dir_entrega.'</td>';
+                        echo '<td>'.$tipo_trabajo.'</td>';
+                        echo '<td>'.formatFechaPG($fec_inicio).'</td>';
+                        if ($estado == NULL) {
+                            $estado ="SIN ESTADO";
+                        }
+                        if ($proccessname == 'YUDI-NEUMATICOS') {
+                            switch ($estado) {
+                                case 'estados_procesosPROC_EN_CURSO':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
                 
-							
-								echo '</tr>';
-						}
-						?>
+                                case 'estados_yudicaEN_CURSO':
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaREPROCESO':
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaENTREGADO':
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                break;
+                
+                                case 'estados_yudicaRECHAZADO':
+                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                break;
+                            
+                                default:
+                                    echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                break;
+                            }
+                        }else{
+                            switch ($estado) {
+                                case 'estados_seinEN_CURSO':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                break;
+                                case 'estados_seinCOTIZACION_ENVIADA':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-navy">COTIZACION ENVIADA</span></td>';
+                                break;
+                                case 'estados_seinENTREGA_PENDIENTE':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-orange">ENTREGA PENDIENTE</span></td>';                               
+                                break;
+                                case 'estados_seinCORRECCION_NC':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-teal">CORRECCION NC</span></td>';
+                                break;
+                                case 'estados_seinRECHAZADO':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                break;
+                                case 'estados_seinCANCELADO_NC':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">CANCELADO NC</span></td>';
+                                break;
+                                case 'estados_seinCONTRATADA':
+                                    echo '<td class="text-center"><span style="background-color:#0b5a36 !important" data-toggle="tooltip" title="" class="badge">CONTRATADO</span></td>';
+                                break;
+                                case 'estados_procesosTRABAJO_TERMINADO':
+                                    echo '<td class="text-center"><span style="background-color: #818387 !important;" data-toggle="tooltip" title="" class="badge">TRABAJO TERMINADO</span></td>';
+                                break;
+                                case 'estados_seinENTREGADO':
+                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-gray">ENTREGADO</span></td>';
+                                break;
+                                default:
+                                    echo '<td class="text-center"><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
+                                break;
+                            }
+                        }
+                        echo '</tr>';
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -102,38 +153,29 @@
         </div>
     </div>
 </div>
-
-
 <?php
-$this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
-?>
-
-<?php
-//HGallardo
-    // carga el modal de impresion de QR
-    $this->load->view( COD.'componentes/modalYudica');
+    $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
 ?>
 <!-- The Modal -->
 <div class="modal modal-fade" id="mdl-form-dinamico" data-backdrop="static">
-                <div class="modal-dialog modal-md">
-                    <div class="modal-content">
-                        <br>
-                        <div class="xmodal-body">
-                            <br>
-                            <div id="form-dinamico" data-frm-id="">
-
-/-                        </div>
-<br>
-                        </div>
-                        <br>
-                        <div class="modal-footer">
-                            <br>
-                            <button type="button" class="btn" onclick="cerrarModalform()">Cerrar</button>
-                            <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
-                        </div>
-                    </div>
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <br>
+            <div class="xmodal-body">
+                <br>
+                <div id="form-dinamico" data-frm-id="">
                 </div>
+                <br>
             </div>
+            <br>
+            <div class="modal-footer">
+                <br>
+                <button type="button" class="btn" onclick="cerrarModalform()">Cerrar</button>
+                <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 //Funcion de datatable para extencion de botones exportar
 //excel, pdf, copiado portapapeles e impresion
@@ -192,11 +234,6 @@ $(document).ready(function() {
         ]
     });
 });
-
-
-
-
-
 //funcion ver pedido
 // parametro petr_id y case_id
 //
@@ -246,17 +283,10 @@ function verPedido(e) {
 //
 function Eliminar(e) {
 
-    debugger;
-
     petr_id = $(e).closest('tr').attr('id');
-
     case_id = $(e).closest('tr').attr('case_id');
-
     console.log('trae pedido N°: ' + petr_id);
-
     console.log('trae case_id N°: ' + case_id);
-
-
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-success',
@@ -299,10 +329,6 @@ function Eliminar(e) {
 //
 function EliminarPedidoTrabajo() {
 
-    debugger;
-
-
-
     $.ajax({
         type: 'GET',
         data: petr_id,
@@ -319,14 +345,11 @@ function EliminarPedidoTrabajo() {
             linkTo('<?php  echo BPM ?>Pedidotrabajo/');
             setTimeout(() => {
                 Swal.fire(
-
                     'Perfecto!',
                     'Se Elimino Pedido Correctamente!',
                     'success'
                 )
             }, 5000);
-
-
         },
         error: function(rsp) {
             console.log('rsp sale por errro trae: ' + rsp);
@@ -341,7 +364,6 @@ function EliminarPedidoTrabajo() {
 
 }
 </script>
-
 <script>
 //#HGALLARDO
 //Impresion Pedido Trabajo
@@ -379,7 +401,7 @@ function modalCodigos() {
         getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
     }
     // llama modal con datos e img de QR ya ingresados
-    verModalImpresion();
+    verModalImpresionPedido();
     band = 1;
 }
 
@@ -399,11 +421,7 @@ function validarImpresion() {
     } else {
         return true;
     }
-
-
 }
-
-
 // REIMPRESION ETIQUETA VIENE DEL LISTADO
 function modalReimpresion(e) {
     debugger;
@@ -421,62 +439,85 @@ function modalReimpresion(e) {
     arraydatos = $(e).closest('tr').attr('data-json');
 
     var datos = JSON.parse(arraydatos);
-
     petr_id = datos.petr_id;
-
 	case_id = datos.case_id;
-
     estado_pedido = datos.estado;
+	proccesname = $('#proccessname').val();
+    if(proccesname == 'YUDI-NEUMATICOS'){
+                if (estado_pedido == "estados_yudicaRECHAZADO") {
+                    debugger;
+                    $.ajax({
+                        type: 'GET',
+                        data: petr_id,
+                        case_id,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/cargar_detalle_formularioJson?petr_id=' +
+                            petr_id + '&case_id=' + case_id,
 
+                        success: function(rsp) {
+                            debugger;
+                        
+                            var motivo = JSON.parse(rsp);
+                            console.log('data trae:' + motivo.motivo_rechazo);
 
-    if (estado_pedido == "estados_yudicaRECHAZADO") {
-		debugger;
-        $.ajax({
-            type: 'GET',
-            data: petr_id,
-            case_id,
-            cache: false,
-            contentType: false,
-            processData: false,
-            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/cargar_detalle_formularioJson?petr_id=' +
-                petr_id + '&case_id=' + case_id,
+                        datos.motivo_rechazo = motivo.motivo_rechazo;
+                            
+                                    // llama modal con datos e img de QR
+                                    getDatos(datos, config);
+                                    // levanta modal completo para su impresion
+                                    verModalImpresion();
+                        },
 
-            success: function(rsp) {
-                debugger;
-               
-				var motivo = JSON.parse(rsp);
-                console.log('data trae:' + motivo.motivo_rechazo);
+                        error: function(rsp) {
+                            console.log('rsp sale por errro trae: ' + rsp);
+                            Swal.fire(
+                                'Cancelado!',
+                                'No se Elimino Pedido de trabajo',
+                                'error'
+                            )
+                        },
+                        complete: function() {
 
-            datos.motivo_rechazo = motivo.motivo_rechazo;
+                        
+                        }
+                    });
+
+            
+                }
+
+            
+                }
                 
-                        // llama modal con datos e img de QR
-                        getDatos(datos, config);
-                        // levanta modal completo para su impresion
-                        verModalImpresion();
-            },
+        if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+debugger;
+                 // llama modal con datos e img de QR
+                 getDatosSein(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresionPedido();
 
-            error: function(rsp) {
-                console.log('rsp sale por errro trae: ' + rsp);
-                Swal.fire(
-                    'Cancelado!',
-                    'No se Elimino Pedido de trabajo',
-                    'error'
-                )
-            },
-            complete: function() {
+                }
 
-              
-            }
-        });
+                if(proccesname == 'YUDI-NEUMATICOS'){
+        // llama modal con datos e img de QR
+        getDatos(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresion();
+            
 
- 
-    }
+                }
 
-         // llama modal con datos e img de QR
-         getDatos(datos, config);
-         // levanta modal completo para su impresion
-        verModalImpresion();
+  if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+  // llama modal con datos e img de QR
+  getDatosSein(datos, config);
+                    // levanta modal completo para su impresion
+                    // verModalImpresion();
+                    verModalImpresionPedido();
 
+                }
 }
 
 
@@ -484,13 +525,13 @@ function modalReimpresion(e) {
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
-    var infoid = datos.info_id;
-    var estado = datos.estado;
-    var cliente = datos.nombre;
-    var trabajo = datos.tipo_trabajo;
-    var N_orden = datos.petr_id;
-    var Cod_proyecto = datos.cod_proyecto;
-    var motivo = datos.motivo_rechazo;
+     var infoid = datos.info_id;
+     var estado = datos.estado;
+      var cliente = datos.nombre;
+     var trabajo = datos.tipo_trabajo;
+     var N_orden = datos.petr_id;
+     var Cod_proyecto = datos.cod_proyecto;
+     var motivo = datos.motivo_rechazo;
 
     $.ajax({
         type: 'GET',
@@ -498,14 +539,14 @@ function getDatos(datos, config) {
         success: function(result) {
 debugger;
             var datMapeado = JSON.parse(result);
-            datMapeado.Cliente = cliente;
-            datMapeado.Trabajo = trabajo;
-            datMapeado.N_orden = N_orden;
-            datMapeado.Motivo = motivo;
+             datMapeado.Cliente = cliente;
+             datMapeado.Trabajo = trabajo;
+             datMapeado.N_orden = N_orden;
+             datMapeado.Motivo = motivo;
 
             console.log('data mapeado: ');
             console.table(datMapeado);
-            // cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
+    
             cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Traz-comp-Yudica');
         },
         error: function(result) {
@@ -517,6 +558,49 @@ debugger;
     });
 
 }
+
+
+
+// obtine datos ya mapeados para QR y cuerpo de a etiqueta
+function getDatosSein(datos, config) {
+
+var infoid = datos.info_id;
+var estado = datos.estado;
+var cliente = datos.nombre;
+var trabajo = datos.tipo_trabajo;
+var N_orden = datos.petr_id;
+var Cod_proyecto = datos.cod_proyecto;
+var motivo = datos.motivo_rechazo;
+
+$.ajax({
+    type: 'GET',
+    url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
+    success: function(result) {
+debugger;
+        var datMapeado = JSON.parse(result);
+        // datMapeado.Cliente = cliente;
+        // datMapeado.Trabajo = trabajo;
+        // datMapeado.N_orden = N_orden;
+        // datMapeado.Motivo = motivo;
+
+        console.log('data mapeado: ');
+        console.table(datMapeado);
+        cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
+    },
+    error: function(result) {
+
+    },
+    complete: function() {
+
+    }
+});
+
+}
+
+
+
+
+
 //  carga el modal con cuerpo y codigo QR
 function cargarInfoReimp(datMapeado, estado, config, direccion) {
     // debugger;
