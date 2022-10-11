@@ -49,19 +49,20 @@ function tomarTarea() {
         success: function(data) {
             debugger;
             var nombreTarea = task.nombreTarea;
-     if (nombreTarea ==="Tarea Generica"){    
+        if (nombreTarea === "Tarea Generica"){    
             if (data['status']) {
                 habilitarInicioTareaEstandar();
             } else {
                 alert(data['msj']);
             }
-         } else {
+        } else {
             if (data['status']) {
                 habilitar();
+                task.idUsuarioAsignado = data['user_id'];
             } else {
                 alert(data['msj']);
             }
-         }
+        }
         },
         error: function(result) {
             alert('Error');
@@ -91,6 +92,7 @@ function soltarTarea() {
             // toma a tarea exitosamente
             if (data['status']) {
                 deshabilitar();
+                task.idUsuarioAsignado = '';
             }
         },
         error: function(result) {
