@@ -197,13 +197,8 @@ $proccessname = $this->session->userdata('proccessname');
 		//Fin script
 		$("#fec_entrega").on("change", function (e) {
 			if($("#fec_entrega").val() < $("#fec_inicio").val()){
-				
-				Swal.fire(
-						'Error...',
-						'La fecha de entrega no puede ser anterior a la fecha de inicio',
-						'error'
-							);
-
+				error('Error...','La fecha de entrega no puede ser anterior a la fecha de inicio');
+				$("#fec_entrega").val('');
 				e.preventDefault();
 			}
 		});

@@ -629,7 +629,7 @@ function cargarInfoReimp(datMapeado, estado, config, direccion) {
 
         case 'estados_yudicaENTREGADO':
             // Comprobante 3
-            $("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajo", datMapeado);
+            $("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajoFinal", datMapeado);
             // agrega codigo QR al modal impresion
             getQR(config, datMapeado, direccion);
             $("#infoFooter").load("<?php echo base_url(YUDIPROC); ?>Infocodigo/pedidoTrabajoFooter");
