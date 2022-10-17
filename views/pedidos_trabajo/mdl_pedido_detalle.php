@@ -20,6 +20,7 @@
         <li class="privado"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Comentarios</a></li>
         <li class="privado"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Información</a></li>
         <li class="privado"><a href="#tab_5" data-toggle="tab" aria-expanded="true">Formulario</a></li>
+        <li class="privado"><a href="#tab_6" data-toggle="tab" aria-expanded="true">Tareas Planificadas</a></li>
         <!-- <li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
 				Dropdown <span class="caret"></span>
@@ -52,6 +53,10 @@
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_5">
                     <div id="cargar_form"></div>
+                </div>
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_6">
+                    <div id="cargar_listado_hitos"></div>
                 </div>
         </div>
     </div>

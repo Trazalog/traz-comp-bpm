@@ -550,9 +550,7 @@ public function cargar_formulario_asociado(){
         *@return array forularios
     */
     public function cargar_detalle_cabecera(){
-
-
-         $case_id = $this->input->get('case_id');
+        $case_id = $this->input->get('case_id');
         // $case_id = $this->input->post('case_id');
         $proccessname = $this->session->userdata('proccessname');
 
@@ -570,13 +568,26 @@ public function cargar_formulario_asociado(){
 
         if ($proccessname == 'YUDI-NEUMATICOS') {
             $cabecera = $this->Yudiproctareas->desplegarCabecera($tarea);
+        }else{
+            $this->load->model(SEIN.'Proceso_tareas');
+            $cabecera = $this->Proceso_tareas->desplegarCabecera($tarea);
         }
-            else{
-                $this->load->model(SEIN.'Proceso_tareas');
-                $cabecera = $this->Proceso_tareas->desplegarCabecera($tarea);
-            }
-                
-
         echo $cabecera;
+    }
+    /**
+        * Trae listado de hitos con sus respectivas tareas para el pedido de trabajo
+        *@param $petr_id (metodo GET)
+        *@return array forularios
+    */
+    public function cargar_detalle_tareas_planificadas(){
+        $petr_id = $this->input->get('petr_id');
+        $proccessname = $this->session->userdata('proccessname');
+
+        //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+        $rsp = $this->Pedidotrabajos->obtenerHitosXPedido($petr_id);
+        $data['listadoHitos'] = $rsp['status'] ? $rsp['data'] : null;
+
+        $this->load->view(BPM.'pedidos_trabajo/tbl_tareas_planificadas', $data);
     }
 }

@@ -248,6 +248,7 @@ function verPedido(e) {
 	var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" + case_id;
 	var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 	var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+	var url4 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_tareas_planificadas?petr_id=" + petr_id;
     header = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_cabecera?case_id=" + case_id;
 
     $("#cabecera").empty();
@@ -273,6 +274,11 @@ function verPedido(e) {
 
 	$("#cargar_info_actual").empty();
 	$("#cargar_info_actual").load(url3, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
+	$("#cargar_listado_hitos").empty();
+	$("#cargar_listado_hitos").load(url4, () => {
 		$('#mdl-vista').modal('show');
 		wc();
 	});
