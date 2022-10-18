@@ -1,20 +1,19 @@
 
+<style>
+    .item-tarea-planificada{
+        width:100%;
+    }
+</style>
 <?php 
-        //obtengo processname
-
+//obtengo processname
 $proccessname = $this->session->userdata('proccessname'); 
-
 //dependiendo de el prccessename
-    // carga el modal de impresion de QR
+// carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
-   
     $this->load->view( COD.'componentes/modalYudica');
-
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  
     // $this->load->view( COD.'componentes/modalGenerico');
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
-
 }
 ?>
 <div class="box box-primary">
@@ -248,6 +247,7 @@ function verPedido(e) {
 	var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" + case_id;
 	var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 	var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+	var url4 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_tareas_planificadas?petr_id=" + petr_id;
     header = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_cabecera?case_id=" + case_id;
 
     $("#cabecera").empty();
@@ -273,6 +273,11 @@ function verPedido(e) {
 
 	$("#cargar_info_actual").empty();
 	$("#cargar_info_actual").load(url3, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
+	$("#cargar_listado_hitos").empty();
+	$("#cargar_listado_hitos").load(url4, () => {
 		$('#mdl-vista').modal('show');
 		wc();
 	});
