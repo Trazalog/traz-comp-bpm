@@ -13,7 +13,27 @@
                     <div class="collapse" id="<?php echo $key->hito_id ?>">
                         <div class="card card-body">
                             <ul style="list-style-type: none;">
-                                <li>Objetivo: <b><?php echo $key->objetivo ?></b></li>
+                            <?php 
+                                if(!empty($key->tareas->tarea)){
+                                    foreach ($key->tareas->tarea as $tareas) {
+                            ?>
+                                <li>Nombre: <b><?php echo $tareas->nombre ?></b></li>
+                                <li>Descripción: <b><?php echo $tareas->descripcion ?></b></li>
+                                <li>Estado: <b><?php echo $tareas->estado ?></b></li>
+                                <li>Asignada: <b><?php echo $tareas->user_id ?></b></li>
+                                <li>Fecha Asignación: <b><?php echo $tareas->fecha ?></b></li>
+                                <li>Fecha Fin: <b><?php echo $tareas->fec_fin ?></b></li>
+                                <li>Case: <b><?php echo $tareas->case_id ?></b></li>
+                                <li>Pedido Material: <b><?php echo $tareas->case_id ?></b></li>
+                                <li>FORMULARIO: <b><?php echo $tareas->case_id ?></b></li>
+                                <li>Duración: <b><?php echo $tareas->duracion ?></b></li>
+                                <hr>
+                            <?php
+                                    }
+                                }else{
+                                    echo "<h5>No se planificaron tareas para este hito.</h5>";
+                                }
+                            ?>
                             </ul>
                         </div>
                     </div>
