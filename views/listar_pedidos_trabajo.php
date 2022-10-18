@@ -1,20 +1,19 @@
 
+<style>
+    .item-tarea-planificada{
+        width:100%;
+    }
+</style>
 <?php 
-        //obtengo processname
-
+//obtengo processname
 $proccessname = $this->session->userdata('proccessname'); 
-
 //dependiendo de el prccessename
-    // carga el modal de impresion de QR
+// carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
-   
     $this->load->view( COD.'componentes/modalYudica');
-
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  
     // $this->load->view( COD.'componentes/modalGenerico');
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
-
 }
 ?>
 <div class="box box-primary">

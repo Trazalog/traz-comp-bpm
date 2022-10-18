@@ -6,10 +6,10 @@
             if(!empty($listadoHitos)){
                 foreach ($listadoHitos as $key) {
             ?>
-                <div class='form-group dataTemporal' data-json='<?php echo json_encode($key) ?>'>
-                    <span data-toggle="collapse" href="#<?php echo $key->hito_id ?>" role="button" aria-expanded="false" aria-controls="<?php echo $key->hito_id ?>"> 
+                <div class='form-group' data-json='<?php echo json_encode($key) ?>'>
+                    <button class="btn btn-primary item-tarea-planificada" data-toggle="collapse" href="#<?php echo $key->hito_id ?>" role="button" aria-expanded="false" aria-controls="<?php echo $key->hito_id ?>"> 
                         <?php echo "<b>$key->numero - $key->descripcion</b>" ?>
-                    </span>
+                    </button>
                     <div class="collapse" id="<?php echo $key->hito_id ?>">
                         <div class="card card-body">
                             <ul style="list-style-type: none;">
