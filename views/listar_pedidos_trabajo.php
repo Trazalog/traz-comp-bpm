@@ -1,20 +1,19 @@
 
+<style>
+    .item-tarea-planificada{
+        width:100%;
+    }
+</style>
 <?php 
-        //obtengo processname
-
+//obtengo processname
 $proccessname = $this->session->userdata('proccessname'); 
-
 //dependiendo de el prccessename
-    // carga el modal de impresion de QR
+// carga el modal de impresion de QR
 if ($proccessname == 'YUDI-NEUMATICOS') {
-   
     $this->load->view( COD.'componentes/modalYudica');
-
 } elseif ($proccessname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  
     // $this->load->view( COD.'componentes/modalGenerico');
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
-
 }
 ?>
 <div class="box box-primary">
@@ -248,6 +247,7 @@ function verPedido(e) {
 	var url1 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_formulario?petr_id=" + petr_id + "&case_id=" + case_id;
 	var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
 	var url3 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_info_actual?case_id=" + case_id;
+	var url4 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_tareas_planificadas?petr_id=" + petr_id;
     header = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_cabecera?case_id=" + case_id;
 
     $("#cabecera").empty();
@@ -273,6 +273,11 @@ function verPedido(e) {
 
 	$("#cargar_info_actual").empty();
 	$("#cargar_info_actual").load(url3, () => {
+		$('#mdl-vista').modal('show');
+		wc();
+	});
+	$("#cargar_listado_hitos").empty();
+	$("#cargar_listado_hitos").load(url4, () => {
 		$('#mdl-vista').modal('show');
 		wc();
 	});
@@ -339,16 +344,9 @@ function EliminarPedidoTrabajo() {
         url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/eliminarPedidoTrabajo/?petr_id=' +
             petr_id + '&case_id=' + case_id,
         success: function(rsp) {
-            debugger;
-            console.log('data trae:' + rsp)
-
-            linkTo('<?php  echo BPM ?>Pedidotrabajo/');
+            linkTo();
             setTimeout(() => {
-                Swal.fire(
-                    'Perfecto!',
-                    'Se Elimino Pedido Correctamente!',
-                    'success'
-                )
+                hecho('Perfecto!','Se Elimino Pedido Correctamente!');
             }, 5000);
         },
         error: function(rsp) {
@@ -360,8 +358,6 @@ function EliminarPedidoTrabajo() {
             )
         }
     });
-
-
 }
 </script>
 <script>
@@ -371,12 +367,6 @@ var band = 0;
 // Se peden hacer dos cosas: o un ajax con los datos o directamente
 // armar con los datos de la pantalla
 function modalCodigos() {
-    debugger;
-    // if (!validarImpresion()) {
-    // 	alert('Complete los campos por favor antes de imprimir');
-    // 	return;
-    // }
-
     if (band == 0) {
         // configuracion de codigo QR
         var config = {};
@@ -406,7 +396,6 @@ function modalCodigos() {
 }
 
 function armarInfo(arraydatos) {
-
     $("#infoEtiqueta").load("<?php echo base_url(YUDIPROC); ?>/Infocodigo/pedidoTrabajo", arraydatos);
 }
 
@@ -424,11 +413,10 @@ function validarImpresion() {
 }
 // REIMPRESION ETIQUETA VIENE DEL LISTADO
 function modalReimpresion(e) {
-    debugger;
-
     $("#infoEtiqueta").empty();
     $("#contenedorCodigo").empty();
     $("#infoFooter").empty();
+
     // configuracion de codigo QR
     var config = {};
     config.titulo = "Reimpresion de Etiqueta";
@@ -444,84 +432,64 @@ function modalReimpresion(e) {
     estado_pedido = datos.estado;
 	proccesname = $('#proccessname').val();
     if(proccesname == 'YUDI-NEUMATICOS'){
-                if (estado_pedido == "estados_yudicaRECHAZADO") {
-                    debugger;
-                    $.ajax({
-                        type: 'GET',
-                        data: petr_id,
-                        case_id,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/cargar_detalle_formularioJson?petr_id=' +
-                            petr_id + '&case_id=' + case_id,
+        if (estado_pedido == "estados_yudicaRECHAZADO") {
+            $.ajax({
+                type: 'GET',
+                data: petr_id,
+                case_id,
+                cache: false,
+                contentType: false,
+                processData: false,
+                url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/cargar_detalle_formularioJson?petr_id=' +
+                    petr_id + '&case_id=' + case_id,
 
-                        success: function(rsp) {
-                            debugger;
-                        
-                            var motivo = JSON.parse(rsp);
-                            console.log('data trae:' + motivo.motivo_rechazo);
-
-                        datos.motivo_rechazo = motivo.motivo_rechazo;
-                            
-                                    // llama modal con datos e img de QR
-                                    getDatos(datos, config);
-                                    // levanta modal completo para su impresion
-                                    verModalImpresion();
-                        },
-
-                        error: function(rsp) {
-                            console.log('rsp sale por errro trae: ' + rsp);
-                            Swal.fire(
-                                'Cancelado!',
-                                'No se Elimino Pedido de trabajo',
-                                'error'
-                            )
-                        },
-                        complete: function() {
-
-                        
-                        }
-                    });
-
-            
-                }
-
-            
-                }
-                
-        if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-debugger;
-                 // llama modal con datos e img de QR
-                 getDatosSein(datos, config);
+                success: function(rsp) {
+                    var motivo = JSON.parse(rsp);
+                    datos.motivo_rechazo = motivo.motivo_rechazo;
+                    // llama modal con datos e img de QR
+                    getDatos(datos, config);
                     // levanta modal completo para su impresion
-                    // verModalImpresion();
-                    verModalImpresionPedido();
+                    verModalImpresion();
+                },
 
+                error: function(rsp) {
+                    console.log('rsp sale por errro trae: ' + rsp);
+                    Swal.fire(
+                        'Cancelado!',
+                        'No se Elimino Pedido de trabajo',
+                        'error'
+                    )
+                },
+                complete: function() {
                 }
+            });
+        }
+    }
+    if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+        // llama modal con datos e img de QR
+        getDatosSein(datos, config);
+        // levanta modal completo para su impresion
+        // verModalImpresion();
+        verModalImpresionPedido();
+    }
 
-                if(proccesname == 'YUDI-NEUMATICOS'){
+    if(proccesname == 'YUDI-NEUMATICOS'){
         // llama modal con datos e img de QR
         getDatos(datos, config);
-                    // levanta modal completo para su impresion
-                    // verModalImpresion();
-                    verModalImpresion();
-            
+        // levanta modal completo para su impresion
+        // verModalImpresion();
+        verModalImpresion();
+    }
 
-                }
+    if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
+        // llama modal con datos e img de QR
+        getDatosSein(datos, config);
+        // levanta modal completo para su impresion
+        // verModalImpresion();
+        verModalImpresionPedido();
 
-  if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-  // llama modal con datos e img de QR
-  getDatosSein(datos, config);
-                    // levanta modal completo para su impresion
-                    // verModalImpresion();
-                    verModalImpresionPedido();
-
-                }
+    }
 }
-
-
-
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
@@ -537,12 +505,11 @@ function getDatos(datos, config) {
         type: 'GET',
         url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + infoid,
         success: function(result) {
-debugger;
             var datMapeado = JSON.parse(result);
-             datMapeado.Cliente = cliente;
-             datMapeado.Trabajo = trabajo;
-             datMapeado.N_orden = N_orden;
-             datMapeado.Motivo = motivo;
+            datMapeado.Cliente = cliente;
+            datMapeado.Trabajo = trabajo;
+            datMapeado.N_orden = N_orden;
+            datMapeado.Motivo = motivo;
 
             console.log('data mapeado: ');
             console.table(datMapeado);
@@ -556,54 +523,42 @@ debugger;
 
         }
     });
-
 }
-
-
-
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatosSein(datos, config) {
+    var infoid = datos.info_id;
+    var estado = datos.estado;
+    var cliente = datos.nombre;
+    var trabajo = datos.tipo_trabajo;
+    var N_orden = datos.petr_id;
+    var Cod_proyecto = datos.cod_proyecto;
+    var motivo = datos.motivo_rechazo;
 
-var infoid = datos.info_id;
-var estado = datos.estado;
-var cliente = datos.nombre;
-var trabajo = datos.tipo_trabajo;
-var N_orden = datos.petr_id;
-var Cod_proyecto = datos.cod_proyecto;
-var motivo = datos.motivo_rechazo;
+    $.ajax({
+        type: 'GET',
+        url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
+        success: function(result) {
+            var datMapeado = JSON.parse(result);
+            // datMapeado.Cliente = cliente;
+            // datMapeado.Trabajo = trabajo;
+            // datMapeado.N_orden = N_orden;
+            // datMapeado.Motivo = motivo;
 
-$.ajax({
-    type: 'GET',
-    url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
-    success: function(result) {
-debugger;
-        var datMapeado = JSON.parse(result);
-        // datMapeado.Cliente = cliente;
-        // datMapeado.Trabajo = trabajo;
-        // datMapeado.N_orden = N_orden;
-        // datMapeado.Motivo = motivo;
+            console.log('data mapeado: ');
+            console.table(datMapeado);
+            cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
+        },
+        error: function(result) {
 
-        console.log('data mapeado: ');
-        console.table(datMapeado);
-        cargarInfoReimp(datMapeado, estado, config, 'codigosQR/Sein-almpantar');
-    },
-    error: function(result) {
+        },
+        complete: function() {
 
-    },
-    complete: function() {
-
-    }
-});
-
+        }
+    });
 }
-
-
-
-
 
 //  carga el modal con cuerpo y codigo QR
 function cargarInfoReimp(datMapeado, estado, config, direccion) {
-    // debugger;
     switch (estado) {
         case 'estados_yudicaEN_CURSO':
             //Comprobante 1

@@ -33,24 +33,26 @@ if (!function_exists('timeline')) {
         echo '<h2 style="margin-left:50px;">Actividades Terminadas</h2>';
         foreach ($timeline['listArch'] as $f) {
             echo '<li>
-                            <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
-                            <div class="timeline-panel">
-                                    <div class="timeline-heading">
-                                    <h4 class="timeline-title">' . $f['displayName'] . '</h4>
-                                    <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i> Fecha Inicio: ' . date_format(date_create($f['assigned_date']), 'd/m/Y H:i') . ' hs | Fecha Fin: ' . date_format(date_create($f['archivedDate']), 'd/m/Y H:i') . ' hs</small></p>
-                                    </div>
-                                    <div class="timeline-body">';
-            if (array_key_exists('assigned_id', $f) && $f['assigned_id'] != '') {
-                echo '<p>Usuario: ' . $f['assigned_id']['firstname'] . ' ' . $f['assigned_id']['lastname'] . '</p>';
-            } else {
-                echo '<p>Usuario: Sin Asignar</p>';
+                    <div class="timeline-badge success">'.($f['type'] == "AUTOMATIC_TASK" ? '<i class="glyphicon glyphicon-cog"></i>' : '<i class="glyphicon glyphicon-check"></i>').'</div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">' . $f['displayName'] . ' '. ($f['type'] == "AUTOMATIC_TASK" ? '<small class="text-muted">AUTOMÁTICA</small>' : '') . '</h4>
+                            <p><small class="text-muted"><i class="glyphicon glyphicon-time"></i>'. (!empty($f['assigned_date']) ?  ' Fecha Inicio: ' . date_format(date_create($f['assigned_date']), 'd/m/Y H:i') . ' hs |' : ''). ' Fecha Fin: ' . date_format(date_create($f['archivedDate']), 'd/m/Y H:i') . ' hs</small></p>
+                        </div>
+                        <div class="timeline-body">';
+            if($f['type'] != "AUTOMATIC_TASK"){
+                if (array_key_exists('assigned_id', $f) && $f['assigned_id'] != '') {
+                    echo '<p>Usuario: ' . $f['assigned_id']['firstname'] . ' ' . $f['assigned_id']['lastname'] . '</p>';
+                } else {
+                    echo '<p>Usuario: Sin Asignar</p>';
+                }
             }
-            echo '<p>Descripción: ' . $f['displayDescription'] . '</p>
-                                    <p>Duración: ' . resta_fechas($f['assigned_date'], $f['archivedDate']) . '</p>
-                                    <p>Case: ' . $f['caseId'] . '</p>
-                                    </div>
-                            </div>
-                            </li>';
+            echo '<p>Descripción: ' . $f['displayDescription'] . '</p>'.
+                    ($f['type'] != "AUTOMATIC_TASK" ? '<p>Duración: ' . resta_fechas($f['assigned_date'], $f['archivedDate']) . '</p>' : '').
+                    '<p>Case: ' . $f['caseId'] . '</p>
+                    </div>
+                </div>
+            </li>';
         }
         echo '<li>
                 <div class="timeline-badge success"><i class="glyphicon glyphicon-flag"></i></div>
