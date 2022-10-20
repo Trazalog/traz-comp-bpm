@@ -83,79 +83,48 @@ echo $data['comentarios'];
 	*/
 //HARCODECHUKA processId
 public function cargar_detalle_linetiempo(){
-   
     $url_info= $_SERVER["REQUEST_URI"];
-
     $components = parse_url($url_info);
-
     parse_str($components['query'], $results);
 
-    // $petr_id =$results['id'];
-   
-   if (isset($results['proccessname'])) {
-    $proccessname =$results['proccessname'];
-   } else {
-    $proccessname = $this->session->userdata('proccessname');
-   }
-    
-   
-       
-
-        if (isset($_GET['case_id'])) {
-            $case_id = $_GET['case_id'];        
-          
-        }else {
-            $case_id = $this->input->get('case_id');
-            // $processId = $this->input->get('proccessname');
-        }
-
-
-        if ($proccessname !=''){
-
-    //Id del proceso desde la tabla pro.procesos
+    if (isset($results['proccessname'])) {
+        $proccessname =$results['proccessname'];
+    } else {
+        $proccessname = $this->session->userdata('proccessname');
+    }
+    if (isset($_GET['case_id'])) {
+        $case_id = $_GET['case_id'];        
+    }else {
+        $case_id = $this->input->get('case_id');
+        // $processId = $this->input->get('proccessname');
+    }
+    if ($proccessname !=''){
+        //Id del proceso desde la tabla pro.procesos
         $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
-
-          //LINEA DE TIEMPO
-      $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-
-      echo timeline($data['timeline']);
- 
+        //LINEA DE TIEMPO
+        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+        echo timeline($data['timeline']);
     }else {
         $processId = $_GET['proccessname'];
         // $processId = BPM_PROCESS_ID_PROCESO_PRODUCTIVO;
-
         //LINEA DE TIEMPO
-  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-
-  echo timeline($data['timeline']);
- 
+        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+        echo timeline($data['timeline']);
     }
-        
-
- 
-
 }
-
-
 /**
 	* Trae el estado actual de la tarea de un pedido segun case_id
 	*@param case_id ,processId. (metodo GET)
     *@return array componete BPM timelineInfoActual
-	*/
+*/
 //HARCODECHUKA processId
 public function cargar_detalle_info_actual(){
-
     $proccessname = $this->session->userdata('proccessname');
-
-   $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
-
-    $case_id = $_GET['case_id'];               
-        
-  //LINEA DE TIEMPO
-  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-
-  echo timelineInfoActual($data['timeline']);
- 
+    $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+    $case_id = $_GET['case_id'];                  
+    //LINEA DE TIEMPO
+    $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+    echo timelineInfoActual($data['timeline']);
 }
 
 /**
@@ -165,31 +134,19 @@ public function cargar_detalle_info_actual(){
 	*/
 //HARCODECHUKA processId
 public function cargar_detalle_formulario(){
-
     $url_info= $_SERVER["REQUEST_URI"];
-
-   
     $petr_id = $_GET['petr_id'];
-
     $proccessname = $this->session->userdata('proccessname');
-
     $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
-
-   $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
-
-   $this->load->view(BPM.'pedidos_trabajo/tbl_formularios_pedido', $data);
-   
-
+    $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+    $this->load->view(BPM.'pedidos_trabajo/tbl_formularios_pedido', $data);
 }
-
-
 
 /**
 	* Trae formularios asociados al pedido de trabajo segun petr_id
 	*@param case_id ,petr_id, processId. (metodo GET)
     *@return array forularios
-	*/
-
+*/
 public function cargar_detalle_formularioJson(){
    
     $this->load->model(FRM . 'Forms');
@@ -576,7 +533,7 @@ public function cargar_formulario_asociado(){
     }
     /**
         * Trae listado de hitos con sus respectivas tareas para el pedido de trabajo
-        *@param $petr_id (metodo GET)
+        *@param $petr_id (método GET)
         *@return array forularios
     */
     public function cargar_detalle_tareas_planificadas(){
@@ -589,5 +546,15 @@ public function cargar_formulario_asociado(){
         $data['listadoHitos'] = $rsp['status'] ? $rsp['data'] : null;
 
         $this->load->view(BPM.'pedidos_trabajo/tbl_tareas_planificadas', $data);
+    }
+    /**
+        * Crea la vista con el detalle con listado de pedidos de materiales las tareas planificadas
+        *@param $tapl_id (método GET)
+        *@return view vista listado de pedidos de materiales
+    */
+    public function listadoPedidosMaterialesXTarea($tapl_id){
+        $this->load->model(TST.'Pedidos');
+        $data['pedidos'] = $this->Pedidos->obtenerXTarea($tapl_id);
+        $this->load->view('pedidos_trabajo/listado_pedidos_materiales', $data);
     }
 }
