@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-// Model ABM No Consumibles
+/**
+	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
+	*
+	* @autor Kevin Marchan
+	*/
 class Pedidotrabajos extends CI_Model
 {
 
@@ -9,6 +13,11 @@ class Pedidotrabajos extends CI_Model
         parent::__construct();
     }
 
+      /**
+		*Obtiene datos facha 
+		* @param 
+		* @return array {mes,dia,año}
+		**/
     public function seleccionarUnidadMedidaTiempo()
     {
         $resource = '/tablas/unidad_medida_tiempo';
@@ -16,7 +25,12 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);
     }
 
-   //Obtiene datos de clientes 
+   
+   /**
+		*Obtiene datos de clientes 
+		* @param empr_id
+		* @return lista de clientes por empresa
+		**/
     public function getClientes($empr_id)
     {
         $resource = "/clientes/porEmpresa/$empr_id/porEstado/ACTIVO";
@@ -24,9 +38,27 @@ class Pedidotrabajos extends CI_Model
         return wso2($url);                                
     }
 
-    //Obtiene los formularios asociados a un pedido de trabajo por petr_id
-    // parametro petr_id
-    //
+    public function obtenerTabla($tabla)
+    {
+        $url = REST_CORE . "/tablas/$tabla";
+        return wso2($url);
+    }
+    /**
+	* Obtiene los datos cargados en core.tablas por empr_id
+	* @param string columna tabla a buscar
+	* @return array listado de coincidencias
+	*/
+    public function obtenerTablaEmpr_id($tabla)
+    {
+        $url = REST_CORE."/tabla/$tabla/empresa/".empresa();
+        return wso2($url);
+    }
+   
+     /**
+		*Obtiene los formularios asociados a un pedido de trabajo
+		* @param petr_id
+		* @return lista de formularios por petr_id
+		**/
     public function getFormularios($petr_id)
     {
         $resource = "/pedidoTrabajo/petr_id/$petr_id";
@@ -35,7 +67,12 @@ class Pedidotrabajos extends CI_Model
                                    
     }
 
-// Guardar guardar Pedido de Trabajo
+ 
+/**
+		*Guardar Pedido de Trabajo
+		* @param array
+		* @return $rsp de guardado
+		**/
     public function guardarPedidoTrabajo($data)
     {
         $url = REST_PRO . '/pedidoTrabajo';
@@ -43,25 +80,43 @@ class Pedidotrabajos extends CI_Model
         return $rsp;
     }
 
+    /**
+		*ELimina Pedido de Trabajo
+		* @param array ($petr_id $processId,$case_id)
+		* @return $rsp de eliminado
+		**/
     public function eliminarPedidoTrabajo($data)
     {
         $url = REST_PRO . "/pedidoTrabajo";
         return wso2($url, 'DELETE', $data);
     }
 
-// Guardar guardar BonitaProccess
+// Guardar BonitaProccess
     public function guardarBonitaProccess($contract)
     {
-        $rsp =  $this->bpm->lanzarProceso(BPM_PROCESS_ID_REPARACION_NEUMATICOS, $contract);
-        return $rsp;
-    }
 
-    // lanzar proceso
-    public function procesos()
-    {
+        //obtengo processname
         $proccessname = $this->session->userdata('proccessname');
 
-        $resource = "/proceso/nombre/$proccessname/empresa/" . empresa();
+         //Si el proceso viene vacio usamos proceso estandar
+       $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+
+       if(isset($proceso->nombre_bpm)){
+         
+        $nombre_bpm = $proceso->nombre_bpm;
+
+       $rsp =  $this->bpm->lanzarProceso($nombre_bpm, $contract);
+        return $rsp;
+      }
+}
+    /**
+		*Busca el proceso asociado a $processname en la tabla pro.procesos
+		* @param array $processname
+		* @return data del proceso asociado
+    **/
+    public function procesos($proccessname)
+    {
+        $resource = ($proccessname == PRO_STD) ? "/proceso/nombre/$proccessname/empresa/". empresa() : "/proceso/nombre/$proccessname/empresa/" . empresa();
 
         $url = REST_PRO . $resource;
         
@@ -69,6 +124,13 @@ class Pedidotrabajos extends CI_Model
 
         return json_decode($array['data']);
     }
+
+//Luego de crear un pedido de trabajo esta funcion actualiza el caseId del pedido
+  /**
+		*Actualiza Case_id (en Pedido Trabajos).
+		* @param array case_id , petr_id
+		* @return 
+		**/
 
     public function ActualizarCaseId($data)
     {
@@ -78,10 +140,19 @@ class Pedidotrabajos extends CI_Model
 
     }
 
+ 
+     /**
+		*Obtiene lista pedido de trabajo por emprId (todos los pedidos de una empresa)
+		* @param  $emprId
+		* @return lista de pedido de trabajo
+		**/
     public function obtener($emprId)
     {
         $url = REST_PRO . "/pedidoTrabajo/$emprId";
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
+        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId   | Lista Pedidos: ' .json_encode(wso2($url)));
         return wso2($url);
+        
     }
 
     public function obtenerHitosXPedido($petrId)
@@ -100,6 +171,14 @@ class Pedidotrabajos extends CI_Model
     {
         $data['fec_inicio'] = date('Y-m-d', strtotime($data['fec_inicio'])) . '+00:00:00';
         $data['documento'] = isset($data['documento']) ? $data['documento'] : '';
+        $data['nombre_documento'] = isset($_FILES['documento']['name']) ? $data['nombre_documento'] : '';
+
+      if(!empty($_FILES['documento']['tmp_name'])){
+      $data['documento'] = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+/////////// nombre documento
+      $data['nombre_documento'] = $_FILES['documento']['name'];
+
+      }
         return payToStr($data);
     }
 
@@ -107,6 +186,14 @@ class Pedidotrabajos extends CI_Model
     {
         $data['petr_id'] = $petrId;
         $xdata['_post_hitos'] = $this->mapHito($data);
+
+            
+            // if(!empty($_FILES['documento']['tmp_name'])){
+            //  //  $xdata = base64_encode(file_get_contents($_FILES['documento']['tmp_name']));
+            
+            // //   return;
+            // }
+
         $url = REST_TST."/hitos";
         return wso2($url, 'POST', $xdata);
     }

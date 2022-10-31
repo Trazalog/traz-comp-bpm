@@ -11,7 +11,6 @@
         <li class="privado"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Comentarios</a></li>
         <li class="privado"><a href="#tab_3" data-toggle="tab" aria-expanded="false">Trazabilidad</a></li>
         <li class="privado"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Información</a></li>
-        <li class="privado"><a href="#tab_5" data-toggle="tab" aria-expanded="true">Formulario</a></li>
         <!-- <li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
 				Dropdown <span class="caret"></span>
@@ -25,11 +24,10 @@
 			</ul>
 		</li> -->
         <!-- <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li> -->
-
     </ul>
     <div class="tab-content">
         <div class="tab-pane" id="tab_1">
-            <?php echo $info ?>
+            <?php echo timelineInfoActual($timeline) ?>
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_2">
@@ -39,62 +37,27 @@
         <div class="tab-pane" id="tab_3">
             <?php echo timeline($timeline) ?>
         </div>
-
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_5">
-            <?php ?>
-<br>
-<h3>Formularios</h3>
-<br><br>
-            <div class="table-responsive-md">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Acciones</th>
-                            <th scope="col">Paso del Proceso</th>
-                            <th scope="col">Nombre de Formulario</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       <?php foreach($formularios as $rsp){
-
-                           $info_id = $rsp->info_id;
-                           $nom_tarea = $rsp->nom_tarea;
-                           $task_id = $rsp->task_id;
-
-                          echo "<tr id='$' data-json='" . json_encode($rsp) . "'>"; 
-                          echo '<td>'.$nom_tarea.'</td>';
-                          echo '<td>'.$info_id.'</td>';
-						  echo '<td>'.$task_id.'</td>';
-                          echo '</tr>';
-                        } 
-                           ?>
-                    </tbody>
-                </table>
-            </div>
-<br><br><br>
         </div>
-
+        <!-- /.tab-pane -->
         <div class="tab-pane active" id="tab_4">
-
             <?php
-
-			echo "<button class='btn btn-success btn-tomar' onclick='tomarTarea()'>Tomar tarea</button>";
-
-			echo "<button class='btn btn-danger  btn-soltar' onclick='soltarTarea()'>Soltar tarea</button><br><br>";	
-			
+                echo "<button class='btn btn-success btn-tomar' onclick='tomarTarea()'>Tomar tarea</button>";
+                echo "<button class='btn btn-danger  btn-soltar' style='display:none;' onclick='soltarTarea()'>Soltar tarea</button>";
 			?>
-
-            <div id="view" class="box">
+            <button class='btn btn-success btn-iniciar pull-right' style='display:none;margin-right: 20%;' name="btnIniciar_tarea" id="btnIniciar_tarea" onclick="existFunction('IniciarTarea')">
+                <i style='margin-right: 4px;' class="fa fa-play-circle" aria-hidden="true"></i>Inicializar tarea
+            </button>
+            <div style='margin-right: 10px' id="view" class="box">
                 <div class="overlay"></div>
                 <?php echo $view ?>
             </div>
-            <hr>
-            <div class="text-right">
-                <button class="btn btn-primary btnNotifEstandar" onclick="cerrar()">Cerrar</button>
-                <button class="btn btn-success btnNotifEstandar" onclick="existFunction('cerrarTarea')">Hecho</button>
+            <div class="btn-group float-right">
+                <button type="button" class="btn btn-warning ml-2 mb-2 mb-2 mt-3" id="btncerrarTarea" style="display:none;" onclick="existFunction('cerrarTareaParcial')">Finalizar Pedido con Entrega Parcial</button>
+                <button type="button" class="btn btn-primary ml-2 mb-2 mb-2 mt-3" id="btnCerrarVistaNotificacion" style="display:block;" onclick="cerrar()">Cerrar</button>
+                <button type="button" class="btn btn-success ml-2 mb-2 mb-2 mt-3" id="btnHecho" style="display:block;" onclick="existFunction('cerrarTarea')" style="">Hecho</button>
             </div>
-
         </div>
         <!-- /.tab-pane -->
     </div>
@@ -102,7 +65,172 @@
 </div>
 
 
+
 <script>
 var task = <?php echo json_encode($tarea) ?>;
+var nombreTarea = task.nombreTarea;
+
+if (nombreTarea === "Entrega pedido pendiente") {
+    $("#btncerrarTarea").removeAttr("style");
+    $("#btnHecho").removeAttr("style");
+    $("#btnHecho").prop('disabled', false);
+
+} else if (nombreTarea ==="Tarea Generica"){
+    // $btn-soltar
+    $("#btnHecho").removeAttr("style");
+    $("#btnHecho").text("Finalizar tarea");
+    $("#btnHecho").prop('disabled', true); 
+}
+
+$('.fecha').datepicker({
+    autoclose: true
+}).on('change', function(e) {
+    // $('#genericForm').bootstrapValidator('revalidateField',$(this).attr('name'));
+    console.log('Validando Campo...' + $(this).attr('name'));
+    $('#genericForm').data('bootstrapValidator').resetField($(this), false);
+    $('#genericForm').data('bootstrapValidator').validateField($(this));
+});
+
+var case_id = task.caseId;
+var date = moment(); 
+var fec_inicio = String(date.format("YYYY-MM-DD HH:MM:s")); 
+var fec_fin = String(date.format("YYYY-MM-DD HH:MM:s")); 
+
+////////////////////////////////////////////////////////
+//Inicia la tarea tomada en notificacion estandar
+function IniciarTarea() {
+    url = '<?php echo TST ?>Tarea/iniciarTareaPlanificada/'+fec_inicio+'/'+case_id;
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function(data) {
+            rsp = JSON.parse(data);
+            if(rsp.status == true){
+                hecho('Perfecto!', 'Se inicio la tarea correctamente!');
+                // $("#btnIniciar_tarea").prop('disabled', true);
+                // $("#btnTerminar_tarea").prop('disabled', false);
+                $('#view').css('pointer-events', 'auto');
+                $('#view').find('.overlay').remove();
+                $("#btnIniciar_tarea").prop('disabled',true);
+                $("#btnHecho").prop('disabled', false);
+                $("#listadoSubtareas").show();
+                $("#formularioTarea").show();
+            }else{
+                error('Error!','No se inicio la tarea correctamente!');
+            }
+        },
+        error: function(result) {
+            error('Error!','Se produjo un error al iniciar la tarea');
+        }
+    });
+}
+
+////////////////////////////////////////////////////////
+//Termina la tarea tomada en notificacion estandar
+function TerminarTarea() {
+   url = '<?php echo TST ?>Tarea/terminarTareaPlanificada/'+fec_fin+'/'+case_id,
+    $.ajax({
+        type: 'POST',
+        url: url,
+        success: function(data) {
+          rsp = JSON.parse(data);
+
+          if(rsp.status == true){
+              // $("#btnIniciar_tarea").prop('disabled', true);
+              // $("#btnTerminar_tarea").prop('disabled', false);
+              $('#view').css('pointer-events', 'auto');
+              $('#view').find('.overlay').remove();
+              $("#btnIniciar_tarea").hide();
+              $("#btnHecho").prop('disabled', false);
+
+              hecho('Perfecto!','Se terminó la tarea correctamente!');
+    	  }else{
+            error('Error!','Se produjo un error al finzalizar la tarea!');
+    	  }
+        },
+        error: function(result) {
+    		error('Error!','Se produjo un error al intentar finzalizar la tarea!');
+        }
+    });
+
+}
+
+////////////////////////////////////////////////////////
+//cerrar tarea en notificacion estandar
+function CerrarTarea() {
+    if (nombreTarea ==="Tarea Generica"){
+        terminarTareaPlanificada();
+        var caseid = task.caseId;
+        var taskid = task.taskId;
+        $.ajax({
+            type: 'POST',
+            data: {
+                'IdtarBonita': taskid,
+                'caseid':caseid
+            },
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + taskid,
+            success: function(data) {
+                if(data['status'] == true){
+                    $("#modalaviso").modal("hide");
+                    var fun = () => {linkTo('<?php echo BPM ?>Proceso/');}
+                    confRefresh(fun);
+                }else{
+                    $("#modalaviso").modal("hide");
+                    error('Error!','No se finalizó la tarea Correctamente!');
+                }
+            },
+            error: function(result) {
+                debugger;
+            }
+        });
+    } else{
+        ////////////////////////////////////////////////////////
+        //cerrar tarea en notificacion estandar
+        var caseid = task.caseId;
+        var taskid = task.taskId;
+        $.ajax({
+            type: 'POST',
+            data: {
+                'IdtarBonita': taskid,
+                'caseid':caseid
+            },
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + taskid,
+            success: function(data) {
+                if(data['status'] == true){
+                    $("#modalaviso").modal("hide");
+                    var fun = () => {linkTo('<?php echo BPM ?>Proceso/');}
+                    confRefresh(fun);
+                }else{
+                    $("#modalaviso").modal("hide");
+                    error('Error!','No se finalizó la tarea correctamente!');
+                }
+            },
+            error: function(result) {
+                error('Error!','No se finalizó la tarea correctamente!');
+            }
+        });
+    }
+}
 </script>
+
+<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12" id="contFormSubtarea">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php $this->load->view('scripts/tarea_std'); ?>

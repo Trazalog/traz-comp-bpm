@@ -1,5 +1,9 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
-
+/**
+	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
+	*
+	* @autor Kevin Marchan
+	*/
 class Pedidotrabajo extends CI_Controller
 {
 
@@ -17,9 +21,7 @@ class Pedidotrabajo extends CI_Controller
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
         $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
-
-       // $url_info= $_SERVER["REQUEST_URI"].'?proccessname=YUDI-NEUMATICOS';
-
+   
         $url_info= $_SERVER["REQUEST_URI"];
 
         $components = parse_url($url_info);
@@ -36,13 +38,15 @@ class Pedidotrabajo extends CI_Controller
 
 
     //carga la vista de pedido trabajo
+    //
     public function view_pedido()
     {
        
         $data['unidad_medida_tiempo'] = $this->Pedidotrabajos->seleccionarUnidadMedidaTiempo()['data'];
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
-
-
+        //$data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTabla('tipos_pedidos_trabajo')['data'];
+        $data['tipo_trabajo'] = $this->Pedidotrabajos->obtenerTablaEmpr_id('tipos_pedidos_trabajo')['data'];
+        
         $url_info= $_SERVER["REQUEST_URI"];
 
         $components = parse_url($url_info);
@@ -54,24 +58,178 @@ class Pedidotrabajo extends CI_Controller
     }
 
 
-    public function cargar_datos_detalle()
-    {
 
+/**
+	* Trae comentarios segun Case_id
+	*@param case_id (metodo GET)
+    *@return view componete comentarios
+	*/
+public function cargar_detalle_comentario(){
+
+$case_id = $_GET['case_id'];    
+
+$data_aux = ['case_id' => $case_id, 'comentarios' => $this->bpm->ObtenerComentarios($case_id)];
+
+$data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
+
+echo $data['comentarios'];
+}
+
+
+/**
+	* Trae trazabilidad de un pedido segun case_id
+	*@param case_id ,processId. (metodo GET)
+    *@return array componete BPM trazabilidad
+	*/
+//HARCODECHUKA processId
+public function cargar_detalle_linetiempo(){
+    $url_info= $_SERVER["REQUEST_URI"];
+    $components = parse_url($url_info);
+    parse_str($components['query'], $results);
+
+    if (isset($results['proccessname'])) {
+        $proccessname =$results['proccessname'];
+    } else {
+        $proccessname = $this->session->userdata('proccessname');
     }
-    
-  
+    if (isset($_GET['case_id'])) {
+        $case_id = $_GET['case_id'];        
+    }else {
+        $case_id = $this->input->get('case_id');
+        // $processId = $this->input->get('proccessname');
+    }
+    if ($proccessname !=''){
+        //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+        //LINEA DE TIEMPO
+        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+        echo timeline($data['timeline']);
+    }else {
+        $processId = $_GET['proccessname'];
+        // $processId = BPM_PROCESS_ID_PROCESO_PRODUCTIVO;
+        //LINEA DE TIEMPO
+        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+        echo timeline($data['timeline']);
+    }
+}
+/**
+	* Trae el estado actual de la tarea de un pedido segun case_id
+	*@param case_id ,processId. (metodo GET)
+    *@return array componete BPM timelineInfoActual
+*/
+//HARCODECHUKA processId
+public function cargar_detalle_info_actual(){
+    $proccessname = $this->session->userdata('proccessname');
+    $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+    $case_id = $_GET['case_id'];                  
+    //LINEA DE TIEMPO
+    $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+    echo timelineInfoActual($data['timeline']);
+}
 
+/**
+	* Trae formularios asociados al pedido de trabajo segun petr_id
+	*@param case_id ,petr_id, processId. (metodo GET)
+    *@return array forularios
+	*/
+//HARCODECHUKA processId
+public function cargar_detalle_formulario(){
+    $url_info= $_SERVER["REQUEST_URI"];
+    $petr_id = $_GET['petr_id'];
+    $proccessname = $this->session->userdata('proccessname');
+    $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+    $data['formularios'] = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+    $this->load->view(BPM.'pedidos_trabajo/tbl_formularios_pedido', $data);
+}
+
+/**
+	* Trae formularios asociados al pedido de trabajo segun petr_id
+	*@param case_id ,petr_id, processId. (metodo GET)
+    *@return array forularios
+*/
+public function cargar_detalle_formularioJson(){
+   
+    $this->load->model(FRM . 'Forms');
+
+    $case_id = $_GET['case_id'];        
+    
+    $petr_id = $_GET['petr_id'];
+        
+
+   $data = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+
+   $prueba = $data[0]->forms->form;
+   
+   foreach ($prueba as $value) {
+
+    switch ($value->nom_form) {
+
+        case 'Rechazo de Tarea':
+            
+            $info_id = $value->info_id;
+
+            $res = $this->Forms->obtener($info_id);
+
+
+              $motivo['motivo_rechazo'] = $res->items[0]->valor;
+     
+
+            break;
+
+            default:
+
+            break;
+    }
+
+}
+
+
+   echo json_encode($motivo);
+
+}
+
+
+
+/**
+	* Instancia un formulario asociado
+	*@param info_id (metodo GET)
+    *@return array forulario
+	*/
+public function cargar_formulario_asociado(){
+
+    $info_id = $_GET['info_id'];   
+    
+    $formulario = getForm($info_id);
+
+    echo $formulario;
+}
+
+   
+  
+    /**
+		*Guarda Pedido de Trabajo.
+		* @param array
+		* @return si guarda pedido retorna mensaje de guardado, sino guarda elimina pedido
+	**/
     public function guardarPedidoTrabajo()
     {
        $proccessname = $this->session->userdata('proccessname');
 
+       $empr_id = empresa();
+       $user_app = userNick();
 
-        $empr_id = empresa();
-        $user_app = userNick();
-        $esin_id = $this->Pedidotrabajos->procesos()->proceso->esin_id;
+       //Si el proceso viene vacio usamos proceso estandar
+       $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
 
-       $lanzar_bpm = $this->Pedidotrabajos->procesos()->proceso->lanzar_bpm;
-
+        if(isset($proceso->nombre_bpm)){
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }else{
+            $proccessname = PRO_STD;
+            $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
+            $esin_id = $proceso->esin_id;
+            $lanzar_bpm = $proceso->lanzar_bpm;
+        }
 
         $data['_post_pedidotrabajo'] = array(
 
@@ -117,7 +275,7 @@ class Pedidotrabajo extends CI_Controller
 
         } elseif ($status == false) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
@@ -125,7 +283,7 @@ class Pedidotrabajo extends CI_Controller
 
         } else {
 
-            log_message('DEBUG', '#TRAZA | #BPM >> guardarPedidoTrabajo  >> ERROR TREMENDO');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR TREMENDO');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
@@ -135,6 +293,12 @@ class Pedidotrabajo extends CI_Controller
         }
 
     }
+
+     /**
+		*Lanza proceso en BPM (en Pedido Trabajos).
+		* @param  petr_id
+		* @return 
+		**/
 
     public function BonitaProccess($petr_id)
     {
@@ -147,20 +311,26 @@ class Pedidotrabajo extends CI_Controller
 
         if (!$rsp['status']) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> BonitaProccess  >> ERROR AL GUARDAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  BonitaProccess  >> ERROR AL GUARDAR POCESO EN BONITA');
 
             $this->eliminarPedidoTrabajo($petr_id);
 
             return;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | BonitaProccess  >> TODO OK - se lanzo proceso correctamente');
            #echo json_encode($data);
             $this->ActualizarCaseId($case_id, $petr_id);
 
         }
 
     }
+
+    /**
+		*Actualiza Case_id (en Pedido Trabajos).
+		* @param array (case_id , petr_id)
+		* @return 
+		**/
 
     public function ActualizarCaseId($case_id, $petr_id)
     {
@@ -178,14 +348,14 @@ class Pedidotrabajo extends CI_Controller
 
         if (!$rsp) {
 
-            log_message('ERROR', '#TRAZA | #BPM >> ActualizarCaseId  >> ERROR AL ACTUALIZAR');
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | ActualizarCaseId  >> ERROR AL ACTUALIZAR CASO DE PEDIDO');
 
            // $this->eliminarPedidoTrabajo($petr_id);
 
             return $rsp;
 
         } else {
-            log_message('DEBUG', '#TRAZA | #BPM >> ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | ActualizarCaseId  >> TODO OK - se actualizo CaseId del pedido');
             #echo json_encode($data);
             //     $this->BonitaProccess($petr_id);
 
@@ -193,18 +363,73 @@ class Pedidotrabajo extends CI_Controller
 
     }
 
-    public function eliminarPedidoTrabajo($petr_id)
+    	/**
+		* Elimina Pedidos Trabajo
+		* @param array $petr_id $processId,$case_id (metodo GET)
+		* @return 
+		*/
+//HARCODECHUKA processId
+
+    public function eliminarPedidoTrabajo()
     {
+        $processId = BPM_PROCESS_ID_REPARACION_NEUMATICOS;
+
+        if($_GET)
+		{
+			$case_id = $_GET["case_id"];
+
+            $petr_id = $_GET["petr_id"];
+			
+		} else{
+            $case_id =  $this->input->post('case_id');
+
+            $petr_id =  $this->input->post('petr_id');
+        }
+
         $data['_delete_pedidotrabajo'] = array(
             'petr_id' => $petr_id,
         );
 
-        $data = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
+        $rsp = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
+
+        if (!$rsp) {
+
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido de trabajo >> Error al Eliminar Pedido de Trabajo');
+
+           // $this->eliminarPedidoTrabajo($petr_id);
+
+           // return $rsp;
+           echo json_encode($rsp);
+
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo |  Eliminar pedido de trabajo   >> Se Elimino pedido de Trabajo Correctamente');
+            
+
+           //si no falla elimina el caso asociado al pedido de trabajo llamando a la API
+
+           $rsp = $this->bpm->eliminarCaso($processId, $case_id);
+
+           if (!$rsp) {
+
+            log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso  >> Error al Eliminar Case_id');
+
+            //return $rsp;
+            echo json_encode($rsp);
+
+        } else {
+            log_message('DEBUG', '#TRAZA | #BPM |Pedido Trabajo | Eliminar Caso >> Se Elimino Caso y Pedido de trabajo Correctamente');
+
+            echo json_encode($rsp);
+        
+        }
 
     }
+}
+
+
 		/**
 		* Levanta pantalla Planificacion de Pedido de Trabajo
-		* @param
+		* @param 
 		* @return
 		*/
     public function dash()
@@ -255,10 +480,81 @@ class Pedidotrabajo extends CI_Controller
         }
     }
 
-    public function cambiarEstado()
-    {
+    /**
+        * Busca en el case especificado, que el proceso se encuentre parado actualmente sobre la tarea enviada y la cierra
+        *@param array $post con estado, case_id, proc_id y petr_id
+        *@return array respuesta según servicio
+    */
+    public function finalizarTrabajo(){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-BPM | Pedidotrabajo | finalizarTrabajo()');
         $post  = $this->input->post();
-        $rsp = $this->Pedidotrabajos->cambiarEstado($post['petrId'], $post['estado']);
+        $proceso = $this->Pedidotrabajos->procesos($post['proc_id'])->proceso;
+        $taskObtenido = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$post['case_id'], TAREA_IT);
+        if(!empty($taskObtenido)){
+            $aux = $this->bpm->setUsuario($taskObtenido,userId());
+            $auxi = $this->bpm->cerrarTarea($taskObtenido);
+            $rsp = $this->Pedidotrabajos->cambiarEstado($post['petr_id'], $post['estado']);
+        }else{
+            $rsp['status'] = false;
+            $rsp['msj'] = "El case especificado no se encuentra en el paso de la TAREA IT";
+        }
         echo json_encode($rsp);
+    }
+    
+    /**
+        * Trae cabecera relacionada con el proceso
+        *@param $case_id (metodo GET)
+        *@return array forularios
+    */
+    public function cargar_detalle_cabecera(){
+        $case_id = $this->input->get('case_id');
+        // $case_id = $this->input->post('case_id');
+        $proccessname = $this->session->userdata('proccessname');
+
+        if ($proccessname == 'YUDI-NEUMATICOS') {
+            $this->load->model(YUDIPROC.'Yudiproctareas');
+        }
+
+        //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+
+        $tarea = new StdClass();
+        $tarea->caseId = $case_id;
+        $tarea->processId = $processId;
+        $tarea->nombreTarea = '';
+
+        if ($proccessname == 'YUDI-NEUMATICOS') {
+            $cabecera = $this->Yudiproctareas->desplegarCabecera($tarea);
+        }else{
+            $this->load->model(SEIN.'Proceso_tareas');
+            $cabecera = $this->Proceso_tareas->desplegarCabecera($tarea);
+        }
+        echo $cabecera;
+    }
+    /**
+        * Trae listado de hitos con sus respectivas tareas para el pedido de trabajo
+        *@param $petr_id (método GET)
+        *@return array forularios
+    */
+    public function cargar_detalle_tareas_planificadas(){
+        $petr_id = $this->input->get('petr_id');
+        $proccessname = $this->session->userdata('proccessname');
+
+        //Id del proceso desde la tabla pro.procesos
+        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+        $rsp = $this->Pedidotrabajos->obtenerHitosXPedido($petr_id);
+        $data['listadoHitos'] = $rsp['status'] ? $rsp['data'] : null;
+
+        $this->load->view(BPM.'pedidos_trabajo/tbl_tareas_planificadas', $data);
+    }
+    /**
+        * Crea la vista con el detalle con listado de pedidos de materiales las tareas planificadas
+        *@param $tapl_id (método GET)
+        *@return view vista listado de pedidos de materiales
+    */
+    public function listadoPedidosMaterialesXTarea($tapl_id){
+        $this->load->model(TST.'Pedidos');
+        $data['pedidos'] = $this->Pedidos->obtenerXTarea($tapl_id);
+        $this->load->view('pedidos_trabajo/listado_pedidos_materiales', $data);
     }
 }

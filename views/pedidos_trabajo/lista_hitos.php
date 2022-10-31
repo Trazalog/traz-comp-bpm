@@ -12,17 +12,14 @@
             foreach ($hitos as $key => $o) {
                 echo "<tr>";
                 echo '<td><div class="btn-group">
-                        <button onclick="reload(\'#tareas_planificadas\','.$o->hito_id.');" type="button" class="btn code"><h4>'.$o->numero.'</h4><img src="http://localhost/traz-tools/lib/dist/img/user2-160x160.jpg" class="user-image" alt="User Image" data-user="'.$o->user_id.'"></button>
+                        <button onclick="reload(\'#tareas_planificadas\','.$o->hito_id.');" type="button" class="btn code" style="max-width: 100%;"><span class="box-title pull-right">'.$o->numero.'</span></button>
                         <button type="button" class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class=""><i class="fa fa-ellipsis-v"></i></span>
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <li><a onclick="selectHito('.$o->hito_id.',\''.$o->numero.'\');$(\'#mdl-hito\').modal(\'show\')" href="#">Ver Detalle</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                          
                         </ul>
                         </div></td>';
                 echo "</tr>";

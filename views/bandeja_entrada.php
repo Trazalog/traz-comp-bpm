@@ -2,7 +2,7 @@
 <div class="row">
     <div id="bandeja" class="col-md-12">
         <div class="box box-primary">
-            <div class="box-header">
+            <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-list"></i>
                     Bandeja de Tareas
@@ -40,10 +40,10 @@
                                       }
                                       
                                       // TAREA	
-                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2'><cite>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
+                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2 ".($f->tagCase ? $f->tagCase : '')."'><cite style='color: #707069'>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
                                       
                                       foreach ($f->info as $o) {
-                                          echo "<p class='label label-$o->color mr-2'>$o->texto</p>";
+                                          echo "<p style='$o->estilo' class='label label-$o->color mr-2'>$o->texto</p>";
                                       }
                                       
                                       echo '</td>';
@@ -65,7 +65,7 @@
         <!-- /.box-body -->
     </div>
     <!-- /. box -->
-    <div id="miniView" class="view col-xs-8">
+    <div id="miniView" class="view col-sm-8">
 
     </div>
 </div>
@@ -78,14 +78,17 @@
 <script>
 
 $(document).ready( function () {
-    $('#tareas').DataTable();
+    $('#tareas').dataTable({
+        "aaSorting": []
+    });
+// DataTable('#tareas');
 } );
 
 $('.item').single_double_click(function() {
     wo()
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
-    $('#bandeja').removeClass().addClass('col-xs-4');
+    $('#bandeja').removeClass().addClass('hidden-xs col-sm-4');
     // $('#miniView').html('<div class="box"><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>');
     $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'), function(){
         wc();   

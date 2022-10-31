@@ -5,12 +5,15 @@ class Proceso extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-
+//agrego helper de session para validar usuarios logeados
+        $this->load->helper('sesion_helper');
+        //verifica si esta iniciado
+        validarInactividad();
         $this->load->model('Procesos');
     }
 
     public function index()
-    {
+    {  
         $data['device'] = "";
         $rsp =  $this->Procesos->listar();
         if($rsp['status']){
@@ -48,11 +51,16 @@ class Proceso extends CI_Controller
         $data['view'] = $this->deplegarVista($tarea);
         $this->load->view(BPM.'notificacion_estandar', $data);
     }
-
-    public function tomarTarea()
-    {
+    /**
+	* Le asigna la tarea enviada al userId en bonita 
+	* @param integer id de la tarea en bonita
+	* @return array segun resultado 
+	*/
+    public function tomarTarea(){
         $id = $this->input->post('id');
-        echo json_encode($this->bpm->setUsuario($id, userId()));
+        $rsp = $this->bpm->setUsuario($id, userId());
+        $rsp['status'] ? $rsp['user_id'] = userId() : '';
+        echo json_encode($rsp);
     }
 
     public function soltarTarea()
@@ -109,4 +117,14 @@ class Proceso extends CI_Controller
         $data = $this->input->post();
         echo $this->bpm->guardarComentario($data);
     }
+
+
+	public function VistaCliente()
+    {
+		
+
+		return $this->load->view(BPM . 'cliente/vista_cliente');
+    }
+   
+
 }

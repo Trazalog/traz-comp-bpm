@@ -12,6 +12,18 @@ function evaluarEstado() {
     }
 }
 
+//Habilita el boton de iniciar tarea
+function habilitarInicioTareaEstandar() {
+    wo();
+    $(".btn-soltar").show();
+    $(".btn-tomar").hide();
+    //la vista se habilita luego de iniciar la tarea.
+    $("#btnIniciar_tarea").show();
+    $("btnIniciar_tarea").prop("disabled", false);
+    wc();
+}
+
+
 function habilitar() {
 
     $(".btn-soltar").show();
@@ -35,13 +47,22 @@ function tomarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/tomarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+        if (nombreTarea === "Tarea Generica"){    
             if (data['status']) {
-                habilitar();
+                habilitarInicioTareaEstandar();
             } else {
                 alert(data['msj']);
             }
-
+        } else {
+            if (data['status']) {
+                habilitar();
+                task.idUsuarioAsignado = data['user_id'];
+            } else {
+                alert(data['msj']);
+            }
+        }
         },
         error: function(result) {
             alert('Error');
@@ -58,10 +79,20 @@ function soltarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/soltarTarea',
         success: function(data) {
-
+            debugger;
+            var nombreTarea = task.nombreTarea;
+     if (nombreTarea ==="Tarea Generica"){    
+        if (data['status']) {
+            $("#btnIniciar_tarea").hide();
+            $("#btnHecho").removeAttr("style");
+            $("#btnHecho").prop('disabled', true);
+                deshabilitar();
+            }
+        }
             // toma a tarea exitosamente
             if (data['status']) {
                 deshabilitar();
+                task.idUsuarioAsignado = '';
             }
         },
         error: function(result) {
@@ -73,6 +104,7 @@ function soltarTarea() {
 
 function cerrar() {
     if ($('#miniView').length == 0) {
+        $('#mdl-vista').modal('hide');
         linkTo('<?php echo BPM ?>Proceso');
     } else {
         existFunction('closeView');
@@ -80,6 +112,21 @@ function cerrar() {
 }
 
 function guardarComentario() {
+    debugger;
+    var comentario = $('#comentario').val();
+    if (comentario.length == 0 ) {
+					
+	Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Asegurate de escribir un comentario!',
+				footer: ''
+				});
+		
+		return;
+
+                }
+				else{
     var nombUsr = $('#usrName').val();
     var apellUsr = $('#usrLastName').val();
     var comentario = $('#comentario').val();
@@ -93,17 +140,21 @@ function guardarComentario() {
         url: '<?php echo BPM ?>Proceso/guardarComentario',
         success: function(result) {
             var lista = $('#listaComentarios');
-            lista.prepend(
-                '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
-                nombUsr + ' ' + apellUsr +
-                '</a><br><br>' + comentario + '</p></div>'
+            // lista.prepend(
+            //     '<div class="item"><p class="message"><a href="#" class="name"><small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>' +
+            //     nombUsr + ' ' + apellUsr +
+            //     '</a><br><br>' + comentario + '</p></div>'
 
-            );
+            // );
+            lista.prepend('<li><i class="fa fa-user mr-2" style="color: #0773BB;" title="User"></i><h4>' + nombUsr + ' ' + apellUsr +
+                '<small style="float: right">Hace un momento</small></h4><i class="fa fa-commenting-o mr-2" style="color: #0773BB;" title="comment"></i><p>' + comentario + '</p></li>'
+                );
             $('#comentario').val('');
         },
         error: function(result) {
             console.log("Error");
         }
     });
+}
 }
 </script>
