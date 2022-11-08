@@ -480,7 +480,6 @@ function modalReimpresion(e) {
         // verModalImpresion();
         verModalImpresionPedido();
     }
-
     if(proccesname == 'YUDI-NEUMATICOS'){
         // llama modal con datos e img de QR
         getDatos(datos, config);
@@ -488,30 +487,21 @@ function modalReimpresion(e) {
         // verModalImpresion();
         verModalImpresion();
     }
-
-    if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-        // llama modal con datos e img de QR
-        getDatosSein(datos, config);
-        // levanta modal completo para su impresion
-        // verModalImpresion();
-        verModalImpresionPedido();
-
-    }
 }
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
-     var infoid = datos.info_id;
-     var estado = datos.estado;
-      var cliente = datos.nombre;
-     var trabajo = datos.tipo_trabajo;
-     var N_orden = datos.petr_id;
-     var Cod_proyecto = datos.cod_proyecto;
-     var motivo = datos.motivo_rechazo;
+    var infoid = datos.info_id;
+    var estado = datos.estado;
+    var cliente = datos.nombre;
+    var trabajo = datos.tipo_trabajo;
+    var N_orden = datos.petr_id;
+    var Cod_proyecto = datos.cod_proyecto;
+    var motivo = datos.motivo_rechazo;
 
     $.ajax({
         type: 'GET',
-        url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + infoid,
+        url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + N_orden + "/" + infoid,
         success: function(result) {
             var datMapeado = JSON.parse(result);
             datMapeado.Cliente = cliente;
