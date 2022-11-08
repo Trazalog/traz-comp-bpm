@@ -36,30 +36,28 @@
         <!-- <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li> -->
 
     </ul>
-    <div class="tab-content">
-  
+    <div class="tab-content">  
         <div class="tab-pane" id="tab_1">
-                  <div id="cargar_info_actual"></div>
-                </div>
-                <!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_2">
-                    <div id="cargar_comentario"></div>
-                </div>
-                <!-- /.tab-pane -->
-                <div class="tab-pane active" id="tab_3">
-                <div id="cargar_trazabilidad"></div>
-                </div>
-
-                <!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_5">
-                    <div id="cargar_form"></div>
-                </div>
-                <!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_6">
-                    <div id="cargar_listado_hitos"></div>
-                </div>
+            <div id="cargar_info_actual"></div>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_2">
+            <div id="cargar_comentario"></div>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane active" id="tab_3">
+            <div id="cargar_trazabilidad"></div>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_5">
+            <div id="cargar_form"></div>
+        </div>
+        <!-- /.tab-pane -->
+        <div class="tab-pane" id="tab_6">
+            <div id="cargar_listado_hitos"></div>
         </div>
     </div>
+</div>
 
 <script>
 // $(document).ready(function() { 
