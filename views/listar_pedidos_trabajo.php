@@ -5,6 +5,7 @@
     }
 </style>
 <?php 
+
 //obtengo processname
 $proccessname = $this->session->userdata('proccessname'); 
 //dependiendo de el prccessename
@@ -16,6 +17,7 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
     $this->load->view( COD.'componentes/modalPedidoTrabajo');
 }
 ?>
+
 <div class="box box-primary">
     <div class="box-header with-border">
     <input type="hidden" id="proccessname" value="<?php echo $proccessname;?>"  readonly>
@@ -173,6 +175,12 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                 <!--       <button type="button" id="btn-accion" class="btn btn-primary btn-guardar" onclick="guardarTodo()">Guardar</button>-->
             </div>
         </div>
+    </div>
+</div>
+<!-- MODAL DETALLE PEDIDO DE MATERIALES EN LAS TAREAS PLANIFICADAS -->
+<div class="modal modal-fade" id="mdl-detalle-pedidosMateriales">
+    <div class="modal-dialog modal-lm">
+        <?php $this->load->view(BPM.'pedidos_trabajo/mdl_detalle_pedido_materiales'); ?>
     </div>
 </div>
 <script>
@@ -472,7 +480,6 @@ function modalReimpresion(e) {
         // verModalImpresion();
         verModalImpresionPedido();
     }
-
     if(proccesname == 'YUDI-NEUMATICOS'){
         // llama modal con datos e img de QR
         getDatos(datos, config);
@@ -480,30 +487,21 @@ function modalReimpresion(e) {
         // verModalImpresion();
         verModalImpresion();
     }
-
-    if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
-        // llama modal con datos e img de QR
-        getDatosSein(datos, config);
-        // levanta modal completo para su impresion
-        // verModalImpresion();
-        verModalImpresionPedido();
-
-    }
 }
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatos(datos, config) {
 
-     var infoid = datos.info_id;
-     var estado = datos.estado;
-      var cliente = datos.nombre;
-     var trabajo = datos.tipo_trabajo;
-     var N_orden = datos.petr_id;
-     var Cod_proyecto = datos.cod_proyecto;
-     var motivo = datos.motivo_rechazo;
+    var infoid = datos.info_id;
+    var estado = datos.estado;
+    var cliente = datos.nombre;
+    var trabajo = datos.tipo_trabajo;
+    var N_orden = datos.petr_id;
+    var Cod_proyecto = datos.cod_proyecto;
+    var motivo = datos.motivo_rechazo;
 
     $.ajax({
         type: 'GET',
-        url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + infoid,
+        url: "<?php echo base_url(YUDIPROC); ?>Infocodigo/mapeoDatos/" + N_orden + "/" + infoid,
         success: function(result) {
             var datMapeado = JSON.parse(result);
             datMapeado.Cliente = cliente;
@@ -596,5 +594,54 @@ function cargarInfoReimp(datMapeado, estado, config, direccion) {
     }
 
     return;
+}
+//Ver detalle del pedido de materiales en el pedido de trabajo, seccion tareas planificadas
+var detalletarea = null;
+function verDetallePedido(tag) {
+    debugger;
+    // if($('#batch_id').val() == "0")
+    // {
+    //     notificar('Er','Se necesita iniciar etapa para podes hacer pedidos de materiales');
+    //     return;
+    // }
+    var data = JSON.parse($(tag).closest('div').attr('data-json'));
+    // var data = getJson2(detalletarea);
+    reload('#lista-pedidos', data.tapl_id);
+    if (data.rece_id != "0") reload('#lista-receta', data.rece_id);
+    $('#mdl-detalle-pedidosMateriales').modal('show');
+}
+//Muestra la instacia del formulario dinamico asociada a la TAREA STANDAR
+function showForm(tag) {
+    debugger;
+    var data = JSON.parse($(tag).closest('div').attr('data-json'));
+    $mdl = $('#mdl-generico');
+    $mdl.find('.modal-title').html('Formulario Asociado');
+    $mdl.find('.modal-body').empty();
+    if (!data.info_id || data.info_id == "false") {
+
+        Swal.fire({
+            type: 'info',
+            title: 'Info',
+            text: 'Aún no se completó formulario asociado!'
+                        
+            })
+        return;
+    }
+    wo();
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '<?php echo base_url(FRM) ?>Form/obtener/' + data.info_id,
+        success: function(res) {
+            $mdl.find('.modal-body').html(res.html);
+            $mdl.modal('show');
+        },
+        error: function(res) {
+            error();
+        },
+        complete: function() {
+            wc();
+        }
+    });
 }
 </script>
