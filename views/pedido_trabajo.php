@@ -337,10 +337,9 @@ $proccessname = $this->session->userdata('proccessname');
 											)
 
 											$('#frm-PedidoTrabajo')[0].reset();
-											linkTo('<?php  echo BPM ?>Proceso/');
+											linkTo();
 										}
 										})
-
 											}
 
 							} else {
@@ -367,7 +366,7 @@ $proccessname = $this->session->userdata('proccessname');
 							)
 					},
 					complete: function() {
-							wc();
+						wc();
 					}
 			});
 	}
@@ -408,9 +407,6 @@ $proccessname = $this->session->userdata('proccessname');
 		band = 1;
 	}
 
-
-
-
 	//Se debe validar el formulario antes de cerrar el modal
 	// de lo contrario frm_validar() retorna true; y no lo es
 	async function cierraPedidoTrabajo(){
@@ -437,7 +433,7 @@ $proccessname = $this->session->userdata('proccessname');
 			}
 			wo();
 			var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
-			guardarPedidoTrabajo(newInfoID)
+			guardarPedidoTrabajo(newInfoID);
 		}else{
 			guardarPedidoTrabajo();
 		}
