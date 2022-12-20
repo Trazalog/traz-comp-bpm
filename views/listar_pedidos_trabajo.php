@@ -524,23 +524,25 @@ function getDatos(datos, config) {
 }
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
 function getDatosSein(datos, config) {
+    debugger;
     var infoid = datos.info_id;
     var estado = datos.estado;
     var cliente = datos.nombre;
-    var trabajo = datos.tipo_trabajo;
     var N_orden = datos.petr_id;
-    var Cod_proyecto = datos.cod_proyecto;
-    var motivo = datos.motivo_rechazo;
+    var descripcion = datos.descripcion;
+    var fec_inicio = datos.fec_inicio;
+    config.pixel = "3";
 
     $.ajax({
         type: 'GET',
         url: "<?php echo base_url(SEIN); ?>Infocodigo/mapeoDatos/" + infoid,
         success: function(result) {
             var datMapeado = JSON.parse(result);
-            // datMapeado.Cliente = cliente;
-            // datMapeado.Trabajo = trabajo;
-            // datMapeado.N_orden = N_orden;
-            // datMapeado.Motivo = motivo;
+            datMapeado.fabricante = "Servicios Industriales";
+            datMapeado.cliente = cliente;
+            datMapeado.numero_pedido = N_orden;
+            datMapeado.descripcion = descripcion;
+            datMapeado.fec_inicio = fec_inicio;
 
             console.log('data mapeado: ');
             console.table(datMapeado);
@@ -589,7 +591,10 @@ function cargarInfoReimp(datMapeado, estado, config, direccion) {
             break;
 
         default:
-            // code...
+            //agrega cuerpo de la etiqueta
+            $("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>Infocodigo/pedidoTrabajoFinal", datMapeado);
+            // agrega codigo QR al modal impresion
+            getQR(config, datMapeado, direccion);
             break;
     }
 
