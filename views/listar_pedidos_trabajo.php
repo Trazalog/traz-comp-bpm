@@ -32,7 +32,7 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
             <div class="col-md-5">
                 <div id="botonToggleOnOff" style="text-align: center;" class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-6">
                     <div class="form-check">
-                        <label class="checkboxtext">Mostrar Pedidos Finalizados</label>
+                        <label class="checkboxtext">Mostrar Pedidos Terminados</label>
                     </div>
                     <label class="switch">
                         <input type="checkbox" id="pedidos_finalizados" name="pedidos_finalizados" onclick="ActualizaTabla()">
