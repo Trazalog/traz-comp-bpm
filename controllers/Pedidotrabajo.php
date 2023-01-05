@@ -530,4 +530,10 @@ public function cargar_formulario_asociado(){
         $data['pedidos'] = $this->Pedidos->obtenerXTarea($tapl_id);
         $this->load->view('pedidos_trabajo/listado_pedidos_materiales', $data);
     }
+
+    public function pedidosTrabajosconFinalizados()
+    {
+       $data = $this->Pedidotrabajos->obtenerPedidosconFinalizados(empresa());
+       echo json_encode($data);
+    }
 }
