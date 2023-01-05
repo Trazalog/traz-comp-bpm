@@ -24,8 +24,23 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
         <h4 class="box-title">Listado de Pedido Trabajo</h4>
     </div>
     <div class="box-body">
-        <button id="btn-agregarPedido" class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-            onclick="$('#mdl-peta').modal('show')">Agregar</button>
+        <div class="row">
+            <div class="col-md-3">
+                <button id="btn-agregarPedido" class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                onclick="$('#mdl-peta').modal('show')">Agregar</button>
+            </div>
+            <div class="col-md-5">
+                <div id="botonToggleOnOff" style="text-align: center;" class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-6">
+                    <div class="form-check">
+                        <label class="checkboxtext">Mostrar Pedidos Finalizados</label>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="pedidos_finalizados" name="pedidos_finalizados" onclick="ActualizaTabla()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
         <br>
         <div class="box-body table-scroll table-responsive">
             <table id="tbl-pedidos" class="table table-striped table-hover">
@@ -649,4 +664,131 @@ function showForm(tag) {
         }
     });
 }
+
+
+////////// Actualizacion de tabla pedidos con/sin finalizados//////////// 
+function ActualizaTabla(){
+    check = $('#pedidos_finalizados').is(':checked');
+    if(check)
+    {
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/pedidosTrabajosconFinalizados',
+            success: function(res) {
+                tabla = $('#tbl-pedidos').DataTable();
+	    	    tabla.clear().draw(); //limpio la tabla
+                $.each(res.data, function(i, value){
+                    var fecha= value.fec_inicio.slice(0, -6);
+                                    fila = "<tr id='"+ value.petr_id +"' data-json= '"+ JSON.stringify(value) +"'>" +
+                					        '<td class="text-center text-light-blue"><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>' +
+                                                                                    '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>' +
+                                                                                    '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>' +
+                                            '</td>'+
+                					        '<td>' + value.petr_id + '</td>' +
+                					        '<td>' + value.cod_proyecto + '</td>' +
+                					        '<td>' + value.nombre +'</td>' +
+                					        '<td>' + value.dir_entrega +'</td>' +
+                					        '<td>' + value.tipo_trabajo + '</td>' +
+                					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
+                					        '<td>' + colorEstado(value.estado) + '</td>' +
+                					    '</tr>';
+                					tabla.row.add($(fila)).draw();
+	    		});
+            },
+            error: function(res) {
+                error();
+            },
+            complete: function() {
+                wc();
+            }
+        });
+    }
+    else
+    {
+        var pedidos = <?php echo json_encode($pedidos) ?>;
+        tabla = $('#tbl-pedidos').DataTable();
+		tabla.clear().draw(); //limpio la tabla
+            $.each(pedidos, function(i, value){
+                var fecha= value.fec_inicio.slice(0, -6);
+                                fila = "<tr id='"+ value.petr_id +"' data-json= '"+ JSON.stringify(value) +"'>" +
+            					        '<td class="text-center text-light-blue"><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>' +
+                                                                                '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>' +
+                                                                                '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>' +
+                                        '</td>'+
+            					        '<td>' + value.petr_id + '</td>' +
+            					        '<td>' + value.cod_proyecto + '</td>' +
+            					        '<td>' + value.nombre +'</td>' +
+            					        '<td>' + value.dir_entrega +'</td>' +
+            					        '<td>' + value.tipo_trabajo + '</td>' +
+            					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
+            					        '<td>' + colorEstado(value.estado) + '</td>' +
+            					    '</tr>';
+            					tabla.row.add($(fila)).draw();
+			});
+    }
+}
+var proceso =" <?php echo $proccessname ?>";
+//////color bolita de Estado
+function colorEstado(estado){
+ if(estado == null)
+    {return bolita("SIN ESTADO", "blank");}
+
+    if(proceso == 'YUDI-NEUMATICOS')
+    {
+	    switch (estado) {
+	    	case 'estados_procesosPROC_EN_CURSO' , 'estados_yudicaEN_CURSO':
+	    		return bolita('EN CURSO', 'green');
+	    		break;
+	    	case 'estados_yudicaREPROCESO':
+	    		return bolita('REPROCESO', 'yellow');
+	    		break;
+	    	case 'estados_yudicaENTREGADO':
+	    		return bolita('ENTREGADO', '');
+	    		break;
+	    	case 'estados_yudicaRECHAZADO', 'estados_seinRECHAZADO':
+	    		return bolita('RECHAZADO', 'red');
+	    		break;
+            default:
+            return estado;
+            break;
+        }
+    }
+    else
+    {
+        switch (estado){
+            case 'estados_seinEN_CURSO':
+	    		return bolita('EN CURSO', 'green');
+	    		break;
+            case 'estados_seinCOTIZACION_ENVIADA':
+		    	return bolita('COTIZACION ENVIADA', 'navy');
+		    	break;
+            case 'estados_seinENTREGA_PENDIENTE':
+		    	return bolita('ENTREGA PENDIENTE', 'orange');
+		    	break;
+            case 'estados_seinCORRECCION_NC':
+		    	return bolita('CORRECCION NC', 'teal');
+		    	break;
+            case 'estados_seinRECHAZADO':
+	    		return bolita('RECHAZADO', 'red');
+	    		break; 
+            case 'estados_seinCANCELADO_NC':
+		    	return bolita('CANCELADO NC', 'red');
+		    	break;
+            case 'estados_seinCONTRATADA':
+		    	return bolita('CONTRATADO', '0b5a36');
+		    	break; 
+            case 'estados_procesosTRABAJO_TERMINADO':
+		    	return bolita('TRABAJO TERMINADO', '0b5a36');
+		    	break;
+            case 'estados_seinENTREGADO':
+		    	return bolita('ENTREGADO', 'gray');
+		    	break;      
+            default:
+                return estado;
+                break;
+            }
+        }
+	}
+
 </script>
