@@ -148,7 +148,7 @@ class Pedidotrabajos extends CI_Model
 		**/
     public function obtener($emprId)
     {
-        $url = REST_PRO . "/pedidoTrabajo/$emprId";
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId";
         log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
         return wso2($url);
         
@@ -211,5 +211,12 @@ class Pedidotrabajos extends CI_Model
 					return wso2($url);
 			}
 		// FIN AGREGADO DE MERGE DE CHECHO
+
+        public function obtenerPedidosconFinalizados($emprId)
+        {
+            $url = REST_PRO . "/pedidoTrabajo/$emprId";
+            log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
+            return wso2($url);
+        }
 
 }
