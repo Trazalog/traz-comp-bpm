@@ -666,11 +666,11 @@ function showForm(tag) {
 }
 
 
-////////// Actualizacion de tabla pedidos con/sin finalizados//////////// 
+////////// Actualizacion de tabla pedidos con/sin finalizados////////////
+var pedidos = <?php echo json_encode($pedidos) ?>;
 function ActualizaTabla(){
     check = $('#pedidos_finalizados').is(':checked');
-    if(check)
-    {
+    if(check){
         $.ajax({
             type: 'GET',
             dataType: 'JSON',
@@ -688,7 +688,7 @@ function ActualizaTabla(){
                 					        '<td>' + value.petr_id + '</td>' +
                 					        '<td>' + value.cod_proyecto + '</td>' +
                 					        '<td>' + value.nombre +'</td>' +
-                					        '<td>' + value.dir_entrega +'</td>' +
+                					        '<td>' + (_isset(value.dir_entrega) ? value.dir_entrega : '') +'</td>' +
                 					        '<td>' + value.tipo_trabajo + '</td>' +
                 					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
                 					        '<td>' + colorEstado(value.estado) + '</td>' +
@@ -703,10 +703,7 @@ function ActualizaTabla(){
                 wc();
             }
         });
-    }
-    else
-    {
-        var pedidos = <?php echo json_encode($pedidos) ?>;
+    }else{
         tabla = $('#tbl-pedidos').DataTable();
 		tabla.clear().draw(); //limpio la tabla
             $.each(pedidos, function(i, value){
@@ -719,7 +716,7 @@ function ActualizaTabla(){
             					        '<td>' + value.petr_id + '</td>' +
             					        '<td>' + value.cod_proyecto + '</td>' +
             					        '<td>' + value.nombre +'</td>' +
-            					        '<td>' + value.dir_entrega +'</td>' +
+            					        '<td>' + (_isset(value.dir_entrega) ? value.dir_entrega : '') +'</td>' +
             					        '<td>' + value.tipo_trabajo + '</td>' +
             					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
             					        '<td>' + colorEstado(value.estado) + '</td>' +
@@ -728,14 +725,12 @@ function ActualizaTabla(){
 			});
     }
 }
-var proceso =" <?php echo $proccessname ?>";
+var proceso ="<?php echo $proccessname ?>";
 //////color bolita de Estado
 function colorEstado(estado){
- if(estado == null)
-    {return bolita("SIN ESTADO", "blank");}
+    if(estado == null)return bolita("SIN ESTADO", "blank");
 
-    if(proceso == 'YUDI-NEUMATICOS')
-    {
+    if(proceso == 'YUDI-NEUMATICOS'){
 	    switch (estado) {
 	    	case 'estados_procesosPROC_EN_CURSO' , 'estados_yudicaEN_CURSO':
 	    		return bolita('EN CURSO', 'green');
@@ -746,16 +741,14 @@ function colorEstado(estado){
 	    	case 'estados_yudicaENTREGADO':
 	    		return bolita('ENTREGADO', '');
 	    		break;
-	    	case 'estados_yudicaRECHAZADO', 'estados_seinRECHAZADO':
+	    	case 'estados_yudicaRECHAZADO':
 	    		return bolita('RECHAZADO', 'red');
 	    		break;
             default:
             return estado;
             break;
         }
-    }
-    else
-    {
+    }else{
         switch (estado){
             case 'estados_seinEN_CURSO':
 	    		return bolita('EN CURSO', 'green');
@@ -790,5 +783,4 @@ function colorEstado(estado){
             }
         }
 	}
-
 </script>
