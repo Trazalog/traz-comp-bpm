@@ -91,23 +91,23 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                         if ($proccessname == 'YUDI-NEUMATICOS') {
                             switch ($estado) {
                                 case 'estados_procesosPROC_EN_CURSO':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo '<td>' . bolita('EN CURSO', 'green') . '</td>';
                                 break;
                 
                                 case 'estados_yudicaEN_CURSO':
-                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo '<td>' . bolita('EN CURSO', 'green') . '</td>' ;  
                                 break;
                 
                                 case 'estados_yudicaREPROCESO':
-                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-yellow">REPROCESO</span></td>';
+                                    echo '<td>' .bolita('REPROCESO', 'yellow') . '</td>' ;
                                 break;
                 
                                 case 'estados_yudicaENTREGADO':
-                                    echo '<td><span data-toggle="tooltip" title="" class="badge">ENTREGADO</span></td>';
+                                    echo '<td>' . bolita('ENTREGADO', 'gray') . '</td>' ;
                                 break;
                 
                                 case 'estados_yudicaRECHAZADO':
-                                    echo '<td><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                    echo '<td>' . bolita('RECHAZADO', 'red') . '</td>' ;
                                 break;
                             
                                 default:
@@ -117,31 +117,31 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                         }else{
                             switch ($estado) {
                                 case 'estados_seinEN_CURSO':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-green">EN CURSO</span></td>';
+                                    echo  '<td>' . bolita('EN CURSO', 'green') . '</td>' ;
                                 break;
                                 case 'estados_seinCOTIZACION_ENVIADA':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-navy">COTIZACION ENVIADA</span></td>';
+                                    echo '<td>' . bolita('COTIZACION ENVIADA', 'navy') . '</td>' ;
                                 break;
                                 case 'estados_seinENTREGA_PENDIENTE':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-orange">ENTREGA PENDIENTE</span></td>';                               
+                                    echo '<td>' . bolita('ENTREGA PENDIENTE', 'orange') . '</td>' ;                           
                                 break;
                                 case 'estados_seinCORRECCION_NC':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-teal">CORRECCION NC</span></td>';
+                                    echo '<td>' . bolita('CORRECCION NC', 'teal') . '</td>' ; 
                                 break;
                                 case 'estados_seinRECHAZADO':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">RECHAZADO</span></td>';
+                                    echo '<td>' . bolita('RECHAZADO', 'red') . '</td>' ;
                                 break;
                                 case 'estados_seinCANCELADO_NC':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-red">CANCELADO NC</span></td>';
+                                    echo '<td>' . bolita('CANCELADO NC', 'red') . '</td>' ;
                                 break;
                                 case 'estados_seinCONTRATADA':
-                                    echo '<td class="text-center"><span style="background-color:#0b5a36 !important" data-toggle="tooltip" title="" class="badge">CONTRATADO</span></td>';
+                                    echo '<td>' . bolita('CONTRATADO', '0b5a36') . '</td>' ;
                                 break;
                                 case 'estados_procesosTRABAJO_TERMINADO':
-                                    echo '<td class="text-center"><span style="background-color: #818387 !important;" data-toggle="tooltip" title="" class="badge">TRABAJO TERMINADO</span></td>';
+                                    echo '<td>' . bolita('TRABAJO TERMINADO', '0b5a36') . '</td>' ;
                                 break;
                                 case 'estados_seinENTREGADO':
-                                    echo '<td class="text-center"><span data-toggle="tooltip" title="" class="badge bg-gray">ENTREGADO</span></td>';
+                                    echo '<td>' . bolita('ENTREGADO', 'gray') . '</td>' ;
                                 break;
                                 default:
                                     echo '<td class="text-center"><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
@@ -732,14 +732,17 @@ function colorEstado(estado){
 
     if(proceso == 'YUDI-NEUMATICOS'){
 	    switch (estado) {
-	    	case 'estados_procesosPROC_EN_CURSO' , 'estados_yudicaEN_CURSO':
+	    	case 'estados_procesosPROC_EN_CURSO':
 	    		return bolita('EN CURSO', 'green');
 	    		break;
+            case 'estados_yudicaEN_CURSO':
+	    		return bolita('EN CURSO', 'green');
+	    		break;    
 	    	case 'estados_yudicaREPROCESO':
 	    		return bolita('REPROCESO', 'yellow');
 	    		break;
 	    	case 'estados_yudicaENTREGADO':
-	    		return bolita('ENTREGADO', '');
+	    		return bolita('ENTREGADO', 'gray');
 	    		break;
 	    	case 'estados_yudicaRECHAZADO':
 	    		return bolita('RECHAZADO', 'red');

@@ -148,7 +148,13 @@ class Pedidotrabajos extends CI_Model
 		**/
     public function obtener($emprId)
     {
-        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId";
+        $proccessname = $this->session->userdata('proccessname');
+            if ($proccessname == 'YUDI-NEUMATICOS') {
+                $estadoFinal = "estados_yudicaENTREGADO";
+            } else{
+                 $estadoFinal ="estados_procesosFINALIZADO";
+            } 
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal";
         log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
         return wso2($url);
         
