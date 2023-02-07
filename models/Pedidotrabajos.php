@@ -146,16 +146,24 @@ class Pedidotrabajos extends CI_Model
 		* @param  $emprId
 		* @return lista de pedido de trabajo
 		**/
-    public function obtener($emprId)
-    {
+    public function obtener($emprId){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | obtener($emprId)  | $emprId: ' .$emprId);
+
         $proccessname = $this->session->userdata('proccessname');
-            if ($proccessname == 'YUDI-NEUMATICOS') {
-                $estadoFinal = "estados_yudicaENTREGADO";
-            } else{
-                 $estadoFinal ="estados_procesosFINALIZADO";
-            } 
+        $this->db->select('p.esfi_id');
+        $this->db->from('pro.procesos p');
+        $this->db->where('p.proc_id', $proccessname);
+        $this->db->limit(1);
+
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+            $estadoFinal = $query->result_object()[0]->esfi_id;
+        }else{
+            $estadoFinal = "estados_procesosFINALIZADO";
+        }
+
         $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal";
-        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
         return wso2($url);
         
     }
