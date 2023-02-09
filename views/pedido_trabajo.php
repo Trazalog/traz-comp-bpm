@@ -374,37 +374,38 @@ $proccessname = $this->session->userdata('proccessname');
 
 
 	function modalCodigosPedido(){
-		if (band == 0) {
-			// configuracion de codigo QR
-			var config = {};
-			config.titulo = "Pedido de Trabajo";
-			config.pixel = "2";
-			config.level = "S";
-			config.framSize = "2";
-			// info para immprimir
-			var arraydatos = {};
-			arraydatos.N_orden = $('#petr_id').val();
-			arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
-			arraydatos.Cliente = $('#clie_id option:selected').text();
-			arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
-			arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
-			arraydatos.Serie = $('#num_serie').val();
-			arraydatos.Num = $('#num_cubiertas').val();
-			arraydatos.Zona = $('#zona').val();
-			arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
-			arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
+		//Limpio la data del modal
+		$("#infoEtiqueta").empty();
+		$("#contenedorCodigo").empty();
+		$("#infoFooter").empty();
+		// configuracion de codigo QR
+		var config = {};
+		config.titulo = "Pedido de Trabajo";
+		config.pixel = "2";
+		config.level = "S";
+		config.framSize = "2";
+		// info para immprimir
+		var arraydatos = {};
+		arraydatos.N_orden = $('#petr_id').val();
+		arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
+		arraydatos.Cliente = $('#clie_id option:selected').text();
+		arraydatos.Medida = $('select[name="medidas_yudica"]').select2('data')[0].text;
+		arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
+		arraydatos.Serie = $('#num_serie').val();
+		arraydatos.Num = $('#num_cubiertas').val();
+		arraydatos.Zona = $('#zona').val();
+		arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
+		arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
 
 
-			// si la etiqueta es derechazo
-			arraydatos.Motivo = $('#motivo_rechazo').val();			
-			// info para grabar en codigo QR
-			armarInfo(arraydatos);
-			//agrega codigo QR al modal impresion
-			getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
-		}
+		// si la etiqueta es derechazo
+		arraydatos.Motivo = $('#motivo_rechazo').val();			
+		// info para grabar en codigo QR
+		armarInfo(arraydatos);
+		//agrega codigo QR al modal impresion
+		getQR(config, arraydatos, 'codigosQR/Traz-comp-Yudica');
 		// llama modal con datos e img de QR ya ingresados
 		verModalImpresion();
-		band = 1;
 	}
 
 	//Se debe validar el formulario antes de cerrar el modal
