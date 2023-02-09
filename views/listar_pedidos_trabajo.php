@@ -670,6 +670,7 @@ function showForm(tag) {
 var pedidos = <?php echo json_encode($pedidos) ?>;
 function ActualizaTabla(){
     check = $('#pedidos_finalizados').is(':checked');
+    wo();
     if(check){
         $.ajax({
             type: 'GET',
