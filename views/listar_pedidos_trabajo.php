@@ -57,100 +57,7 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    $proceso = $this->Pedidotrabajos->procesos($proccessname)->proceso;
-                    foreach($pedidos as $rsp){
-
-                        $petr_id = $rsp->petr_id;
-                        $nombre_cliente = $rsp->nombre;
-                        $tipo = $rsp->tipo;
-                        $descripcion = $rsp->descripcion;
-                        $fec_inicio = $rsp->fec_inicio;
-                        $estado = $rsp->estado;
-                        $case_id = $rsp->case_id;
-                        $proc_id = $rsp->proc_id;
-                        $tipo_trabajo = $rsp->tipo_trabajo;
-                        $dir_entrega = $rsp->dir_entrega;
-                        $cod_proyecto = $rsp->cod_proyecto;
-
-                        echo "<tr id='$petr_id' case_id='$case_id' data-json='" . json_encode($rsp) . "'>";
-                        echo "<td class='text-center text-light-blue'>";
-                        echo '<i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
-                        echo '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
-                        echo '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
-                        echo "</td>";
-                        echo '<td>'.$petr_id.'</td>';
-                        echo '<td>'.$cod_proyecto.'</td>';
-                        echo '<td>'.$nombre_cliente.'</td>';
-                        echo '<td>'.$dir_entrega.'</td>';
-                        echo '<td>'.$tipo_trabajo.'</td>';
-                        echo '<td>'.formatFechaPG($fec_inicio).'</td>';
-                        if ($estado == NULL) {
-                            $estado ="SIN ESTADO";
-                        }
-                        if ($proccessname == 'YUDI-NEUMATICOS') {
-                            switch ($estado) {
-                                case 'estados_procesosPROC_EN_CURSO':
-                                    echo '<td>' . bolita('EN CURSO', 'green') . '</td>';
-                                break;
-                
-                                case 'estados_yudicaEN_CURSO':
-                                    echo '<td>' . bolita('EN CURSO', 'green') . '</td>' ;  
-                                break;
-                
-                                case 'estados_yudicaREPROCESO':
-                                    echo '<td>' .bolita('REPROCESO', 'yellow') . '</td>' ;
-                                break;
-                
-                                case 'estados_yudicaENTREGADO':
-                                    echo '<td>' . bolita('ENTREGADO', 'gray') . '</td>' ;
-                                break;
-                
-                                case 'estados_yudicaRECHAZADO':
-                                    echo '<td>' . bolita('RECHAZADO', 'red') . '</td>' ;
-                                break;
-                            
-                                default:
-                                    echo '<td><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-                                break;
-                            }
-                        }else{
-                            switch ($estado) {
-                                case 'estados_seinEN_CURSO':
-                                    echo  '<td>' . bolita('EN CURSO', 'green') . '</td>' ;
-                                break;
-                                case 'estados_seinCOTIZACION_ENVIADA':
-                                    echo '<td>' . bolita('COTIZACION ENVIADA', 'navy') . '</td>' ;
-                                break;
-                                case 'estados_seinENTREGA_PENDIENTE':
-                                    echo '<td>' . bolita('ENTREGA PENDIENTE', 'orange') . '</td>' ;                           
-                                break;
-                                case 'estados_seinCORRECCION_NC':
-                                    echo '<td>' . bolita('CORRECCION NC', 'teal') . '</td>' ; 
-                                break;
-                                case 'estados_seinRECHAZADO':
-                                    echo '<td>' . bolita('RECHAZADO', 'red') . '</td>' ;
-                                break;
-                                case 'estados_seinCANCELADO_NC':
-                                    echo '<td>' . bolita('CANCELADO NC', 'red') . '</td>' ;
-                                break;
-                                case 'estados_seinCONTRATADA':
-                                    echo '<td>' . bolita('CONTRATADO', '0b5a36') . '</td>' ;
-                                break;
-                                case 'estados_procesosTRABAJO_TERMINADO':
-                                    echo '<td>' . bolita('TRABAJO TERMINADO', '0b5a36') . '</td>' ;
-                                break;
-                                case 'estados_seinENTREGADO':
-                                    echo '<td>' . bolita('ENTREGADO', 'gray') . '</td>' ;
-                                break;
-                                default:
-                                    echo '<td class="text-center"><button type="button" class="btn btn-secondary">'.$estado.'</button></td>';
-                                break;
-                            }
-                        }
-                        echo '</tr>';
-                    }
-                    ?>
+                    <!-- Definicion en inicio de datatable -->
                 </tbody>
             </table>
         </div>
@@ -199,11 +106,12 @@ if ($proccessname == 'YUDI-NEUMATICOS') {
     </div>
 </div>
 <script>
-//Funcion de datatable para extencion de botones exportar
-//excel, pdf, copiado portapapeles e impresion
+
 
 $(document).ready(function() {
     $('#tbl-pedidos').DataTable({
+        //Funcion de datatable para extencion de botones exportar
+        //excel, pdf, copiado portapapeles e impresion
         responsive: true,
         language: {
             url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
@@ -253,7 +161,167 @@ $(document).ready(function() {
                 filename: 'Pedidos de Trabajo',
                 text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
             }
-        ]
+        ],
+        //Funcion de datatable para paginacion de los pedidos de trabajo
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'ajax':{
+            type: 'POST',
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado'
+        },
+        'columnDefs':[
+            {
+                //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
+                "defaultContent": "-",
+                "targets": "_all",
+            },
+            {
+                'targets':[0],
+                 //agregado de class con el estilo de las acciones
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                    $(td).attr('class', 'text-center text-light-blue'); 
+                },
+                'data': 'acciones',
+                'render': function(data,type,row){
+                    var petr_id=row['petr_id'];
+                    var case_id=row['case_id'];
+                    var json=JSON.stringify(row); 
+                    var r = `<tr>`;
+                        r +='<td><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
+                        r +='<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
+                        r +='<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
+                        r +="</td>";
+                    return r;
+                }
+            },
+            {
+                'targets':[1],
+                'data':'petr_id',
+                'render': function(data, type, row){
+                    return `<td class="petr_id">${row['petr_id']}</td>`;
+                }
+            },
+            {
+                'targets':[2],
+                'data':'cod_proyecto',
+                'render': function(data, type, row){
+                    return `<td class="cod_proyecto">${row['cod_proyecto']}</td>`;
+                }
+            },
+            {
+                'targets':[3],
+                'data':'nombre',
+                'render': function(data, type, row){
+                    return `<td class="nombre_cliente">${row['nombre']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'dir_entrega',
+                'render': function(data, type, row){
+                    return `<td class="dir_entrega">${row['dir_entrega']}</td>`;
+                }
+            },
+            {
+                'targets':[5],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    return `<td class="tipo_trabajo">${row['tipo_trabajo']}</td>`;
+                }
+            },
+            {
+                'targets':[6],
+                'data':'fec_inicio',
+                'render': function(data, type, row){   
+                    var fec_inicio ='';              
+                    fec_inicio =  dateFormat(row['fec_inicio']) ;
+                    return `<td class="fec_inicio">${fec_inicio}</td>`;
+                }
+            },
+            {
+                'targets':[7],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    var proccessname = '<?php echo $proccessname ?>';
+                    var r = '';
+                    var estado = row['estado']
+                    if (!estado) {
+                            estado ="SIN ESTADO";
+                    }
+                    if (proccessname == 'YUDI-NEUMATICOS') {
+                            switch (estado) {
+                                case 'estados_procesosPROC_EN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>';
+                                break;
+                
+                                case 'estados_yudicaEN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;  
+                                break;
+                
+                                case 'estados_yudicaREPROCESO':
+                                    r = '<td>' + bolita('REPROCESO', 'yellow') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                            
+                                default:
+                                    r = '<td><button type="button" class="btn btn-secondary">' + estado +'</button></td></tr>';
+                                break; 
+                            }
+                        }else{
+                            switch (estado) {
+                                case 'estados_seinEN_CURSO':
+                                    r =  '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCOTIZACION_ENVIADA':
+                                    r = '<td>' + bolita('COTIZACION ENVIADA', 'navy') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGA_PENDIENTE':
+                                    r = '<td>' + bolita('ENTREGA PENDIENTE', 'orange') + '</td></tr>' ;                           
+                                break;
+                                case 'estados_seinCORRECCION_NC':
+                                    r = '<td>' + bolita('CORRECCION NC', 'teal') + '</td></tr>' ; 
+                                break;
+                                case 'estados_seinRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCANCELADO_NC':
+                                    r = '<td>' + bolita('CANCELADO NC', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCONTRATADA':
+                                    r = '<td>' + bolita('CONTRATADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_procesosTRABAJO_TERMINADO':
+                                    r = '<td>' + bolita('TRABAJO TERMINADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                                default:
+                                    r = '<td class="text-center"><button type="button" class="btn btn-secondary">'+ estado +'</button></td></tr>';
+                                break;
+                            }
+                        }
+                    
+                    return r;
+                }
+            }
+        ],
+        //agregado de data-json al tr de la tabla
+        createdRow:function( row, data, dataIndex ) {
+                    json = JSON.stringify(data);
+                    $(row).attr('data-json', json);
+                    $(row).attr('id', data['petr_id']);
+                    $(row).attr('case_id', data['case_id']);
+        },
     });
 });
 //funcion ver pedido
@@ -667,124 +735,450 @@ function showForm(tag) {
 
 
 ////////// Actualizacion de tabla pedidos con/sin finalizados////////////
-var pedidos = <?php echo json_encode($pedidos) ?>;
+//var pedidos = <?php echo json_encode($pedidos) ?>;
 function ActualizaTabla(){
     check = $('#pedidos_finalizados').is(':checked');
+    tabla = $('#tbl-pedidos').DataTable();
     wo();
     if(check){
-        $.ajax({
-            type: 'GET',
-            dataType: 'JSON',
-            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/pedidosTrabajosconFinalizados',
-            success: function(res) {
-                tabla = $('#tbl-pedidos').DataTable();
-	    	    tabla.clear().draw(); //limpio la tabla
-                $.each(res.data, function(i, value){
-                    var fecha= value.fec_inicio.slice(0, -6);
-                                    fila = "<tr id='"+ value.petr_id +"' data-json= '"+ JSON.stringify(value) +"'>" +
-                					        '<td class="text-center text-light-blue"><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>' +
-                                                                                    '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>' +
-                                                                                    '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>' +
-                                            '</td>'+
-                					        '<td>' + value.petr_id + '</td>' +
-                					        '<td>' + value.cod_proyecto + '</td>' +
-                					        '<td>' + value.nombre +'</td>' +
-                					        '<td>' + (_isset(value.dir_entrega) ? value.dir_entrega : '') +'</td>' +
-                					        '<td>' + value.tipo_trabajo + '</td>' +
-                					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
-                					        '<td>' + colorEstado(value.estado) + '</td>' +
-                					    '</tr>';
-                					tabla.row.add($(fila)).draw();
-	    		});
+	    tabla.destroy(); 
+        $('#tbl-pedidos').DataTable({
+        //Funcion de datatable para extencion de botones exportar
+        //excel, pdf, copiado portapapeles e impresion
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedido de Trabajo',
+                filename: 'pedido_trabajo',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
             },
-            error: function(res) {
-                error();
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
             },
-            complete: function() {
-                wc();
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
             }
-        });
+        ],
+        //Funcion de datatable para paginacion de los pedidos de trabajo
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'ajax':{
+            type: 'POST',
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado',
+            data: {PedidosFinalizados:true}  
+        },
+        'columnDefs':[
+            {
+                //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
+                "defaultContent": "-",
+                "targets": "_all",
+            },
+            {
+                'targets':[0],
+                 //agregado de class con el estilo de las acciones
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                    $(td).attr('class', 'text-center text-light-blue'); 
+                },
+                'data': 'acciones',
+                'render': function(data,type,row){
+                    var petr_id=row['petr_id'];
+                    var case_id=row['case_id'];
+                    var json=JSON.stringify(row); 
+                    var r = `<tr>`;
+                        r +='<td><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
+                        r +='<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
+                        r +='<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
+                        r +="</td>";
+                    return r;
+                }
+            },
+            {
+                'targets':[1],
+                'data':'petr_id',
+                'render': function(data, type, row){
+                    return `<td class="petr_id">${row['petr_id']}</td>`;
+                }
+            },
+            {
+                'targets':[2],
+                'data':'cod_proyecto',
+                'render': function(data, type, row){
+                    return `<td class="cod_proyecto">${row['cod_proyecto']}</td>`;
+                }
+            },
+            {
+                'targets':[3],
+                'data':'nombre',
+                'render': function(data, type, row){
+                    return `<td class="nombre_cliente">${row['nombre']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'dir_entrega',
+                'render': function(data, type, row){
+                    return `<td class="dir_entrega">${row['dir_entrega']}</td>`;
+                }
+            },
+            {
+                'targets':[5],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    return `<td class="tipo_trabajo">${row['tipo_trabajo']}</td>`;
+                }
+            },
+            {
+                'targets':[6],
+                'data':'fec_inicio',
+                'render': function(data, type, row){   
+                    var fec_inicio ='';              
+                    fec_inicio =  dateFormat(row['fec_inicio']) ;
+                    return `<td class="fec_inicio">${fec_inicio}</td>`;
+                }
+            },
+            {
+                'targets':[7],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    var proccessname = '<?php echo $proccessname ?>';
+                    var r = '';
+                    var estado = row['estado']
+                    if (!estado) {
+                            estado ="SIN ESTADO";
+                    }
+                    if (proccessname == 'YUDI-NEUMATICOS') {
+                            switch (estado) {
+                                case 'estados_procesosPROC_EN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>';
+                                break;
+                
+                                case 'estados_yudicaEN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;  
+                                break;
+                
+                                case 'estados_yudicaREPROCESO':
+                                    r = '<td>' + bolita('REPROCESO', 'yellow') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                            
+                                default:
+                                    r = '<td><button type="button" class="btn btn-secondary">' + estado +'</button></td></tr>';
+                                break; 
+                            }
+                        }else{
+                            switch (estado) {
+                                case 'estados_seinEN_CURSO':
+                                    r =  '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCOTIZACION_ENVIADA':
+                                    r = '<td>' + bolita('COTIZACION ENVIADA', 'navy') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGA_PENDIENTE':
+                                    r = '<td>' + bolita('ENTREGA PENDIENTE', 'orange') + '</td></tr>' ;                           
+                                break;
+                                case 'estados_seinCORRECCION_NC':
+                                    r = '<td>' + bolita('CORRECCION NC', 'teal') + '</td></tr>' ; 
+                                break;
+                                case 'estados_seinRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCANCELADO_NC':
+                                    r = '<td>' + bolita('CANCELADO NC', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCONTRATADA':
+                                    r = '<td>' + bolita('CONTRATADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_procesosTRABAJO_TERMINADO':
+                                    r = '<td>' + bolita('TRABAJO TERMINADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                                default:
+                                    r = '<td class="text-center"><button type="button" class="btn btn-secondary">'+ estado +'</button></td></tr>';
+                                break;
+                            }
+                        }
+                    
+                    return r;
+                }
+            }
+        ],
+        //agregado de data-json al tr de la tabla
+        createdRow:function( row, data, dataIndex ) {
+                    json = JSON.stringify(data);
+                    $(row).attr('data-json', json);
+                    $(row).attr('id', data['petr_id']);
+                    $(row).attr('case_id', data['case_id']);
+        },
+        "initComplete": function(settings, json) {
+            wc();
+        }
+    });
     }else{
-        tabla = $('#tbl-pedidos').DataTable();
-		tabla.clear().draw(); //limpio la tabla
-            $.each(pedidos, function(i, value){
-                var fecha= value.fec_inicio.slice(0, -6);
-                                fila = "<tr id='"+ value.petr_id +"' data-json= '"+ JSON.stringify(value) +"'>" +
-            					        '<td class="text-center text-light-blue"><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>' +
-                                                                                '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>' +
-                                                                                '<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>' +
-                                        '</td>'+
-            					        '<td>' + value.petr_id + '</td>' +
-            					        '<td>' + value.cod_proyecto + '</td>' +
-            					        '<td>' + value.nombre +'</td>' +
-            					        '<td>' + (_isset(value.dir_entrega) ? value.dir_entrega : '') +'</td>' +
-            					        '<td>' + value.tipo_trabajo + '</td>' +
-            					        '<td>' + dateFormat(fecha).replaceAll("-", "/")  + '</td>' +
-            					        '<td>' + colorEstado(value.estado) + '</td>' +
-            					    '</tr>';
-            					tabla.row.add($(fila)).draw();
-			});
+	    tabla.destroy();
+        $('#tbl-pedidos').DataTable({
+        //Funcion de datatable para extencion de botones exportar
+        //excel, pdf, copiado portapapeles e impresion
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedido de Trabajo',
+                filename: 'pedido_trabajo',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            },
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6]
+                },
+                footer: true,
+                title: 'Pedidos de Trabajo',
+                filename: 'Pedidos de Trabajo',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+            }
+        ],
+        //Funcion de datatable para paginacion de los pedidos de trabajo
+        'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+        'paging' : true,
+        'processing':true,
+        'serverSide': true,
+        'ajax':{
+            type: 'POST',
+            url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado'
+        },
+        'columnDefs':[
+            {
+                //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
+                "defaultContent": "-",
+                "targets": "_all",
+            },
+            {
+                'targets':[0],
+                 //agregado de class con el estilo de las acciones
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                    $(td).attr('class', 'text-center text-light-blue'); 
+                },
+                'data': 'acciones',
+                'render': function(data,type,row){
+                    var petr_id=row['petr_id'];
+                    var case_id=row['case_id'];
+                    var json=JSON.stringify(row); 
+                    var r = `<tr>`;
+                        r +='<td><i class="fa fa-trash-o" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="Eliminar(this)"></i>';
+                        r +='<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Comprobante" onclick="modalReimpresion(this)"></i>';
+                        r +='<i class="fa fa-search"  style="cursor: pointer;margin: 3px;" title="Ver Pedido" onclick="verPedido(this)"></i>';
+                        r +="</td>";
+                    return r;
+                }
+            },
+            {
+                'targets':[1],
+                'data':'petr_id',
+                'render': function(data, type, row){
+                    return `<td class="petr_id">${row['petr_id']}</td>`;
+                }
+            },
+            {
+                'targets':[2],
+                'data':'cod_proyecto',
+                'render': function(data, type, row){
+                    return `<td class="cod_proyecto">${row['cod_proyecto']}</td>`;
+                }
+            },
+            {
+                'targets':[3],
+                'data':'nombre',
+                'render': function(data, type, row){
+                    return `<td class="nombre_cliente">${row['nombre']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'dir_entrega',
+                'render': function(data, type, row){
+                    return `<td class="dir_entrega">${row['dir_entrega']}</td>`;
+                }
+            },
+            {
+                'targets':[5],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    return `<td class="tipo_trabajo">${row['tipo_trabajo']}</td>`;
+                }
+            },
+            {
+                'targets':[6],
+                'data':'fec_inicio',
+                'render': function(data, type, row){   
+                    var fec_inicio ='';              
+                    fec_inicio =  dateFormat(row['fec_inicio']) ;
+                    return `<td class="fec_inicio">${fec_inicio}</td>`;
+                }
+            },
+            {
+                'targets':[7],
+                'data':'tipo_trabajo',
+                'render': function(data, type, row){
+                    var proccessname = '<?php echo $proccessname ?>';
+                    var r = '';
+                    var estado = row['estado']
+                    if (!estado) {
+                            estado ="SIN ESTADO";
+                    }
+                    if (proccessname == 'YUDI-NEUMATICOS') {
+                            switch (estado) {
+                                case 'estados_procesosPROC_EN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>';
+                                break;
+                
+                                case 'estados_yudicaEN_CURSO':
+                                    r = '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;  
+                                break;
+                
+                                case 'estados_yudicaREPROCESO':
+                                    r = '<td>' + bolita('REPROCESO', 'yellow') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                
+                                case 'estados_yudicaRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                            
+                                default:
+                                    r = '<td><button type="button" class="btn btn-secondary">' + estado +'</button></td></tr>';
+                                break; 
+                            }
+                        }else{
+                            switch (estado) {
+                                case 'estados_seinEN_CURSO':
+                                    r =  '<td>' + bolita('EN CURSO', 'green') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCOTIZACION_ENVIADA':
+                                    r = '<td>' + bolita('COTIZACION ENVIADA', 'navy') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGA_PENDIENTE':
+                                    r = '<td>' + bolita('ENTREGA PENDIENTE', 'orange') + '</td></tr>' ;                           
+                                break;
+                                case 'estados_seinCORRECCION_NC':
+                                    r = '<td>' + bolita('CORRECCION NC', 'teal') + '</td></tr>' ; 
+                                break;
+                                case 'estados_seinRECHAZADO':
+                                    r = '<td>' + bolita('RECHAZADO', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCANCELADO_NC':
+                                    r = '<td>' + bolita('CANCELADO NC', 'red') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinCONTRATADA':
+                                    r = '<td>' + bolita('CONTRATADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_procesosTRABAJO_TERMINADO':
+                                    r = '<td>' + bolita('TRABAJO TERMINADO', '0b5a36') + '</td></tr>' ;
+                                break;
+                                case 'estados_seinENTREGADO':
+                                    r = '<td>' + bolita('ENTREGADO', 'gray') + '</td></tr>' ;
+                                break;
+                                default:
+                                    r = '<td class="text-center"><button type="button" class="btn btn-secondary">'+ estado +'</button></td></tr>';
+                                break;
+                            }
+                        }
+                    
+                    return r;
+                }
+            }
+        ],
+        //agregado de data-json al tr de la tabla
+        createdRow:function( row, data, dataIndex ) {
+                    json = JSON.stringify(data);
+                    $(row).attr('data-json', json);
+                    $(row).attr('id', data['petr_id']);
+                    $(row).attr('case_id', data['case_id']);
+        },
+        "initComplete": function(settings, json) {
+            wc();
+        }
+    });
     }
 }
-var proceso ="<?php echo $proccessname ?>";
-//////color bolita de Estado
-function colorEstado(estado){
-    if(estado == null)return bolita("SIN ESTADO", "blank");
-
-    if(proceso == 'YUDI-NEUMATICOS'){
-	    switch (estado) {
-	    	case 'estados_procesosPROC_EN_CURSO':
-	    		return bolita('EN CURSO', 'green');
-	    		break;
-            case 'estados_yudicaEN_CURSO':
-	    		return bolita('EN CURSO', 'green');
-	    		break;    
-	    	case 'estados_yudicaREPROCESO':
-	    		return bolita('REPROCESO', 'yellow');
-	    		break;
-	    	case 'estados_yudicaENTREGADO':
-	    		return bolita('ENTREGADO', 'gray');
-	    		break;
-	    	case 'estados_yudicaRECHAZADO':
-	    		return bolita('RECHAZADO', 'red');
-	    		break;
-            default:
-            return estado;
-            break;
-        }
-    }else{
-        switch (estado){
-            case 'estados_seinEN_CURSO':
-	    		return bolita('EN CURSO', 'green');
-	    		break;
-            case 'estados_seinCOTIZACION_ENVIADA':
-		    	return bolita('COTIZACION ENVIADA', 'navy');
-		    	break;
-            case 'estados_seinENTREGA_PENDIENTE':
-		    	return bolita('ENTREGA PENDIENTE', 'orange');
-		    	break;
-            case 'estados_seinCORRECCION_NC':
-		    	return bolita('CORRECCION NC', 'teal');
-		    	break;
-            case 'estados_seinRECHAZADO':
-	    		return bolita('RECHAZADO', 'red');
-	    		break; 
-            case 'estados_seinCANCELADO_NC':
-		    	return bolita('CANCELADO NC', 'red');
-		    	break;
-            case 'estados_seinCONTRATADA':
-		    	return bolita('CONTRATADO', '0b5a36');
-		    	break; 
-            case 'estados_procesosTRABAJO_TERMINADO':
-		    	return bolita('TRABAJO TERMINADO', '0b5a36');
-		    	break;
-            case 'estados_seinENTREGADO':
-		    	return bolita('ENTREGADO', 'gray');
-		    	break;      
-            default:
-                return estado;
-                break;
-            }
-        }
-	}
 </script>
