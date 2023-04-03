@@ -321,5 +321,16 @@ class Pedidotrabajos extends CI_Model
         return $result;
     }
 
+    /**
+	*Trae datos de la tarea desde bonita
+	* @param integer;integer; case_id ; proc_id
+	* @return $data tarea
+	**/
+    public function traeDatosPedidoEntregadoBonita($case_id, $proc_id){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | traeDatosPedidoEntregadoBonita($case_id, $proc_id)  | $case_id: ' .$case_id .'$proc_id:'.$proc_id);
+       $data = $this->bpm->ObtenerActividadesArchivadas($proc_id, $case_id);
+        return $data;
+    }
+
 
 }

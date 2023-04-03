@@ -396,6 +396,8 @@ $proccessname = $this->session->userdata('proccessname');
 		arraydatos.Zona = $('#zona').val();
 		arraydatos.Trabajo = $('select[name="tipt_id"]').select2('data')[0].text;
 		arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
+        arraydatos.Fecha_inicio = dateFormat($('#fec_inicio').val());
+		arraydatos.Prioridad = $('select[name="prioridad_yudica"]').select2('data')[0].text;
 
 
 		// si la etiqueta es derechazo

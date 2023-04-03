@@ -564,4 +564,18 @@ public function cargar_formulario_asociado(){
 		);
 		echo json_encode($json_data);
 	}
+
+
+     /**
+	* Trae fecha de tarea finalizada desde bonita
+	* @return $fecha fin de tarea
+	*/
+    public function fechaFinTareaDesdeBonita(){
+        $case_id = $_GET['case_id'];
+        $proc_id =  $_GET['proc_id'];   
+        $proceso = $this->Pedidotrabajos->procesos($proc_id)->proceso;
+        $datos = $this->Pedidotrabajos->traeDatosPedidoEntregadoBonita($case_id, $proceso->nombre_bpm);
+        $fecha = $datos[0]['reached_state_date'];
+        echo $fecha;
+    }
 }
