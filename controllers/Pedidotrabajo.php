@@ -20,7 +20,7 @@ class Pedidotrabajo extends CI_Controller
 
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
-        $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
+        //$data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
    
         $url_info= $_SERVER["REQUEST_URI"];
 
@@ -531,9 +531,51 @@ public function cargar_formulario_asociado(){
         $this->load->view('pedidos_trabajo/listado_pedidos_materiales', $data);
     }
 
-    public function pedidosTrabajosconFinalizados()
-    {
-       $data = $this->Pedidotrabajos->obtenerPedidosconFinalizados(empresa());
-       echo json_encode($data);
+
+    /**
+	* Genera el listado de los pedidos de trabajo paginado
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado(){//server side processing
+
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+		$PedidosFinalizados = $this->input->post('PedidosFinalizados');
+
+        //consulta si trae los pedidos finalizados o los no finalizados
+        if($PedidosFinalizados)
+        {
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search);
+        }else{
+            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search);
+        }
+
+		$datos =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+		$datosPagina = count($datos);
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos
+		);
+		echo json_encode($json_data);
+	}
+
+
+     /**
+	* Trae fecha de tarea finalizada desde bonita
+	* @return $fecha fin de tarea
+	*/
+    public function fechaFinTareaDesdeBonita(){
+        $case_id = $_GET['case_id'];
+        $proc_id =  $_GET['proc_id'];   
+        $proceso = $this->Pedidotrabajos->procesos($proc_id)->proceso;
+        $datos = $this->Pedidotrabajos->traeDatosPedidoEntregadoBonita($case_id, $proceso->nombre_bpm);
+        $fecha = $datos[0]['reached_state_date'];
+        echo $fecha;
     }
 }

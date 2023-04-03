@@ -146,16 +146,24 @@ class Pedidotrabajos extends CI_Model
 		* @param  $emprId
 		* @return lista de pedido de trabajo
 		**/
-    public function obtener($emprId)
-    {
+    public function obtener($emprId){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | obtener($emprId)  | $emprId: ' .$emprId);
+
         $proccessname = $this->session->userdata('proccessname');
-            if ($proccessname == 'YUDI-NEUMATICOS') {
-                $estadoFinal = "estados_yudicaENTREGADO";
-            } else{
-                 $estadoFinal ="estados_procesosFINALIZADO";
-            } 
-        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal";
-        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
+        $this->db->select('p.esfi_id');
+        $this->db->from('pro.procesos p');
+        $this->db->where('p.proc_id', $proccessname);
+        $this->db->limit(1);
+
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+            $estadoFinal = $query->result_object()[0]->esfi_id;
+        }else{
+            $estadoFinal = "estados_procesosFINALIZADO";
+        }
+
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal/ ";
         return wso2($url);
         
     }
@@ -208,21 +216,121 @@ class Pedidotrabajos extends CI_Model
         $data['_put_pedidoTrabajo_estado'] = array('estado' => $estado, 'petr_id'=>"$petrId");
         $url = REST_PRO."/pedidoTrabajo/estado";
         return wso2($url, 'PUT', $data);
-		}
+	}
 
-		// AGREGADO DE MERGE DE CHECHO
-			public function obtenerInfoId($petrId)
-			{
-					$url = REST_PRO . "/info_id/$petrId";
-					return wso2($url);
-			}
-		// FIN AGREGADO DE MERGE DE CHECHO
+	// AGREGADO DE MERGE DE CHECHO
+	public function obtenerInfoId($petrId)
+	{
+		$url = REST_PRO . "/info_id/$petrId";
+		return wso2($url);
+	}
+    // FIN AGREGADO DE MERGE DE CHECHO
 
-        public function obtenerPedidosconFinalizados($emprId)
-        {
-            $url = REST_PRO . "/pedidoTrabajo/$emprId";
-            log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
-            return wso2($url);
+  
+    /**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listadopaginado y la cantidad
+	**/
+    public function pedidosTrabajoPaginados($start,$length,$search){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+
+        $emprId = empresa();
+        $proccessname = $this->session->userdata('proccessname');
+        $this->db->select('p.esfi_id');
+        $this->db->from('pro.procesos p');
+        $this->db->where('p.proc_id', $proccessname);
+        $this->db->limit(1);
+        
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+            $estadoFinal = $query->result_object()[0]->esfi_id;
+        }else{
+            $estadoFinal = "estados_procesosFINALIZADO";
         }
+
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal/$search";
+
+        $data =  wso2($url);
+        if($data['status'])
+        {
+            $arrayDatos = $data['data'];
+            $query_total = count($arrayDatos);
+            if ($query_total > 0) {
+                $query_total = $query_total;
+            } else {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+
+        $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
+        $pedidosTrabajoPaginados = wso2($resp);
+
+        if($pedidosTrabajoPaginados['status'])
+        {
+            $result = array(
+                'numDataTotal' => $query_total,
+                'datos' => $pedidosTrabajoPaginados['data']
+            );
+        }
+        else
+        {
+            return array('status', 'Error al traer los pedidos de trabajo');
+        }
+        return $result;
+    }
+
+     /**
+	*Genera lista pedido de trabajo paginados junto con los finalizados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listadopaginado y la cantidad
+	**/
+    public function pedidosTrabajoFinalizadosPaginados($start,$length,$search){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+
+        $emprId = empresa();
+
+        $url = REST_PRO . "/pedidoTrabajo/$emprId/$search";
+
+        $data =  wso2($url);
+        if($data['status'])
+        {
+            $arrayDatos = $data['data'];
+            $query_total = count($arrayDatos);
+            if ($query_total > 0) {
+                $query_total = $query_total;
+            } else {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+        
+        $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+        $pedidosTrabajoPaginados = wso2($resp);
+        if($pedidosTrabajoPaginados['status'])
+        {
+            $result = array(
+                'numDataTotal' => $query_total,
+                'datos' => $pedidosTrabajoPaginados['data']
+            );
+        }
+        else
+        {
+            return array('status', 'Error al traer los pedidos de trabajo');
+        }
+        return $result;
+    }
+
+    /**
+	*Trae datos de la tarea desde bonita
+	* @param integer;integer; case_id ; proc_id
+	* @return $data tarea
+	**/
+    public function traeDatosPedidoEntregadoBonita($case_id, $proc_id){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | traeDatosPedidoEntregadoBonita($case_id, $proc_id)  | $case_id: ' .$case_id .'$proc_id:'.$proc_id);
+       $data = $this->bpm->ObtenerActividadesArchivadas($proc_id, $case_id);
+        return $data;
+    }
+
 
 }
