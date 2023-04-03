@@ -466,6 +466,7 @@ function modalCodigos() {
         config.level = "S";
         config.framSize = "3";
         // info para immprimir
+        debugger;
         var arraydatos = {};
         arraydatos.Codigo_proyecto = $('#codigo_proyecto').val();
         arraydatos.Trabajo = $('#tipt_id option:selected').val();
@@ -474,6 +475,7 @@ function modalCodigos() {
         arraydatos.Marca = $('select[name="marca_yudica"]').select2('data')[0].text;
         arraydatos.Serie = $('#num_serie').val();
         arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
+        array.datos.Fecha = $('#fec_inicio').val();
         // si la etiqueta es derechazo
         arraydatos.Motivo = $('#motivo_rechazo').val();
         // info para grabar en codigo QR
@@ -520,6 +522,7 @@ function modalReimpresion(e) {
     var datos = JSON.parse(arraydatos);
     petr_id = datos.petr_id;
 	case_id = datos.case_id;
+    proc_id = datos.proc_id;
     estado_pedido = datos.estado;
 	proccesname = $('#proccessname').val();
     if(proccesname == 'YUDI-NEUMATICOS'){
@@ -564,11 +567,34 @@ function modalReimpresion(e) {
         verModalImpresionPedido();
     }
     if(proccesname == 'YUDI-NEUMATICOS'){
-        // llama modal con datos e img de QR
-        getDatos(datos, config);
-        // levanta modal completo para su impresion
-        // verModalImpresion();
-        verModalImpresion();
+        //obtengo fecha final en caso de que este entregado el pedido
+        if(estado_pedido == "estados_yudicaENTREGADO"){
+            $.ajax({
+                type: 'GET',
+                data: case_id,
+                cache: false,
+                contentType: false,
+                processData: false,
+                url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/fechaFinTareaDesdeBonita?case_id=' +
+                case_id + '&proc_id=' + proc_id,
+                success: function(rsp) {
+                    datos.fecha_fin = rsp.slice(0, -13);
+                     // llama modal con datos e img de QR
+                    getDatos(datos, config);
+                    // levanta modal completo para su impresion
+                    verModalImpresion();
+                },
+                error: function(rsp) {
+                    console.log('rsp sale por errro trae: ' + rsp);
+                }
+            });
+        }
+        else{
+            // llama modal con datos e img de QR
+            getDatos(datos, config);
+            // levanta modal completo para su impresion
+            verModalImpresion();
+        } 
     }
 }
 // obtine datos ya mapeados para QR y cuerpo de a etiqueta
@@ -581,6 +607,9 @@ function getDatos(datos, config) {
     var N_orden = datos.petr_id;
     var Cod_proyecto = datos.cod_proyecto;
     var motivo = datos.motivo_rechazo;
+    var fecha_inicio = dateFormat(datos.fec_inicio);
+    var int_pedi_id = datos.int_pedi_id;
+    var fecha_fin = (datos.fecha_fin) ? dateFormat(datos.fecha_fin) : '';
 
     $.ajax({
         type: 'GET',
@@ -591,6 +620,9 @@ function getDatos(datos, config) {
             datMapeado.Trabajo = trabajo;
             datMapeado.N_orden = N_orden;
             datMapeado.Motivo = motivo;
+            datMapeado.Fecha_inicio = fecha_inicio;
+            datMapeado.int_pedi_id = int_pedi_id;
+            datMapeado.Fecha_entrega = fecha_fin;
 
             console.log('data mapeado: ');
             console.table(datMapeado);
