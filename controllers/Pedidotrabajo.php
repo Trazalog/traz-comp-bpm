@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+use Google\Service\Blogger\Post;
+
+ defined('BASEPATH') or exit('No direct script access allowed');
 /**
 	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
 	*
@@ -543,13 +547,16 @@ public function cargar_formulario_asociado(){
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
 		$PedidosFinalizados = $this->input->post('PedidosFinalizados');
+        $order = $this->input->post('order[0][dir]');
+        // echo var_dump($order);
 
         //consulta si trae los pedidos finalizados o los no finalizados
         if($PedidosFinalizados)
         {
-            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search);
-        }else{
-            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search);
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$order);
+        }
+        else{
+            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$order);
         }
 
 		$datos =$r['datos'];
@@ -560,7 +567,8 @@ public function cargar_formulario_asociado(){
 			"draw" 				=> intval($this->input->post('draw')),
 			"recordsTotal"  	=> intval($datosPagina),
 			"recordsFiltered"	=> intval($totalDatos),
-			"data" 				=> $datos
+			"data" 				=> $datos,
+            "order" => $order
 		);
 		echo json_encode($json_data);
 	}
