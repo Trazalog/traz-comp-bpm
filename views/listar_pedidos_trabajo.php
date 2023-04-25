@@ -172,7 +172,8 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             'serverSide': true,
             'ajax': {
                 type: 'POST',
-                url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado'
+                url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado',
+               
             },
             'columnDefs': [{
                     //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
@@ -326,10 +327,7 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             },
         });
 
-
-
-
-        /**
+         /**
          * FUNCION QUE REALIZAD EL ORDENAMIENTO DE
          * REISTROS DE LA TABLA
          */
@@ -338,12 +336,27 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             checkFilter = !checkFilter;
             
             if (checkFilter) {
-                // const dataOrde = data.sort((a, b) => a.id.localeCompare(b.id));
                 const dataOrde = data.sort((a, b) => (a.id < b.id) ? -1 : (a.id > b.id) ? 1 : 0);
                 $("table tbody").html(dataOrde);
+                  $('#tbl-pedidos').DataTable().destroy();
+                 $('#tbl-pedidos').DataTable({
+                     'ajax': null
+                 });
+               
+               
             } else {
                 const dataOrde = data.sort((a, b) => (a.id > b.id) ? -1 : (a.id < b.id) ? 1 : 0);
                 $("table tbody").html(dataOrde);
+                  $('#tbl-pedidos').DataTable().destroy();
+                 $('#tbl-pedidos').DataTable({
+                    'ajax': {
+                        type: 'POST',
+                        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/paginado',
+                    
+                     }
+                 });
+                
+                
             }
            
            console.log(checkFilter);
@@ -368,14 +381,14 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
          * @variable checkFilter controla que el objeto este odenado de manera asc y desc
          */
         var checkFilter = false;
-        const table = $("table thead tr th").click(function (e) {
+        // const table = $("table thead tr th").click(function (e) {
             
-            e.preventDefault();
+        //     e.preventDefault();
             
-            const id = $(this).attr('id');
+        //     const id = $(this).attr('id');
             
-            getRowTabla();
-        });
+        //     getRowTabla();
+        // });
 
     });
     //funcion ver pedido
