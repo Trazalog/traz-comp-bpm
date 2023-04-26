@@ -323,7 +323,12 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
+<<<<<<< HEAD
              
+=======
+        
+      
+>>>>>>> pkenny
         if (strpos($order,"asc") !== false) {
             $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
