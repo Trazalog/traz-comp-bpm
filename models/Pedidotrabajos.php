@@ -325,9 +325,7 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
-<<<<<<< HEAD
-             
-=======
+
         
         // si $order esquivale a ASC devuelvo los registros de manera Asc en datatable
         if (strpos($order,"asc") !== false) {
