@@ -263,7 +263,7 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
-
+        // si $order es asc devuelvo los registros de manera asc en el dataTable
         if (strpos($order,"asc") !== false) {
             $resp = REST_PRO . "/pedidoTrabajoPaginadoAsc/$emprId/$estadoFinal/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
@@ -279,7 +279,9 @@ class Pedidotrabajos extends CI_Model
             {
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
-        } else {
+        } 
+        // si $order es dec se devuelve los registros de manera desc en el dataTable
+        else {
             $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
 
@@ -327,8 +329,7 @@ class Pedidotrabajos extends CI_Model
              
 =======
         
-      
->>>>>>> pkenny
+        // si $order esquivale a ASC devuelvo los registros de manera Asc en datatable
         if (strpos($order,"asc") !== false) {
             $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
@@ -343,7 +344,9 @@ class Pedidotrabajos extends CI_Model
             {
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
-        } else {
+        } 
+        // si $order equivale a desc devuelvo los registros de manera desc en DataTable
+        else {
             $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
             if($pedidosTrabajoPaginados['status'])
