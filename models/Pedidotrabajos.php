@@ -233,7 +233,7 @@ class Pedidotrabajos extends CI_Model
 	* @return array listadopaginado y la cantidad
 	**/
     public function pedidosTrabajoPaginados($start,$length,$search,$myData){
-        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
 
         $emprId = empresa();
         $proccessname = $this->session->userdata('proccessname');
@@ -263,35 +263,35 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
-        $filtro= '';
-        // si $order es asc devuelvo los registros de manera asc en el dataTable
-        if (strpos($myData['order'],"asc") !== false) {
-           
-            switch ($myData['columna']) {
+        $filtro= "";
+        // si es asc devuelvo los registros de manera asc en el dataTable
+        if (strpos($myData["order"],"asc") !== false) {
+            // evaluo la columna clickeada en el th del dataable
+            switch ($myData["columna"]) {
                 case 1:
-                    $filtro = "pt.".$myData['petr_id'];
+                    $filtro = $myData["petr_id"];
                     break;
                 case 2:
-                    $filtro = "pt.".$myData['cod_proyecto'];
+                    $filtro = $myData["cod_proyecto"];
                     break;
                 case 3:
-                    $filtro = "c.".$myData['nombre'];
+                    $filtro = $myData["nombre"];
                     break;
                 case 4:
-                    $filtro = "c".$myData['dir_entrega'];
+                    $filtro = $myData["dir_entrega"];
                     break;
                 case 5:
-                    $filtro = $myData['tipo_trabajo'];
+                    $filtro = $myData["tipo_trabajo"];
                     break;
                 case 6:
-                    $filtro = $myData['fec_inicio'];
+                    $filtro = $myData["fec_inicio"];
                     break;
 
                 default:
-                $filtro= '';
-                    break;
+                    $filtro = "";
+                     break;
             }
-            // $resp = REST_PRO . "/pedidoTrabajoPaginadoAsc/$emprId/$estadoFinal/$length/$start/$search";
+            
             $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
             $pedidosTrabajoPaginados = wso2($resp);
 
@@ -301,43 +301,17 @@ class Pedidotrabajos extends CI_Model
                      'numDataTotal' => $query_total,
                      'datos' => $pedidosTrabajoPaginados['data'],
                      "filtro" => $filtro,
-                     "estadoFinal" => $estadoFinal
+                     "estadoFinal" => $estadoFinal,
+                     "mydata" => $myData
                  );
              }
-            // $sql = "select pt.petr_id, pt.cod_proyecto, case when pt.int_pedi_id ='' or pt.int_pedi_id is null then 'N/A' else pt.int_pedi_id end int_pedi_id, pt.descripcion, pt.estado, pt.objetivo, to_char(pt.fec_inicio,'YYYY-MM-DD') as fec_inicio, to_char(pt.fec_entrega, 'YYYY-MM-DD') as fec_entrega, pt.usuario, pt.umti_id, pt.info_id, pt.proc_id, pt.empr_id, pt.clie_id, pt.case_id, pt.case_id_final, pt.tipt_id, t.descripcion tipo_trabajo, C.nombre, c.dir_entrega, pt.int_pedi_id 
-            // from pro.pedidos_trabajo pt
-            // join pro.procesos p  on pt.estado != cast($estadoFinal as varchar)
-            // join core.clientes C on pt.clie_id = C.clie_id
-            // join core.tablas t on pt.tipt_id = t.tabl_id
-            // ,(SELECT $filtro) AS param
-            // where pt.empr_id = cast($emprId as integer)
-            // and not pt.eliminado
-            // and (upper(c.nombre) like '%' || upper($filtro) || '%'
-            // or upper(pt.estado) like '%' || upper($filtro) || '%'
-            // or upper(pt.cod_proyecto) like '%' || upper($filtro) || '%'
-            // or CAST(pt.petr_id AS TEXT) like '%' || upper($filtro) || '%'
-            // or upper(c.dir_entrega) like '%' || upper($filtro) || '%'
-            // or upper(t.descripcion) like '%' || upper($filtro) || '%'
-            //     )
-            // group by pt.fec_alta, pt.petr_id, t.descripcion, c.nombre, c.dir_entrega
-            // order by $filtro asc
-            // limit cast($length as integer) offset cast($start as integer)";
-
-            // $query2= $this->db->query($sql);
-            // if ($query2->num_rows() > 0) {
-            //     $result = array(
-            //         'numDataTotal' => $query_total,
-            //         'datos' => $query2->result_array(),
-            //         "filtro" => $filtro,
-            //         "estadoFinal" => $estadoFinal
-            //     );
-            // }
+            
             else
             {
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         } 
-        // si $order es dec se devuelve los registros de manera desc en el dataTable
+        // si es dec se devuelve los registros de manera desc en el dataTable
         else {
             
             $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
@@ -349,7 +323,9 @@ class Pedidotrabajos extends CI_Model
                     'numDataTotal' => $query_total,
                     'datos' => $pedidosTrabajoPaginados['data'],
                     "filtro" => $filtro,
-                    "estadoFinal" => $estadoFinal
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
+                    
                 );
             }
             else
