@@ -547,16 +547,28 @@ public function cargar_formulario_asociado(){
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
 		$PedidosFinalizados = $this->input->post('PedidosFinalizados');
-        $order = $this->input->post('order[0][dir]');
-        // echo var_dump($order);
+        
+        //recibo los datos que vienen del dataTable
+        $myData = array(
+            'order' =>  $this->input->post('order[0][dir]'),
+            'columna' => intval($this->input->post('order[0][column]')),
+            'petr_id' => $this->input->post('columns[1][data]'),
+            'cod_proyecto' => $this->input->post('columns[2][data]'),
+            'nombre' => $this->input->post('columns[3][data]'),
+            'dir_entrega' => $this->input->post('columns[4][data]'),
+            'tipo_trabajo' => $this->input->post('columns[5][data]'),
+            'fec_inicio' => $this->input->post('columns[6][data]')
+        );
+      
 
         //consulta si trae los pedidos finalizados o los no finalizados
         if($PedidosFinalizados)
         {
-            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$order);
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData);
         }
         else{
-            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$order);
+            // echo var_dump($start,$length,$search,$myData);
+            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$myData);
         }
 
 		$datos =$r['datos'];
@@ -568,7 +580,11 @@ public function cargar_formulario_asociado(){
 			"recordsTotal"  	=> intval($datosPagina),
 			"recordsFiltered"	=> intval($totalDatos),
 			"data" 				=> $datos,
-            "order" => $order
+            "filtro" => $r['filtro'],
+            "estadoFinal" => $r['estadoFinal'],
+            'search' => $search,
+            "mydata" => $r['mydata']
+            
 		);
 		echo json_encode($json_data);
 	}

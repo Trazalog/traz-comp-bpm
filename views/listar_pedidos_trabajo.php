@@ -839,11 +839,13 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
         $('#tbl-pedidos').DataTable();
         wo();
         if (check) {
-            tabla.destroy();
+            // tabla.destroy();
+            $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
                 responsive: true,
+                ordering: true,
                 language: {
                     url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
                 },
@@ -1063,11 +1065,13 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
                 }
             });
         } else {
-            tabla.destroy();
+            // tabla.destroy();
+            $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
                 responsive: true,
+                ordering:true,
                 language: {
                     url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
                 },
