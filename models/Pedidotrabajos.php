@@ -344,7 +344,7 @@ class Pedidotrabajos extends CI_Model
 	* @return array listadopaginado y la cantidad
 	**/
     public function pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData){
-        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
 
         $emprId = empresa();
 
@@ -362,16 +362,45 @@ class Pedidotrabajos extends CI_Model
             }
         }
 
-        
+        $filtro="";
         // si $order esquivale a ASC devuelvo los registros de manera Asc en datatable
         if (strpos($myData['order'],"asc") !== false) {
-            $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search";
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = "nombre";
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search/$filtro";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            //$resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
             $pedidosTrabajoPaginados = wso2($resp);
             if($pedidosTrabajoPaginados['status'])
             {
                 $result = array(
                     'numDataTotal' => $query_total,
-                    'datos' => $pedidosTrabajoPaginados['data']
+                    'datos' => $pedidosTrabajoPaginados['data'],
+                    "filtro" => $filtro,
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
                 );
             }
             else

@@ -564,7 +564,7 @@ public function cargar_formulario_asociado(){
         //consulta si trae los pedidos finalizados o los no finalizados
         if($PedidosFinalizados)
         {
-            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search);
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData);
         }
         else{
             // echo var_dump($start,$length,$search,$myData);

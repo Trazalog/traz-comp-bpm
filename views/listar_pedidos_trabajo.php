@@ -839,7 +839,8 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
         $('#tbl-pedidos').DataTable();
         wo();
         if (check) {
-            tabla.destroy();
+            // tabla.destroy();
+            $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
@@ -1064,7 +1065,8 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
                 }
             });
         } else {
-            tabla.destroy();
+            // tabla.destroy();
+            $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
