@@ -314,7 +314,34 @@ class Pedidotrabajos extends CI_Model
         // si es dec se devuelve los registros de manera desc en el dataTable
         else {
             
-            $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
+            // $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
+             // evaluo la columna clickeada en el th del dataable
+             switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
             $pedidosTrabajoPaginados = wso2($resp);
 
             if($pedidosTrabajoPaginados['status'])
@@ -410,7 +437,33 @@ class Pedidotrabajos extends CI_Model
         } 
         // si $order equivale a desc devuelvo los registros de manera desc en DataTable
         else {
-            $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+
             $pedidosTrabajoPaginados = wso2($resp);
             if($pedidosTrabajoPaginados['status'])
             {
