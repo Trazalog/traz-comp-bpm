@@ -146,11 +146,24 @@ class Pedidotrabajos extends CI_Model
 		* @param  $emprId
 		* @return lista de pedido de trabajo
 		**/
-    public function obtener($emprId)
-    {
-        $url = REST_PRO . "/pedidoTrabajo/$emprId";
-        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId >  | $empresa_id: ' .$emprId);
-        log_message('DEBUG', '#Model BPM PedidoTrabajo *Obtiene lista pedido de trabajo por emprId   | Lista Pedidos: ' .json_encode(wso2($url)));
+    public function obtener($emprId){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | obtener($emprId)  | $emprId: ' .$emprId);
+
+        $proccessname = $this->session->userdata('proccessname');
+        $this->db->select('p.esfi_id');
+        $this->db->from('pro.procesos p');
+        $this->db->where('p.proc_id', $proccessname);
+        $this->db->limit(1);
+
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+            $estadoFinal = $query->result_object()[0]->esfi_id;
+        }else{
+            $estadoFinal = "estados_procesosFINALIZADO";
+        }
+
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal/ ";
         return wso2($url);
         
     }
@@ -203,14 +216,282 @@ class Pedidotrabajos extends CI_Model
         $data['_put_pedidoTrabajo_estado'] = array('estado' => $estado, 'petr_id'=>"$petrId");
         $url = REST_PRO."/pedidoTrabajo/estado";
         return wso2($url, 'PUT', $data);
-		}
+	}
 
-		// AGREGADO DE MERGE DE CHECHO
-			public function obtenerInfoId($petrId)
-			{
-					$url = REST_PRO . "/info_id/$petrId";
-					return wso2($url);
-			}
-		// FIN AGREGADO DE MERGE DE CHECHO
+	// AGREGADO DE MERGE DE CHECHO
+	public function obtenerInfoId($petrId)
+	{
+		$url = REST_PRO . "/info_id/$petrId";
+		return wso2($url);
+	}
+    // FIN AGREGADO DE MERGE DE CHECHO
+
+  
+    /**
+	*Genera lista pedido de trabajo paginados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listadopaginado y la cantidad
+	**/
+    public function pedidosTrabajoPaginados($start,$length,$search,$myData){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
+
+        $emprId = empresa();
+        $proccessname = $this->session->userdata('proccessname');
+        $this->db->select('p.esfi_id');
+        $this->db->from('pro.procesos p');
+        $this->db->where('p.proc_id', $proccessname);
+        $this->db->limit(1);
+        
+        $query = $this->db->get();
+        
+        if($query->num_rows() > 0){
+            $estadoFinal = $query->result_object()[0]->esfi_id;
+        }else{
+            $estadoFinal = "estados_procesosFINALIZADO";
+        }
+
+        $url = REST_PRO . "/pedidoTrabajoNoFinalizado/$emprId/$estadoFinal/$search";
+
+        $data =  wso2($url);
+        if($data['status'])
+        {
+            $arrayDatos = $data['data'];
+            $query_total = count($arrayDatos);
+            if ($query_total > 0) {
+                $query_total = $query_total;
+            } else {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+        $filtro= "";
+        // si es asc devuelvo los registros de manera asc en el dataTable
+        if (strpos($myData["order"],"asc") !== false) {
+            // evaluo la columna clickeada en el th del dataable
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = "";
+                     break;
+            }
+            
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            $pedidosTrabajoPaginados = wso2($resp);
+
+            if($pedidosTrabajoPaginados['status'])
+             {
+                 $result = array(
+                     'numDataTotal' => $query_total,
+                     'datos' => $pedidosTrabajoPaginados['data'],
+                     "filtro" => $filtro,
+                     "estadoFinal" => $estadoFinal,
+                     "mydata" => $myData
+                 );
+             }
+            
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        } 
+        // si es dec se devuelve los registros de manera desc en el dataTable
+        else {
+            
+            // $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
+             // evaluo la columna clickeada en el th del dataable
+             switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            $pedidosTrabajoPaginados = wso2($resp);
+
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data'],
+                    "filtro" => $filtro,
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
+                    
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+        
+       
+        return $result;
+    }
+
+     /**
+	*Genera lista pedido de trabajo paginados junto con los finalizados
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listadopaginado y la cantidad
+	**/
+    public function pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
+
+        $emprId = empresa();
+
+        $url = REST_PRO . "/pedidoTrabajo/$emprId/$search";
+
+        $data =  wso2($url);
+        if($data['status'])
+        {
+            $arrayDatos = $data['data'];
+            $query_total = count($arrayDatos);
+            if ($query_total > 0) {
+                $query_total = $query_total;
+            } else {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+
+        $filtro="";
+        // si $order esquivale a ASC devuelvo los registros de manera Asc en datatable
+        if (strpos($myData['order'],"asc") !== false) {
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = "nombre";
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search/$filtro";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            //$resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            $pedidosTrabajoPaginados = wso2($resp);
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data'],
+                    "filtro" => $filtro,
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        } 
+        // si $order equivale a desc devuelvo los registros de manera desc en DataTable
+        else {
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+
+            $pedidosTrabajoPaginados = wso2($resp);
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data']
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
+        
+       
+        return $result;
+    }
+
+    /**
+	*Trae datos de la tarea desde bonita
+	* @param integer;integer; case_id ; proc_id
+	* @return $data tarea
+	**/
+    public function traeDatosPedidoEntregadoBonita($case_id, $proc_id){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | traeDatosPedidoEntregadoBonita($case_id, $proc_id)  | $case_id: ' .$case_id .'$proc_id:'.$proc_id);
+       $data = $this->bpm->ObtenerActividadesArchivadas($proc_id, $case_id);
+        return $data;
+    }
+
 
 }

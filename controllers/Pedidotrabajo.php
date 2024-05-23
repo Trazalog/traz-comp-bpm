@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+use Google\Service\Blogger\Post;
+
+ defined('BASEPATH') or exit('No direct script access allowed');
 /**
 	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
 	*
@@ -20,7 +24,7 @@ class Pedidotrabajo extends CI_Controller
 
         $data['clientes'] = $this->Pedidotrabajos->getClientes(empresa())['data'];
 
-        $data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
+        //$data['pedidos'] = $this->Pedidotrabajos->obtener(empresa())['data'];
    
         $url_info= $_SERVER["REQUEST_URI"];
 
@@ -148,64 +152,37 @@ public function cargar_detalle_formulario(){
     *@return array forularios
 */
 public function cargar_detalle_formularioJson(){
-   
+    log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | Pedidotrabajo | cargar_detalle_formularioJson()');
     $this->load->model(FRM . 'Forms');
-
     $case_id = $_GET['case_id'];        
-    
     $petr_id = $_GET['petr_id'];
-        
-
-   $data = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
-
-   $prueba = $data[0]->forms->form;
+    $data = $this->Pedidotrabajos->getFormularios($petr_id)['data'];
+    $prueba = $data[0]->forms->form;
    
-   foreach ($prueba as $value) {
-
-    switch ($value->nom_form) {
-
-        case 'Rechazo de Tarea':
-            
-            $info_id = $value->info_id;
-
-            $res = $this->Forms->obtener($info_id);
-
-
-              $motivo['motivo_rechazo'] = $res->items[0]->valor;
-     
-
-            break;
-
+    foreach ($prueba as $value) {
+        switch ($value->nom_form) {
+            case 'Rechazo de Tarea':
+                $info_id = $value->info_id;
+                $res = $this->Forms->obtener($info_id);
+                $motivo['motivo_rechazo'] = $res->items[0]->valor;
+                break;
             default:
-
-            break;
+                break;
+        }
     }
-
+    echo json_encode($motivo);
 }
-
-
-   echo json_encode($motivo);
-
-}
-
-
-
 /**
 	* Instancia un formulario asociado
 	*@param info_id (metodo GET)
     *@return array forulario
-	*/
+*/
 public function cargar_formulario_asociado(){
-
     $info_id = $_GET['info_id'];   
-    
     $formulario = getForm($info_id);
-
     echo $formulario;
 }
 
-   
-  
     /**
 		*Guarda Pedido de Trabajo.
 		* @param array
@@ -556,5 +533,73 @@ public function cargar_formulario_asociado(){
         $this->load->model(TST.'Pedidos');
         $data['pedidos'] = $this->Pedidos->obtenerXTarea($tapl_id);
         $this->load->view('pedidos_trabajo/listado_pedidos_materiales', $data);
+    }
+
+
+    /**
+	* Genera el listado de los pedidos de trabajo paginado
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado(){//server side processing
+
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+		$PedidosFinalizados = $this->input->post('PedidosFinalizados');
+        
+        //recibo los datos que vienen del dataTable
+        $myData = array(
+            'order' =>  $this->input->post('order[0][dir]'),
+            'columna' => intval($this->input->post('order[0][column]')),
+            'petr_id' => $this->input->post('columns[1][data]'),
+            'cod_proyecto' => $this->input->post('columns[2][data]'),
+            'nombre' => $this->input->post('columns[3][data]'),
+            'dir_entrega' => $this->input->post('columns[4][data]'),
+            'tipo_trabajo' => $this->input->post('columns[5][data]'),
+            'fec_inicio' => $this->input->post('columns[6][data]')
+        );
+      
+
+        //consulta si trae los pedidos finalizados o los no finalizados
+        if($PedidosFinalizados)
+        {
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData);
+        }
+        else{
+            // echo var_dump($start,$length,$search,$myData);
+            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$myData);
+        }
+
+		$datos =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+		$datosPagina = count($datos);
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos,
+            "filtro" => $r['filtro'],
+            "estadoFinal" => $r['estadoFinal'],
+            'search' => $search,
+            "mydata" => $r['mydata']
+            
+		);
+		echo json_encode($json_data);
+	}
+
+
+     /**
+	* Trae fecha de tarea finalizada desde bonita
+	* @return $fecha fin de tarea
+	*/
+    public function fechaFinTareaDesdeBonita(){
+        $case_id = $_GET['case_id'];
+        $proc_id =  $_GET['proc_id'];   
+        $proceso = $this->Pedidotrabajos->procesos($proc_id)->proceso;
+        $datos = $this->Pedidotrabajos->traeDatosPedidoEntregadoBonita($case_id, $proceso->nombre_bpm);
+        $fecha = $datos[0]['reached_state_date'];
+        echo $fecha;
     }
 }
