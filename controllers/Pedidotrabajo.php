@@ -1,4 +1,8 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+use Google\Service\Blogger\Post;
+
+ defined('BASEPATH') or exit('No direct script access allowed');
 /**
 	* Laza Pedido de Trabajo con informacion variable segun proceso BPM
 	*
@@ -86,31 +90,33 @@ public function cargar_detalle_linetiempo(){
     $url_info= $_SERVER["REQUEST_URI"];
     $components = parse_url($url_info);
     parse_str($components['query'], $results);
-
-    if (isset($results['proccessname'])) {
-        $proccessname =$results['proccessname'];
-    } else {
-        $proccessname = $this->session->userdata('proccessname');
-    }
+    // if (isset($results['proccessname'])) {
+    //     $proccessname =$results['proccessname'];
+    // } else {
+    //     $proccessname = $this->session->userdata('proccessname');
+    // }
     if (isset($_GET['case_id'])) {
         $case_id = $_GET['case_id'];        
     }else {
         $case_id = $this->input->get('case_id');
         // $processId = $this->input->get('proccessname');
     }
-    if ($proccessname !=''){
+    // if ($proccessname !=''){
         //Id del proceso desde la tabla pro.procesos
-        $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
+        // $processId = $this->Pedidotrabajos->procesos($proccessname)->proceso->nombre_bpm;
         //LINEA DE TIEMPO
-        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-        echo timeline($data['timeline']);
-    }else {
-        $processId = $_GET['proccessname'];
+    //     $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+    //     echo timeline($data['timeline']);
+    // }else {
+    //     $processId = $_GET['proccessname'];
         // $processId = BPM_PROCESS_ID_PROCESO_PRODUCTIVO;
         //LINEA DE TIEMPO
-        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-        echo timeline($data['timeline']);
-    }
+    //     $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+    //     echo timeline($data['timeline']);
+    // }
+    $processId = BPM_PROCESS_ID_PEDIDOS_NORMALES;
+    $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
+    echo timeline($data['timeline']);
 }
 /**
 	* Trae el estado actual de la tarea de un pedido segun case_id
@@ -543,13 +549,28 @@ public function cargar_formulario_asociado(){
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
 		$PedidosFinalizados = $this->input->post('PedidosFinalizados');
+        
+        //recibo los datos que vienen del dataTable
+        $myData = array(
+            'order' =>  $this->input->post('order[0][dir]'),
+            'columna' => intval($this->input->post('order[0][column]')),
+            'petr_id' => $this->input->post('columns[1][data]'),
+            'cod_proyecto' => $this->input->post('columns[2][data]'),
+            'nombre' => $this->input->post('columns[3][data]'),
+            'dir_entrega' => $this->input->post('columns[4][data]'),
+            'tipo_trabajo' => $this->input->post('columns[5][data]'),
+            'fec_inicio' => $this->input->post('columns[6][data]')
+        );
+      
 
         //consulta si trae los pedidos finalizados o los no finalizados
         if($PedidosFinalizados)
         {
-            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search);
-        }else{
-            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search);
+            $r = $this->Pedidotrabajos->pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData);
+        }
+        else{
+            // echo var_dump($start,$length,$search,$myData);
+            $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$myData);
         }
 
 		$datos =$r['datos'];
@@ -560,7 +581,12 @@ public function cargar_formulario_asociado(){
 			"draw" 				=> intval($this->input->post('draw')),
 			"recordsTotal"  	=> intval($datosPagina),
 			"recordsFiltered"	=> intval($totalDatos),
-			"data" 				=> $datos
+			"data" 				=> $datos,
+            "filtro" => $r['filtro'],
+            "estadoFinal" => $r['estadoFinal'],
+            'search' => $search,
+            "mydata" => $r['mydata']
+            
 		);
 		echo json_encode($json_data);
 	}

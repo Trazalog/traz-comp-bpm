@@ -398,7 +398,7 @@ $proccessname = $this->session->userdata('proccessname');
 		arraydatos.Banda = $('select[name="banda_yudica"]').select2('data')[0].text;
         arraydatos.Fecha_inicio = dateFormat($('#fec_inicio').val());
 		arraydatos.Prioridad = $('select[name="prioridad_yudica"]').select2('data')[0].text;
-
+		arraydatos.int_pedi_id = $('select[name="int_pedi_id"]').select2('data')[0].text;
 
 		// si la etiqueta es derechazo
 		arraydatos.Motivo = $('#motivo_rechazo').val();			

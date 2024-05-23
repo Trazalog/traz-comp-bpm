@@ -232,8 +232,8 @@ class Pedidotrabajos extends CI_Model
 	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
 	* @return array listadopaginado y la cantidad
 	**/
-    public function pedidosTrabajoPaginados($start,$length,$search){
-        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+    public function pedidosTrabajoPaginados($start,$length,$search,$myData){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
 
         $emprId = empresa();
         $proccessname = $this->session->userdata('proccessname');
@@ -263,21 +263,105 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
+        $filtro= "";
+        // si es asc devuelvo los registros de manera asc en el dataTable
+        if (strpos($myData["order"],"asc") !== false) {
+            // evaluo la columna clickeada en el th del dataable
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
 
-        $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
-        $pedidosTrabajoPaginados = wso2($resp);
+                default:
+                    $filtro = "";
+                     break;
+            }
+            
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            $pedidosTrabajoPaginados = wso2($resp);
 
-        if($pedidosTrabajoPaginados['status'])
-        {
-            $result = array(
-                'numDataTotal' => $query_total,
-                'datos' => $pedidosTrabajoPaginados['data']
-            );
+            if($pedidosTrabajoPaginados['status'])
+             {
+                 $result = array(
+                     'numDataTotal' => $query_total,
+                     'datos' => $pedidosTrabajoPaginados['data'],
+                     "filtro" => $filtro,
+                     "estadoFinal" => $estadoFinal,
+                     "mydata" => $myData
+                 );
+             }
+            
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        } 
+        // si es dec se devuelve los registros de manera desc en el dataTable
+        else {
+            
+            // $resp = REST_PRO . "/pedidoTrabajoPaginado/$emprId/$estadoFinal/$length/$start/$search";
+             // evaluo la columna clickeada en el th del dataable
+             switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            $pedidosTrabajoPaginados = wso2($resp);
+
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data'],
+                    "filtro" => $filtro,
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
+                    
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
         }
-        else
-        {
-            return array('status', 'Error al traer los pedidos de trabajo');
-        }
+        
+       
         return $result;
     }
 
@@ -286,8 +370,8 @@ class Pedidotrabajos extends CI_Model
 	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
 	* @return array listadopaginado y la cantidad
 	**/
-    public function pedidosTrabajoFinalizadosPaginados($start,$length,$search){
-        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search)  | $start: ' .$start .'$length:'.$length.'$search:'.$search);
+    public function pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-BPM | PedidoTrabajos | pedidosTrabajoFinalizadosPaginados($start,$length,$search,$myData)  | $start: ' .$start .'$length:'.$length.'$search:'.$search.'$myData:'.$myData);
 
         $emprId = empresa();
 
@@ -304,20 +388,97 @@ class Pedidotrabajos extends CI_Model
                 return array('status', 'Error al traer los pedidos de trabajo');
             }
         }
+
+        $filtro="";
+        // si $order esquivale a ASC devuelvo los registros de manera Asc en datatable
+        if (strpos($myData['order'],"asc") !== false) {
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = "nombre";
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginadoAsc/$emprId/$length/$start/$search/$filtro";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoAscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+            //$resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            $pedidosTrabajoPaginados = wso2($resp);
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data'],
+                    "filtro" => $filtro,
+                    "estadoFinal" => $estadoFinal,
+                    "mydata" => $myData
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        } 
+        // si $order equivale a desc devuelvo los registros de manera desc en DataTable
+        else {
+            switch ($myData["columna"]) {
+                case 1:
+                    $filtro = $myData["petr_id"];
+                    break;
+                case 2:
+                    $filtro = $myData["cod_proyecto"];
+                    break;
+                case 3:
+                    $filtro = $myData["nombre"];
+                    break;
+                case 4:
+                    $filtro = $myData["dir_entrega"];
+                    break;
+                case 5:
+                    $filtro = $myData["tipo_trabajo"];
+                    break;
+                case 6:
+                    $filtro = $myData["fec_inicio"];
+                    break;
+
+                default:
+                    $filtro = $myData["fec_inicio"];;
+                     break;
+            }
+            // $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
+            $resp = REST_PRO . "/pedidoTrabajoPaginadoDscV2/$emprId/$estadoFinal/$length/$start/$search/$filtro";
+
+            $pedidosTrabajoPaginados = wso2($resp);
+            if($pedidosTrabajoPaginados['status'])
+            {
+                $result = array(
+                    'numDataTotal' => $query_total,
+                    'datos' => $pedidosTrabajoPaginados['data']
+                );
+            }
+            else
+            {
+                return array('status', 'Error al traer los pedidos de trabajo');
+            }
+        }
         
-        $resp = REST_PRO . "/pedidoTrabajoFinalizadosPaginado/$emprId/$length/$start/$search";
-        $pedidosTrabajoPaginados = wso2($resp);
-        if($pedidosTrabajoPaginados['status'])
-        {
-            $result = array(
-                'numDataTotal' => $query_total,
-                'datos' => $pedidosTrabajoPaginados['data']
-            );
-        }
-        else
-        {
-            return array('status', 'Error al traer los pedidos de trabajo');
-        }
+       
         return $result;
     }
 
