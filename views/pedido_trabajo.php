@@ -285,6 +285,7 @@ $proccessname = $this->session->userdata('proccessname');
 									
 										setTimeout(function(){
 											modalCodigosSein();
+											window.location.reload();
 									}, 2000);
 																		
 									} else if (
@@ -326,6 +327,7 @@ $proccessname = $this->session->userdata('proccessname');
 										}).then((result) => {
 										if (result.value) {
 											modalCodigosPedido();
+											window.location.reload();
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
