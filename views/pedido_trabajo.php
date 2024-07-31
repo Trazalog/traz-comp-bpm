@@ -288,7 +288,8 @@ $proccessname = $this->session->userdata('proccessname');
 									
 										setTimeout(function(){
 											modalCodigosSein();
-											$('#frm-PedidoTrabajo')[0].reset();
+											// $('#frm-PedidoTrabajo')[0].reset();
+											resetFormAndSelect2();
 									}, 2000);
 																		
 									} else if (
@@ -301,7 +302,8 @@ $proccessname = $this->session->userdata('proccessname');
 										'info'
 										)
 
-										$('#frm-PedidoTrabajo')[0].reset();
+										// $('#frm-PedidoTrabajo')[0].reset();
+										resetFormAndSelect2();
 										linkTo('<?php  echo BPM ?>Proceso/');
 									}
 									})
@@ -330,8 +332,7 @@ $proccessname = $this->session->userdata('proccessname');
 										}).then((result) => {
 										if (result.value) {
 											modalCodigosPedido();
-											// $('#frm-PedidoTrabajo')[0].reset();
-											resetFormAndSelect2();
+											// $('#frm-PedidoTrabajo')[0].reset();											
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
@@ -342,8 +343,7 @@ $proccessname = $this->session->userdata('proccessname');
 											'info'
 											)
 
-											// $('#frm-PedidoTrabajo')[0].reset();
-											resetFormAndSelect2();
+											// $('#frm-PedidoTrabajo')[0].reset();											
 											linkTo();
 										}
 										})
