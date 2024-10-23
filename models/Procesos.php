@@ -9,47 +9,41 @@ class Procesos extends CI_Model
         parent::__construct();
     }
 
-    public function mapeo($data)
-    {
-				$array = [];
-				$empr_id = empresa();
+    public function mapeo($data){
+        $array = [];
+        $empr_id = empresa();
 
         foreach ($data as $o) {
+            $process = $this->mapProcess($o['processId']);
 
-						$process = $this->mapProcess($o['processId']);
+            if(bandejaEmpresa($o['caseId'], $empr_id)){
 
-					if(bandejaEmpresa($o['caseId'], $empr_id)){
+                $aux = new StdClass();
+                $aux->taskId = $o['id'];
+                $aux->caseId = $o['caseId'];
+                $aux->processId = $o['processId'];
+                $aux->nombreTarea = $o['displayName'];
+                $aux->nombreProceso =  $process?$process['nombre']:'';
+                $aux->color =  $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');
+                $aux->descripcion = '-';
+                $aux->fec_vencimiento = $o['dueDate'];
+                $aux->usuarioAsignado = 'Nombre Apellido';
+                $aux->idUsuarioAsignado = $o['assigned_id'];
+                $aux->fec_asignacion = $o['assigned_date'];
+                $aux->prioridad = $o['priority'];
 
-							$aux = new StdClass();
-							$aux->taskId = $o['id'];
-							$aux->caseId = $o['caseId'];
-							$aux->processId = $o['processId'];
-							$aux->nombreTarea = $o['displayName'];
-							$aux->nombreProceso =  $process?$process['nombre']:'';
-							$aux->color =  $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');
-							$aux->descripcion = '-';
-							$aux->fec_vencimiento = $o['dueDate'];
-							$aux->usuarioAsignado = 'Nombre Apellido';
-							$aux->idUsuarioAsignado = $o['assigned_id'];
-							$aux->fec_asignacion = $o['assigned_date'];
-							$aux->prioridad = $o['priority'];
-		
-							$array[] = $aux;
-					}
+                $array[] = $aux;
+            }
         }
-        
         return $array;
-        
     }
     /**
 	* Funcion para obtener desde el modelo especificado en el constants la configuracion en bandeja de entrada
 	* @param array informacion de tareas enviados por bonita 
 	* @return array con informacion parseada para armar las notificaiones en bandeja de entrada
 	*/
-    public function map($data)
-    {
+    public function map($data){
         foreach ($data as $key => $o) {
-
             $process = $this->mapProcess($o->processId);
             if($process){
                 if($process['proyecto'] != TST){
@@ -73,30 +67,28 @@ class Procesos extends CI_Model
         }
 
         return $data;
-		}
+    }
 		
-		function mapeoTarea($data){
-							
-			$aux = new StdClass();
+    function mapeoTarea($data){ 
+        $aux = new StdClass();
 
-			$aux->taskId = $data['id'];
-			$aux->caseId = $data['caseId'];
-			$aux->processId = $data['processId'];
-			$aux->nombreTarea = $data['name'];
-			$aux->nombreProceso =  json_decode(BPM_PROCESS,true)[$data['processId']]['nombre'];
-			$aux->color =  json_decode(BPM_PROCESS,true)[$data['processId']]['color'];
-			$aux->descripcion = 'Esto es una Descripcion de la Tarea...<p>Esto es un texto de la solcitud de servicio que puede ser muy larga</p><span class="label label-danger">Urgente</span> <span class="label label-primary">#PonganseLasPilas</span>';
-			$aux->fec_vencimiento = 'dd/mm/aaaa';
-			$aux->usuarioAsignado = 'Nombre Apellido';
-			$aux->idUsuarioAsignado = $data['assigned_id'];
-			$aux->fec_asignacion = $data['assigned_date'];
-			$aux->prioridad = $data['priority'];
+        $aux->taskId = $data['id'];
+        $aux->caseId = $data['caseId'];
+        $aux->processId = $data['processId'];
+        $aux->nombreTarea = $data['name'];
+        $aux->nombreProceso =  json_decode(BPM_PROCESS,true)[$data['processId']]['nombre'];
+        $aux->color =  json_decode(BPM_PROCESS,true)[$data['processId']]['color'];
+        $aux->descripcion = 'Esto es una Descripcion de la Tarea...<p>Esto es un texto de la solcitud de servicio que puede ser muy larga</p><span class="label label-danger">Urgente</span> <span class="label label-primary">#PonganseLasPilas</span>';
+        $aux->fec_vencimiento = 'dd/mm/aaaa';
+        $aux->usuarioAsignado = 'Nombre Apellido';
+        $aux->idUsuarioAsignado = $data['assigned_id'];
+        $aux->fec_asignacion = $data['assigned_date'];
+        $aux->prioridad = $data['priority'];
 
-			return $aux;
+        return $aux;
 	}
 
-    public function listar()
-    {
+    public function listar(){
         $rsp =  $this->bpm->getToDoList();
 
         if(!$rsp['status']) return $rsp;
@@ -122,9 +114,13 @@ class Procesos extends CI_Model
     {
         # code...
     }
-
-    public function mapProcess($processId)
-    {
+    /**
+	* Obtiene el arreglo de procesos definidos en constants y mapea el proceso segun el id.
+    * Si no encuentra la definicion devuelve array con proceso generico.
+	* @param integer ID proceso en bonita
+	* @return array parametros seteados para el proceso
+	*/
+    public function mapProcess($processId){
         $aux = json_decode(BPM_PROCESS,'true');
        
         return isset($aux[$processId])?$aux[$processId]:array('proyecto'=>'', 'model'=>'Gentareas');

@@ -68,29 +68,33 @@ class Proceso extends CI_Controller
         $id = $this->input->post('id');
         echo json_encode($this->bpm->setUsuario($id, ""));
     }
-
-    public function cerrarTarea($taskId)
-    {
-        //Obtener Infomracion de Tarea
+    /**
+	* Cierra la tarea enviada desde bonita, mapeando con el modelo correspondiente al proceso
+	* @param integer id de la tarea en bonita
+	* @return array segun resultado de la operacion
+	*/
+    public function cerrarTarea($taskId){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-BPM | Proceso | cerrarTarea() task_id >> $taskId");
+        //Obtener Informacion de Tarea
         $tarea = $this->Procesos->mapeoTarea($this->bpm->getTarea($taskId)['data']);
-
         //Formulario desde la Vista
         $form = $this->input->post();
-
         //Mapeo de Contrato
         $contrato = $this->getContrato($tarea, $form);
-
         //Cerrar Tarea
-				$rsp = $this->bpm->cerrarTarea($taskId, $contrato);
-				echo json_encode($rsp);
+        $rsp = $this->bpm->cerrarTarea($taskId, $contrato);
+        //Respuesta
+        echo json_encode($rsp);
     }
-
-    public function getContrato($tarea, $form)
-    {
-			$process = $this->Procesos->mapProcess($tarea->processId);
-
-			$this->load->model($process['proyecto'].$process['model']);
-
+    /**
+	* Obtiene el contrato definido por nombre de tarea en el modelo correspondiente al proceso
+	* @param array datos de la tarea; @param array datos del formulario de cierre de tarea
+	* @return array datos del contrato para la tarea en cuestion
+	*/
+    public function getContrato($tarea, $form){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-BPM | Proceso | getContrato()");
+        $process = $this->Procesos->mapProcess($tarea->processId);
+        $this->load->model($process['proyecto'].$process['model']);
         return $this->{$process['model']}->getContrato($tarea, $form);
     }
 
