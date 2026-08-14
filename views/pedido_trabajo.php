@@ -162,6 +162,9 @@ $proccessname = $this->session->userdata('proccessname');
 			
 			?>
 
+			<!-- Campo oculto para almacenar form_id -->
+			<input type="hidden" id="FormId" value="<?php echo $form_id; ?>">
+
  </div>
             <div class="form-group">
                 <div class="col-xs-12 col-sm-12 col-md-12" style="text-align: right">
@@ -285,6 +288,8 @@ $proccessname = $this->session->userdata('proccessname');
 									
 										setTimeout(function(){
 											modalCodigosSein();
+											// $('#frm-PedidoTrabajo')[0].reset();
+											resetFormAndSelect2();
 									}, 2000);
 																		
 									} else if (
@@ -297,7 +302,8 @@ $proccessname = $this->session->userdata('proccessname');
 										'info'
 										)
 
-										$('#frm-PedidoTrabajo')[0].reset();
+										// $('#frm-PedidoTrabajo')[0].reset();
+										resetFormAndSelect2();
 										linkTo('<?php  echo BPM ?>Proceso/');
 									}
 									})
@@ -326,6 +332,7 @@ $proccessname = $this->session->userdata('proccessname');
 										}).then((result) => {
 										if (result.value) {
 											modalCodigosPedido();
+											// $('#frm-PedidoTrabajo')[0].reset();											
 										} else if (
 											/* Read more about handling dismissals below */
 											result.dismiss === Swal.DismissReason.cancel
@@ -336,7 +343,7 @@ $proccessname = $this->session->userdata('proccessname');
 											'info'
 											)
 
-											$('#frm-PedidoTrabajo')[0].reset();
+											// $('#frm-PedidoTrabajo')[0].reset();											
 											linkTo();
 										}
 										})
@@ -503,5 +510,43 @@ $proccessname = $this->session->userdata('proccessname');
 		if (proccesname == 'SEIN-SERVICIOS-INDUSTRIALES'){
     		$("#infoEtiqueta").load("<?php echo base_url(SEIN); ?>/Infocodigo/pedidoTrabajoFinal", arraydatos);
   		}
+	}
+
+	function resetFormAndSelect2() {
+		$('#frm-PedidoTrabajo')[0].reset();
+		// Destruye select2 antes de reinicializar
+		$('.select2').each(function() {
+			if ($(this).data('select2')) {
+				$(this).select2('destroy');
+			}
+		});
+
+		var form_id = $('#hiddenFormId').val();
+		$('.frm-new').attr('data-form', form_id);
+		//Script setear fecha actual en Fecha Inicio
+		fecha = new Date();
+		dia = fecha.getDate();
+		mes = fecha.getMonth()+1;
+		anio = fecha.getFullYear();
+
+		if(dia<10){dia='0'+dia;} 
+		if(mes<10){mes='0'+mes;}
+		
+		hoy = anio+'-'+mes+'-'+dia;  
+		$("#fec_inicio").val(hoy);
+		//Fin script
+		$("#fec_entrega").on("change", function (e) {
+			if($("#fec_entrega").val() < $("#fec_inicio").val()){
+				error('Error...','La fecha de entrega no puede ser anterior a la fecha de inicio');
+				$("#fec_entrega").val('');
+				e.preventDefault();
+			}
+		});
+
+		// Reinicializa select2
+		$('.select2').select2();
+
+		detectarForm();
+		initForm();
 	}
 </script>

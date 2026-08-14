@@ -2,22 +2,19 @@
     exit('No direct script access allowed');
 }
 
-class Gentareas extends CI_Model
-{
-    public function __construct()
-    {
+class Gentareas extends CI_Model{
+
+    public function __construct(){
         parent::__construct();
 
     }
 
-    public function map($tarea)
-    {
-        $data['descripcion'] = 'Holis como estas?';
+    public function map($tarea){
+        $data['descripcion'] = 'Te falto definir el modelo para la tarea pa';
         return $data;
     }
 
-    public function desplegarVista($tarea)
-    {
+    public function desplegarVista($tarea){
         switch ($tarea->nombreTarea) {
             default:
                 # code...
@@ -25,8 +22,7 @@ class Gentareas extends CI_Model
         }
     }
 
-    public function getContrato($tarea, $form)
-    {
+    public function getContrato($tarea, $form){
         switch ($tarea->nombreTarea) {
             default:
                 # code...
@@ -34,10 +30,7 @@ class Gentareas extends CI_Model
         }
     }
 
-    public function desplegarCabecera($tarea)
-    {
+    public function desplegarCabecera($tarea){
         
     }
-
-
 }
