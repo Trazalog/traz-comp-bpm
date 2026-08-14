@@ -100,6 +100,35 @@ class Procesos extends CI_Model
         return $rsp;
     }
 
+    public function listarPaginaServerSide($start = 0, $length = 10){
+        $ci =& get_instance();
+        $cacheKey = 'bpm_tasks_empr_' . empresa() . '_' . userId();
+
+        // Si es el inicio o no está en sesión, consultar a Bonita y guardar las tareas de la empresa activa
+        if ($start == 0 || !$ci->session->userdata($cacheKey)) {
+            $rsp = $this->bpm->getTodoList();
+            if(!$rsp['status']) return $rsp;
+
+            $items = isset($rsp['data']) && is_array($rsp['data']) ? $rsp['data'] : [];
+            $todasEmpresa = (empresa() != '') ? $this->mapeo($items) : [];
+            $ci->session->set_userdata($cacheKey, $todasEmpresa);
+        } else {
+            $todasEmpresa = $ci->session->userdata($cacheKey);
+        }
+
+        $totalRecords = count($todasEmpresa);
+        $slicedItems = array_slice($todasEmpresa, $start, $length);
+        
+        // Mapea ÚNICAMENTE los 10 elementos que se van a renderizar en pantalla
+        $mappedData = $this->map($slicedItems);
+
+        return [
+            'status' => true,
+            'total' => $totalRecords,
+            'data' => $mappedData
+        ];
+    }
+
     public function obtener($id)
     {
         return $this->mapeo(array($this->bpm->getTarea($id)['data']))[0];
