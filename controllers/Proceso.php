@@ -15,12 +15,65 @@ class Proceso extends CI_Controller
     public function index()
     {  
         $data['device'] = "";
-        $rsp =  $this->Procesos->listar();
-        if($rsp['status']){
-
-            $data['list'] = $rsp['data'];
-        }
         $this->load->view('bandeja_entrada', $data);
+    }
+
+    public function paginarServerSide()
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        if ($length <= 0) {
+            $length = 10;
+        }
+
+        // Trae de Bonita y mapea ÚNICAMENTE las tareas de esta página ($length)
+        $rsp = $this->Procesos->listarPaginaServerSide($start, $length);
+        $list = ($rsp['status'] && isset($rsp['data'])) ? $rsp['data'] : [];
+        $recordsTotal = ($rsp['status'] && isset($rsp['total'])) ? $rsp['total'] : 0;
+
+        $formattedData = [];
+        foreach ($list as $f) {
+            $id = $f->taskId;
+            $asig = $f->idUsuarioAsignado;
+            $nombreTarea = $f->nombreTarea;
+            $depo_id = !empty($f->info[3]->depo_id) ? $f->info[3]->depo_id : '';
+
+            if (filtrarbyDepo($nombreTarea, $depo_id)) {
+                if ($asig != "") {
+                    $asigIcon = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
+                } else {
+                    $asigIcon = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
+                }
+
+                $tagCase = isset($f->tagCase) && $f->tagCase ? $f->tagCase : '';
+                $html = "<h4>$asigIcon <proceso style='color:{$f->color}'>{$f->nombreProceso}</proceso>  |  {$f->nombreTarea} <small class='text-gray ml-2 {$tagCase}'><cite style='color: #707069'>case: {$f->caseId}</cite></small></h4><p>" . substr($f->descripcion, 0, 500) . '</p>';
+
+                if (!empty($f->info) && is_array($f->info)) {
+                    foreach ($f->info as $o) {
+                        $estilo = !empty($o->estilo) ? $o->estilo : '';
+                        $html .= "<p style='{$estilo}' class='label label-{$o->color} mr-2'>{$o->texto}</p>";
+                    }
+                }
+
+                $formattedData[] = [
+                    'DT_RowId' => $id,
+                    'DT_RowClass' => 'item',
+                    'DT_RowData' => [
+                        'caseId' => $f->caseId,
+                        'json' => json_encode($f)
+                    ],
+                    '0' => $html
+                ];
+            }
+        }
+
+        echo json_encode([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data' => $formattedData
+        ]);
     }
 
     public function detalleTarea($taskId)
