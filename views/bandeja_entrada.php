@@ -38,7 +38,7 @@
 <script>
 
 $(document).ready( function () {
-    $('#tareas').DataTable({
+    var table = $('#tareas').DataTable({
         "processing": true,
         "serverSide": true,
         "pageLength": 10,
@@ -54,6 +54,19 @@ $(document).ready( function () {
         },
         "createdRow": function(row, data, dataIndex) {
             $(row).attr('style', 'cursor: pointer;');
+        },
+        "initComplete": function() {
+            var $searchInput = $('#tareas_filter input');
+            // Removemos los eventos que DataTables le asigna por defecto
+            $searchInput.unbind();
+            $searchInput.off('.DT');
+            // Asignamos nuestro evento personalizado
+            $searchInput.on('keyup', function(e) {
+                var value = $(this).val();
+                if (value.length >= 3 || value.length === 0 || e.keyCode == 13) {
+                    table.search(value).draw();
+                }
+            });
         }
     });
 });

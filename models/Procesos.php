@@ -110,7 +110,7 @@ class Procesos extends CI_Model
             if(!$rsp['status']) return $rsp;
 
             $items = isset($rsp['data']) && is_array($rsp['data']) ? $rsp['data'] : [];
-            $todasEmpresa = (empresa() != '') ? $this->mapeo($items) : [];
+            $todasEmpresa = (empresa() != '') ? $this->map($this->mapeo($items)) : [];
             $ci->session->set_userdata($cacheKey, $todasEmpresa);
         } else {
             $todasEmpresa = $ci->session->userdata($cacheKey);
@@ -143,8 +143,8 @@ class Procesos extends CI_Model
         $totalFiltered = count($filtered);
         $slicedItems = array_slice($filtered, $start, $length);
 
-        // Mapea ÚNICAMENTE los elementos que se van a renderizar en pantalla
-        $mappedData = $this->map($slicedItems);
+        // Los elementos ya fueron mapeados al guardarse en caché
+        $mappedData = $slicedItems;
 
         return [
             'status' => true,
