@@ -100,7 +100,7 @@ class Procesos extends CI_Model
         return $rsp;
     }
 
-    public function listarPaginaServerSide($start = 0, $length = 10){
+    public function listarPaginaServerSide($start = 0, $length = 10, $search = ''){
         $ci =& get_instance();
         $cacheKey = 'bpm_tasks_empr_' . empresa() . '_' . userId();
 
@@ -117,14 +117,39 @@ class Procesos extends CI_Model
         }
 
         $totalRecords = count($todasEmpresa);
-        $slicedItems = array_slice($todasEmpresa, $start, $length);
-        
-        // Mapea ÚNICAMENTE los 10 elementos que se van a renderizar en pantalla
+        $filtered = $todasEmpresa;
+
+        // Aplicar filtro global (case-insensitive)
+        if (!empty($search)) {
+            $term = strtolower(trim($search));
+            $filtered = array_filter($filtered, function ($f) use ($term) {
+                $texto = '';
+                $texto .= strtolower($f->nombreTarea ?? '');
+                $texto .= ' ' . strtolower($f->nombreProceso ?? '');
+                $texto .= ' ' . strtolower($f->caseId ?? '');
+                $texto .= ' ' . strtolower($f->descripcion ?? '');
+                $texto .= ' ' . strtolower($f->tagCase ?? '');
+
+                if (!empty($f->info) && is_array($f->info)) {
+                    foreach ($f->info as $o) {
+                        $texto .= ' ' . strtolower($o->texto ?? '');
+                    }
+                }
+                return strpos($texto, $term) !== false;
+            });
+            $filtered = array_values($filtered);
+        }
+
+        $totalFiltered = count($filtered);
+        $slicedItems = array_slice($filtered, $start, $length);
+
+        // Mapea ÚNICAMENTE los elementos que se van a renderizar en pantalla
         $mappedData = $this->map($slicedItems);
 
         return [
             'status' => true,
             'total' => $totalRecords,
+            'filtered' => $totalFiltered,
             'data' => $mappedData
         ];
     }

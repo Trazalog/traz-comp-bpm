@@ -28,9 +28,12 @@ class Proceso extends CI_Controller
         }
 
         // Trae de Bonita y mapea ÚNICAMENTE las tareas de esta página ($length)
-        $rsp = $this->Procesos->listarPaginaServerSide($start, $length);
+        $search = $this->input->post('search')['value'] ?? '';
+
+        $rsp = $this->Procesos->listarPaginaServerSide($start, $length, $search);
         $list = ($rsp['status'] && isset($rsp['data'])) ? $rsp['data'] : [];
         $recordsTotal = ($rsp['status'] && isset($rsp['total'])) ? $rsp['total'] : 0;
+        $recordsFiltered = ($rsp['status'] && isset($rsp['filtered'])) ? $rsp['filtered'] : $recordsTotal;
 
         $formattedData = [];
         foreach ($list as $f) {
@@ -71,7 +74,7 @@ class Proceso extends CI_Controller
         echo json_encode([
             'draw' => $draw,
             'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
             'data' => $formattedData
         ]);
     }

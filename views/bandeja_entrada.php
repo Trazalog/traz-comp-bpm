@@ -42,8 +42,12 @@ $(document).ready( function () {
         "processing": true,
         "serverSide": true,
         "pageLength": 10,
-        "searching": false,
+        "searching": true,
         "ordering": false,
+        "dom": 'lfrtip',
+        "language": {
+            "url": "<?php echo base_url() ?>lib/bower_components/datatables.net/js/es-ar.json"
+        },
         "ajax": {
             "url": "<?php echo BPM ?>Proceso/paginarServerSide",
             "type": "POST"
