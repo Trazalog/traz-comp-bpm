@@ -38,18 +38,35 @@
 <script>
 
 $(document).ready( function () {
-    $('#tareas').DataTable({
+    var table = $('#tareas').DataTable({
         "processing": true,
         "serverSide": true,
         "pageLength": 10,
-        "searching": false,
+        "searching": true,
         "ordering": false,
+        "dom": 'lfrtip',
+        "language": {
+            "url": "<?php echo base_url() ?>lib/bower_components/datatables.net/js/es-ar.json"
+        },
         "ajax": {
             "url": "<?php echo BPM ?>Proceso/paginarServerSide",
             "type": "POST"
         },
         "createdRow": function(row, data, dataIndex) {
             $(row).attr('style', 'cursor: pointer;');
+        },
+        "initComplete": function() {
+            var $searchInput = $('#tareas_filter input');
+            // Removemos los eventos que DataTables le asigna por defecto
+            $searchInput.unbind();
+            $searchInput.off('.DT');
+            // Asignamos nuestro evento personalizado
+            $searchInput.on('keyup', function(e) {
+                var value = $(this).val();
+                if (value.length >= 3 || value.length === 0 || e.keyCode == 13) {
+                    table.search(value).draw();
+                }
+            });
         }
     });
 });
