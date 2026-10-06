@@ -28,7 +28,8 @@ class Proceso extends CI_Controller
         }
 
         // Trae de Bonita y mapea ÚNICAMENTE las tareas de esta página ($length)
-        $search = $this->input->post('search')['value'] ?? '';
+        $searchPost = $this->input->post('search');
+        $search = isset($searchPost['value']) ? $searchPost['value'] : '';
 
         $rsp = $this->Procesos->listarPaginaServerSide($start, $length, $search);
         $list = ($rsp['status'] && isset($rsp['data'])) ? $rsp['data'] : [];

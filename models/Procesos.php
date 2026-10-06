@@ -124,15 +124,15 @@ class Procesos extends CI_Model
             $term = strtolower(trim($search));
             $filtered = array_filter($filtered, function ($f) use ($term) {
                 $texto = '';
-                $texto .= strtolower($f->nombreTarea ?? '');
-                $texto .= ' ' . strtolower($f->nombreProceso ?? '');
-                $texto .= ' ' . strtolower($f->caseId ?? '');
-                $texto .= ' ' . strtolower($f->descripcion ?? '');
-                $texto .= ' ' . strtolower($f->tagCase ?? '');
+                $texto .= strtolower(isset($f->nombreTarea) ? $f->nombreTarea : '');
+                $texto .= ' ' . strtolower(isset($f->nombreProceso) ? $f->nombreProceso : '');
+                $texto .= ' ' . strtolower(isset($f->caseId) ? $f->caseId : '');
+                $texto .= ' ' . strtolower(isset($f->descripcion) ? $f->descripcion : '');
+                $texto .= ' ' . strtolower(isset($f->tagCase) ? $f->tagCase : '');
 
                 if (!empty($f->info) && is_array($f->info)) {
                     foreach ($f->info as $o) {
-                        $texto .= ' ' . strtolower($o->texto ?? '');
+                        $texto .= ' ' . strtolower(isset($o->texto) ? $o->texto : '');
                     }
                 }
                 return strpos($texto, $term) !== false;
