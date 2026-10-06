@@ -4,6 +4,8 @@
 <input type="text" class="form-control hidden" id="asignado" value="<?php echo $tarea->idUsuarioAsignado?>">
 <input type="text" class="form-control hidden" id="taskId" value="<?php echo $tarea->taskId?>">
 <input type="text" class="form-control hidden" id="caseId" value="<?php echo $tarea->caseId?>">
+<input type="text" class="form-control hidden" id="nomTarea" value="<?php echo $tarea->nombreTarea?>">
+
 
 <div class="nav-tabs-custom ">
     <ul class="nav nav-tabs">
@@ -12,17 +14,17 @@
         <li class="privado"><a href="#tab_3" data-toggle="tab" aria-expanded="false">Trazabilidad</a></li>
         <li class="privado"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Información</a></li>
         <!-- <li class="dropdown">
-			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-				Dropdown <span class="caret"></span>
-			</a>
-			<ul class="dropdown-menu">
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Vista Global</a></li>
-				<li role="presentation" class="divider"></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-			</ul>
-		</li> -->
+									<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+										Dropdown <span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Vista Global</a></li>
+										<li role="presentation" class="divider"></li>
+										<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+									</ul>
+								</li> -->
         <!-- <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li> -->
     </ul>
     <div class="tab-content">

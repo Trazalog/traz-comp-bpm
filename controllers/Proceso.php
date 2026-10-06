@@ -15,12 +15,65 @@ class Proceso extends CI_Controller
     public function index()
     {  
         $data['device'] = "";
-        $rsp =  $this->Procesos->listar();
-        if($rsp['status']){
-
-            $data['list'] = $rsp['data'];
-        }
         $this->load->view('bandeja_entrada', $data);
+    }
+
+    public function paginarServerSide()
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        if ($length <= 0) {
+            $length = 10;
+        }
+
+        // Trae de Bonita y mapea ÚNICAMENTE las tareas de esta página ($length)
+        $rsp = $this->Procesos->listarPaginaServerSide($start, $length);
+        $list = ($rsp['status'] && isset($rsp['data'])) ? $rsp['data'] : [];
+        $recordsTotal = ($rsp['status'] && isset($rsp['total'])) ? $rsp['total'] : 0;
+
+        $formattedData = [];
+        foreach ($list as $f) {
+            $id = $f->taskId;
+            $asig = $f->idUsuarioAsignado;
+            $nombreTarea = $f->nombreTarea;
+            $depo_id = !empty($f->info[3]->depo_id) ? $f->info[3]->depo_id : '';
+
+            if (filtrarbyDepo($nombreTarea, $depo_id)) {
+                if ($asig != "") {
+                    $asigIcon = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
+                } else {
+                    $asigIcon = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
+                }
+
+                $tagCase = isset($f->tagCase) && $f->tagCase ? $f->tagCase : '';
+                $html = "<h4>$asigIcon <proceso style='color:{$f->color}'>{$f->nombreProceso}</proceso>  |  {$f->nombreTarea} <small class='text-gray ml-2 {$tagCase}'><cite style='color: #707069'>case: {$f->caseId}</cite></small></h4><p>" . substr($f->descripcion, 0, 500) . '</p>';
+
+                if (!empty($f->info) && is_array($f->info)) {
+                    foreach ($f->info as $o) {
+                        $estilo = !empty($o->estilo) ? $o->estilo : '';
+                        $html .= "<p style='{$estilo}' class='label label-{$o->color} mr-2'>{$o->texto}</p>";
+                    }
+                }
+
+                $formattedData[] = [
+                    'DT_RowId' => $id,
+                    'DT_RowClass' => 'item',
+                    'DT_RowData' => [
+                        'caseId' => $f->caseId,
+                        'json' => json_encode($f)
+                    ],
+                    '0' => $html
+                ];
+            }
+        }
+
+        echo json_encode([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsTotal,
+            'data' => $formattedData
+        ]);
     }
 
     public function detalleTarea($taskId)
@@ -68,29 +121,33 @@ class Proceso extends CI_Controller
         $id = $this->input->post('id');
         echo json_encode($this->bpm->setUsuario($id, ""));
     }
-
-    public function cerrarTarea($taskId)
-    {
-        //Obtener Infomracion de Tarea
+    /**
+				* Cierra la tarea enviada desde bonita, mapeando con el modelo correspondiente al proceso
+				* @param integer id de la tarea en bonita
+				* @return array segun resultado de la operacion
+				*/
+    public function cerrarTarea($taskId){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-BPM | Proceso | cerrarTarea() task_id >> $taskId");
+        //Obtener Informacion de Tarea
         $tarea = $this->Procesos->mapeoTarea($this->bpm->getTarea($taskId)['data']);
-
         //Formulario desde la Vista
         $form = $this->input->post();
-
         //Mapeo de Contrato
         $contrato = $this->getContrato($tarea, $form);
-
         //Cerrar Tarea
-				$rsp = $this->bpm->cerrarTarea($taskId, $contrato);
-				echo json_encode($rsp);
+        $rsp = $this->bpm->cerrarTarea($taskId, $contrato);
+        //Respuesta
+        echo json_encode($rsp);
     }
-
-    public function getContrato($tarea, $form)
-    {
-			$process = $this->Procesos->mapProcess($tarea->processId);
-
-			$this->load->model($process['proyecto'].$process['model']);
-
+    /**
+				* Obtiene el contrato definido por nombre de tarea en el modelo correspondiente al proceso
+				* @param array datos de la tarea; @param array datos del formulario de cierre de tarea
+				* @return array datos del contrato para la tarea en cuestion
+				*/
+    public function getContrato($tarea, $form){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-BPM | Proceso | getContrato()");
+        $process = $this->Procesos->mapProcess($tarea->processId);
+        $this->load->model($process['proyecto'].$process['model']);
         return $this->{$process['model']}->getContrato($tarea, $form);
     }
 
@@ -119,11 +176,11 @@ class Proceso extends CI_Controller
     }
 
 
-	public function VistaCliente()
+				public function VistaCliente()
     {
 		
 
-		return $this->load->view(BPM . 'cliente/vista_cliente');
+								return $this->load->view(BPM . 'cliente/vista_cliente');
     }
    
 
