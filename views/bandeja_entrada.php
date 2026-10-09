@@ -16,6 +16,39 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                            #Validacion de bandeja vacia
+                            if(!empty($list)){
+                                foreach ($list as $f) {
+                                    $id = $f->taskId;
+                                    $asig = $f->idUsuarioAsignado;
+                                    $nombreTarea = $f->nombreTarea;
+                                    $depo_id = !empty($f->info[3]->depo_id) ? $f->info[3]->depo_id : '';
+
+                                    if (filtrarbyDepo($nombreTarea, $depo_id)) {
+                                    
+                                      echo "<tr class='item' id='$id' data-caseId='$f->caseId' data-json='".json_encode($f)."'  style='cursor: pointer;'>";
+                                    
+                                      if ($asig != "") {
+                                        $asig = '<i class="fa fa-user text-primary mr-2" title="' . formato_fecha_hora($f->fec_asignacion) . '"></i>';
+                                      } else {
+                                        $asig = '<i class="fa fa-user mr-2" style="color: #d6d9db;" title="No Asignado"></i>';
+                                      }
+                                      
+                                      // TAREA	
+                                      echo "<td><h4>$asig <proceso style='color:$f->color'>$f->nombreProceso</proceso>  |  $f->nombreTarea <small class='text-gray ml-2 ".($f->tagCase ? $f->tagCase : '')."'><cite style='color: #707069'>case: $f->caseId</cite></small></h4>".'<p>' . substr($f->descripcion, 0, 500) .'</p>';
+                                      
+                                      foreach ($f->info as $o) {
+                                        echo "<p style='".(!empty($o->estilo) ? $o->estilo : "" )."' class='label label-$o->color mr-2'>$o->texto</p>";
+                                      }
+                                      echo '</td>';
+                                      echo '</tr>';
+                                    }
+                                }
+                            }else{
+                                echo "<td class='text-center'><h4>Sin Tareas en este momento...</h4></td>";
+                            }
+                        ?>
                     </tbody>
                 </table>
                 <!-- /.table -->
@@ -38,80 +71,23 @@
 <script>
 
 $(document).ready( function () {
-    var table = $('#tareas').DataTable({
-        "processing": false, // Desactivamos el de datatables
-        "serverSide": true,
-        "pageLength": 10,
-        "searching": true,
-        "ordering": false,
-        "dom": "<'row'<'col-sm-6'l><'col-sm-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>",
-        "language": {
-            "url": "<?php echo base_url() ?>lib/bower_components/datatables.net/js/es-ar.json"
-        },
-        "ajax": {
-            "url": "<?php echo BPM ?>Proceso/paginarServerSide",
-            "type": "POST"
-        },
-        "createdRow": function(row, data, dataIndex) {
-            $(row).attr('style', 'cursor: pointer;');
-        },
-        "initComplete": function() {
-            var $filterDiv = $('#tareas_filter');
-            var $searchInput = $filterDiv.find('input');
-            var $searchLabel = $filterDiv.find('label');
-            
-            // Mantenemos el diseño original, solo agregamos la 'x' posicionada dentro del input
-            $searchLabel.css('position', 'relative');
-            $searchInput.css('padding-right', '20px');
-            $searchInput.after('<i class="fa fa-times text-muted" style="cursor:pointer; display:none; position:absolute; right:10px; top:50%; transform:translateY(-50%);" id="clear_search_tareas"></i>');
-
-            // Removemos los eventos que DataTables le asigna por defecto
-            $searchInput.unbind();
-            $searchInput.off('.DT');
-            // Asignamos nuestro evento personalizado
-            var delayTimer;
-            $searchInput.on('keyup', function(e) {
-                var value = $(this).val();
-
-                if(value.length > 0) {
-                    $('#clear_search_tareas').show();
-                } else {
-                    $('#clear_search_tareas').hide();
-                }
-
-                clearTimeout(delayTimer);
-                if (value.length >= 3 || value.length === 0 || e.keyCode == 13) {
-                    delayTimer = setTimeout(function() {
-                        table.search(value).draw();
-                    }, 500);
-                }
-            });
-
-            $('#clear_search_tareas').on('click', function() {
-                $searchInput.val('');
-                $(this).hide();
-                table.search('').draw();
-            });
-        }
+    $('#tareas').dataTable({
+        "aaSorting": []
     });
+// DataTable('#tareas');
+} );
 
-    // Mostrar modal de espera propio al hacer peticiones AJAX
-    table.on('preXhr.dt', function() {
-        wo();
-    }).on('xhr.dt', function() {
-        wc();
-    });
-});
-
-$(document).on('click', '.item', function() {
-    var id = $(this).attr('id');
-    wo();
+$('.item').single_double_click(function() {
+    wo()
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
     $('#bandeja').removeClass().addClass('hidden-xs col-sm-4');
-    $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + id, function(){
+    // $('#miniView').html('<div class="box"><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>');
+    $('#miniView').load('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'), function(){
         wc();   
     });
+}, function() {
+    linkTo('<?php echo BPM ?>Proceso/detalleTarea/' + $(this).attr('id'));
 });
 
 function closeView() {
