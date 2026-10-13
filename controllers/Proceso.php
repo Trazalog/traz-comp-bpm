@@ -15,6 +15,11 @@ class Proceso extends CI_Controller
     public function index()
     {  
         $data['device'] = "";
+        $rsp =  $this->Procesos->listar();
+        if($rsp['status']){
+
+            $data['list'] = $rsp['data'];
+        }
         $this->load->view('bandeja_entrada', $data);
     }
 
