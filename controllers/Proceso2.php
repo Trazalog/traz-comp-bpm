@@ -38,8 +38,18 @@ class Proceso2 extends Proceso
         // Al cerrar la tarea, la vista compartida vuelve a la bandeja vieja: que vuelva a esta
         $salida = $this->output->get_output();
         $salida = str_replace(
-            ["linkTo('" . BPM . "Proceso/')", "linkTo('" . BPM . "Proceso')"],
-            ["linkTo('" . BPM . "Proceso2/')", "linkTo('" . BPM . "Proceso2')"],
+            [
+                "linkTo('" . BPM . "Proceso/')",
+                "linkTo('" . BPM . "Proceso')",
+                "linkTo('" . base_url(BPM) . "Proceso/')",
+                "linkTo('" . base_url(BPM) . "Proceso')"
+            ],
+            [
+                "linkTo('" . BPM . "Proceso2/')",
+                "linkTo('" . BPM . "Proceso2')",
+                "linkTo('" . BPM . "Proceso2/')",
+                "linkTo('" . BPM . "Proceso2')"
+            ],
             $salida
         );
         $this->output->set_output($salida);

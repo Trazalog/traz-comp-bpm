@@ -304,7 +304,7 @@ $proccessname = $this->session->userdata('proccessname');
 
 										// $('#frm-PedidoTrabajo')[0].reset();
 										resetFormAndSelect2();
-										linkTo('<?php  echo BPM ?>Proceso/');
+										linkTo('<?php  echo BPM ?>Proceso2/');
 									}
 									})
 											} 

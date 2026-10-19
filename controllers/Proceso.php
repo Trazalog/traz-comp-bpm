@@ -14,13 +14,8 @@ class Proceso extends CI_Controller
 
     public function index()
     {  
-        $data['device'] = "";
-        $rsp =  $this->Procesos->listar();
-        if($rsp['status']){
-
-            $data['list'] = $rsp['data'];
-        }
-        $this->load->view('bandeja_entrada', $data);
+        // Redirige a la bandeja 2 (paginado real en BD)
+        redirect(BPM . 'Proceso2');
     }
 
     public function paginarServerSide()
