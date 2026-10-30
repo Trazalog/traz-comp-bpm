@@ -40,6 +40,7 @@ function deshabilitar() {
 }
 
 function tomarTarea() {
+    wo();
     $.ajax({
         type: 'POST',
         data: {
@@ -47,6 +48,7 @@ function tomarTarea() {
         },
         url: '<?php echo BPM ?>Proceso/tomarTarea',
         success: function(data) {
+            wc();
             debugger;
             var nombreTarea = task.nombreTarea;
         if (nombreTarea === "Tarea Generica"){    
@@ -65,6 +67,7 @@ function tomarTarea() {
         }
         },
         error: function(result) {
+            wc();
             alert('Error');
         },
         dataType: 'json'

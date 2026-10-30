@@ -63,10 +63,6 @@ class Proceso extends CI_Controller
                 $formattedData[] = [
                     'DT_RowId' => $id,
                     'DT_RowClass' => 'item',
-                    'DT_RowData' => [
-                        'caseId' => $f->caseId,
-                        'json' => json_encode($f)
-                    ],
                     '0' => $html
                 ];
             }
@@ -89,25 +85,84 @@ class Proceso extends CI_Controller
         $data['device'] = "";
 
         //INFORMACION DE TAREA
-        $tarea = $this->Procesos->obtener($taskId); 
+        $tarea = $this->Procesos->obtener($taskId);
 
-        //INFORMACION DE TAREA
+        if (!$tarea) {
+            show_404();
+            return;
+        }
+
         $data['tarea'] = $tarea;
         $data['info'] = '';#$this->load->view(BPM.'tareas/componentes/informacion',$data['tarea'], true);
 
-        //LINEA DE TIEMPO
-        $data['timeline'] =$this->bpm->ObtenerLineaTiempo($tarea->processId, $tarea->caseId);
+        //LINEA DE TIEMPO y COMENTARIOS: se cargan bajo demanda al abrir sus pestañas
+        $data['timeline'] = null;
+        $data['comentarios'] = '';
 
-        //COMENTARIOS
-        $data_aux = ['case_id' => $tarea->caseId, 'comentarios' => $this->bpm->ObtenerComentarios($tarea->caseId)];
-        $data['comentarios'] = $this->load->view(BPM.'tareas/componentes/comentarios', $data_aux, true);
-
+        //La cabecera se dibuja antes de mostrar la tarea
         $data['cabecera'] = $this->deplegarCabecera($tarea);
 
         //DESPLEGAR VISTA
         $data['view'] = $this->deplegarVista($tarea);
         $this->load->view(BPM.'notificacion_estandar', $data);
     }
+
+    /**
+     * Carga diferida de comentarios para la pestaña Comentarios
+     * @param integer $taskId id de la tarea en Bonita
+     */
+    public function cargarComentarios($taskId)
+    {
+        $tarea = $this->Procesos->obtener($taskId);
+
+        if (!$tarea) {
+            http_response_code(404);
+            echo '<div class="alert alert-danger" style="margin:20px;">No se pudo cargar la tarea.</div>';
+            return;
+        }
+
+        $data_aux = ['case_id' => $tarea->caseId, 'comentarios' => $this->bpm->ObtenerComentarios($tarea->caseId)];
+        $this->load->view(BPM . 'tareas/componentes/comentarios', $data_aux);
+    }
+
+    /**
+     * Carga diferida de linea de tiempo para las pestañas Trazabilidad e Información
+     * @param integer $taskId id de la tarea en Bonita
+     */
+    public function cargarTimeline($taskId)
+    {
+        $tarea = $this->Procesos->obtener($taskId);
+
+        if (!$tarea) {
+            http_response_code(404);
+            echo json_encode(['status' => false, 'timeline' => '', 'info' => '']);
+            return;
+        }
+
+        $timeline = $this->bpm->ObtenerLineaTiempo($tarea->processId, $tarea->caseId);
+
+        if (!isset($timeline['listAct']) || !is_array($timeline['listAct'])) {
+            $timeline['listAct'] = [];
+        }
+        if (!isset($timeline['listArch']) || !is_array($timeline['listArch'])) {
+            $timeline['listArch'] = [];
+        }
+
+        ob_start();
+        timeline($timeline);
+        $htmlTimeline = ob_get_clean();
+
+        ob_start();
+        timelineInfoActual($timeline);
+        $htmlInfo = ob_get_clean();
+
+        echo json_encode([
+            'status' => true,
+            'timeline' => $htmlTimeline,
+            'info' => $htmlInfo
+        ]);
+    }
+
     /**
 	* Le asigna la tarea enviada al userId en bonita 
 	* @param integer id de la tarea en bonita

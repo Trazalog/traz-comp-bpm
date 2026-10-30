@@ -29,15 +29,24 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" id="tab_1">
-            <?php echo timelineInfoActual($timeline) ?>
+            <div id="contenedor_info_actual" class="text-center text-muted" style="padding: 40px;">
+                <i class="fa fa-refresh fa-spin fa-2x"></i>
+                <p style="margin-top: 10px;">Cargando información del proceso...</p>
+            </div>
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_2">
-            <?php echo $comentarios ?>
+            <div id="contenedor_comentarios" class="text-center text-muted" style="padding: 40px;">
+                <i class="fa fa-refresh fa-spin fa-2x"></i>
+                <p style="margin-top: 10px;">Cargando comentarios...</p>
+            </div>
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_3">
-            <?php echo timeline($timeline) ?>
+            <div id="contenedor_trazabilidad" class="text-center text-muted" style="padding: 40px;">
+                <i class="fa fa-refresh fa-spin fa-2x"></i>
+                <p style="margin-top: 10px;">Cargando trazabilidad...</p>
+            </div>
         </div>
         <!-- /.tab-pane -->
         <div class="tab-pane" id="tab_5">
@@ -71,6 +80,55 @@
 <script>
 var task = <?php echo json_encode($tarea) ?>;
 var nombreTarea = task.nombreTarea;
+
+////////////////////////////////////////////////////////
+//Carga diferida de Comentarios, Trazabilidad e Información
+var cargadoComentarios = false;
+var cargadoTimeline = false;
+var $tabsTarea = $('#view').closest('.nav-tabs-custom');
+
+$tabsTarea.on('shown.bs.tab', 'a[data-toggle="tab"]', function(e) {
+    var target = $(e.target).attr('href');
+
+    if (target === '#tab_2' && !cargadoComentarios) {
+        cargadoComentarios = true;
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo base_url(BPM) ?>Proceso2/cargarComentarios/' + task.taskId,
+            success: function(html) {
+                $('#tab_2').html(html);
+            },
+            error: function() {
+                cargadoComentarios = false;
+                $('#tab_2').html('<div class="alert alert-danger" style="margin:20px;"><i class="fa fa-exclamation-triangle"></i> Error al cargar comentarios.</div>');
+            }
+        });
+    }
+
+    if ((target === '#tab_3' || target === '#tab_1') && !cargadoTimeline) {
+        cargadoTimeline = true;
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '<?php echo base_url(BPM) ?>Proceso2/cargarTimeline/' + task.taskId,
+            success: function(res) {
+                if (res && res.status) {
+                    $('#tab_3').html(res.timeline);
+                    $('#tab_1').html(res.info);
+                } else {
+                    cargadoTimeline = false;
+                    $('#tab_3').html('<div class="alert alert-danger" style="margin:20px;"><i class="fa fa-exclamation-triangle"></i> Error al cargar trazabilidad.</div>');
+                    $('#tab_1').html('<div class="alert alert-danger" style="margin:20px;"><i class="fa fa-exclamation-triangle"></i> Error al cargar información.</div>');
+                }
+            },
+            error: function() {
+                cargadoTimeline = false;
+                $('#tab_3').html('<div class="alert alert-danger" style="margin:20px;"><i class="fa fa-exclamation-triangle"></i> Error de conexión al cargar trazabilidad.</div>');
+                $('#tab_1').html('<div class="alert alert-danger" style="margin:20px;"><i class="fa fa-exclamation-triangle"></i> Error de conexión al cargar información.</div>');
+            }
+        });
+    }
+});
 
 if (nombreTarea === "Entrega pedido pendiente") {
     $("#btncerrarTarea").removeAttr("style");

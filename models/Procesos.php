@@ -156,7 +156,9 @@ class Procesos extends CI_Model
 
     public function obtener($id)
     {
-        return $this->mapeo(array($this->bpm->getTarea($id)['data']))[0];
+        $tareas = $this->mapeo(array($this->bpm->getTarea($id)['data']));
+
+        return !empty($tareas) ? $tareas[0] : null;
     }
 
     public function editar($id, $data)
@@ -176,7 +178,57 @@ class Procesos extends CI_Model
 	*/
     public function mapProcess($processId){
         $aux = json_decode(BPM_PROCESS,'true');
-       
+
         return isset($aux[$processId])?$aux[$processId]:array('proyecto'=>'', 'model'=>'Gentareas');
+    }
+
+    public function mapProcessV2($processId){
+        static $cache = [];
+
+        if (!array_key_exists($processId, $cache)) {
+            log_message('DEBUG', '#TRAZA | #PROCESOS | mapProcessV2 | MISS >> ' . $processId);
+            $cache[$processId] = $this->mapProcess($processId);
+        } else {
+            log_message('DEBUG', '#TRAZA | #PROCESOS | mapProcessV2 | HIT >> ' . $processId);
+        }
+
+        return $cache[$processId];
+    }
+
+    public function mapeoV2($data){
+        $array = [];
+        $empr_id = empresa();
+
+        foreach ($data as $o) {
+            $process = $this->mapProcessV2($o['processId']);
+
+            if(bandejaEmpresa($o['caseId'], $empr_id)){
+
+                $aux = new StdClass();
+                $aux->taskId = $o['id'];
+                $aux->caseId = $o['caseId'];
+                $aux->processId = $o['processId'];
+                $aux->nombreTarea = $o['displayName'];
+                $aux->nombreProceso = $process?$process['nombre']:'';
+                $aux->color = $o['state'] == 'failed'?'#d33724': ($process?$process['color']:'');
+                $aux->descripcion = '-';
+                $aux->fec_vencimiento = $o['dueDate'];
+                $aux->usuarioAsignado = 'Nombre Apellido';
+                $aux->idUsuarioAsignado = $o['assigned_id'];
+                $aux->fec_asignacion = $o['assigned_date'];
+                $aux->prioridad = $o['priority'];
+
+                $array[] = $aux;
+            }
+        }
+
+        return $array;
+    }
+
+    public function obtenerV2($id)
+    {
+        $tareas = $this->mapeoV2(array($this->bpm->getTarea($id)['data']));
+
+        return !empty($tareas) ? $tareas[0] : null;
     }
 }

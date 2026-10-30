@@ -6,7 +6,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <i class="fa fa-list"></i>
-                    Bandeja de Tareas 2 <small>(paginado y búsqueda en la base)</small>
+                    Bandeja de Tareas
                 </h3>
             </div>
             <div class="box-body table-responsive">
@@ -104,14 +104,25 @@ $(document).ready( function () {
     });
 });
 
-$(document).on('click', '.item', function() {
+// Delegado en la tabla, no en document: la tabla se destruye al navegar, así el handler no se acumula
+var detalleTareaXhr = null;
+$('#tareas').on('click', 'tr.item', function() {
     var id = $(this).attr('id');
+    // Guard: si ya se está cargando esta misma tarea, ignorar el clic; si es otra, abortar la anterior
+    if (detalleTareaXhr && detalleTareaXhr.taskId === id) return;
+    if (detalleTareaXhr) detalleTareaXhr.abort();
     wo();
     $('body').addClass('sidebar-collapse');
     $('.oculto').hide();
     $('#bandeja').removeClass().addClass('hidden-xs col-sm-4');
-    $('#miniView').load('<?php echo BPM ?>Proceso2/detalleTarea/' + id, function(){
-        wc();   
+    var xhr = $.get('<?php echo BPM ?>Proceso2/detalleTarea/' + id);
+    xhr.taskId = id;
+    detalleTareaXhr = xhr;
+    xhr.done(function(html) {
+    $('#miniView').html(html);
+    }).always(function() {
+    if (detalleTareaXhr === xhr) detalleTareaXhr = null;
+    wc();
     });
 });
 
