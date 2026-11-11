@@ -51,7 +51,7 @@ function tomarTarea() {
             wc();
             debugger;
             var nombreTarea = task.nombreTarea;
-        if (nombreTarea === "Tarea Generica"){    
+        if (esTareaGenerica){    
             if (data['status']) {
                 habilitarInicioTareaEstandar();
             } else {
@@ -84,7 +84,7 @@ function soltarTarea() {
         success: function(data) {
             debugger;
             var nombreTarea = task.nombreTarea;
-     if (nombreTarea ==="Tarea Generica"){    
+     if (esTareaGenerica){    
         if (data['status']) {
             $("#btnIniciar_tarea").hide();
             $("#btnHecho").removeAttr("style");

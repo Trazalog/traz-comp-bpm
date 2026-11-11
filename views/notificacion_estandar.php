@@ -80,6 +80,8 @@
 <script>
 var task = <?php echo json_encode($tarea) ?>;
 var nombreTarea = task.nombreTarea;
+// La tarea planificada (TST001) llega con el nombre de la tarea, no "Tarea Generica": se reconoce por su proceso
+var esTareaGenerica = nombreTarea === "Tarea Generica" || task.processId == '<?php echo defined('BPM_PROCESS_ID_TAREA_GENERICA') ? BPM_PROCESS_ID_TAREA_GENERICA : '' ?>';
 
 ////////////////////////////////////////////////////////
 //Carga diferida de Comentarios, Trazabilidad e Información
@@ -135,7 +137,7 @@ if (nombreTarea === "Entrega pedido pendiente") {
     $("#btnHecho").removeAttr("style");
     $("#btnHecho").prop('disabled', false);
 
-} else if (nombreTarea ==="Tarea Generica"){
+} else if (esTareaGenerica){
     // $btn-soltar
     $("#btnHecho").removeAttr("style");
     $("#btnHecho").text("Finalizar tarea");
@@ -152,14 +154,12 @@ $('.fecha').datepicker({
 });
 
 var case_id = task.caseId;
-var date = moment(); 
-var fec_inicio = String(date.format("YYYY-MM-DD HH:MM:s")); 
-var fec_fin = String(date.format("YYYY-MM-DD HH:MM:s")); 
+// La hora real de inicio y de fin la pone el servidor al recibir el clic (Tarea/iniciarTareaPlanificada)
 
 ////////////////////////////////////////////////////////
 //Inicia la tarea tomada en notificacion estandar
 function IniciarTarea() {
-    url = '<?php echo TST ?>Tarea/iniciarTareaPlanificada/'+fec_inicio+'/'+case_id;
+    url = '<?php echo TST ?>Tarea/iniciarTareaPlanificada/0/'+case_id;
     $.ajax({
         type: 'POST',
         url: url,
@@ -188,7 +188,7 @@ function IniciarTarea() {
 ////////////////////////////////////////////////////////
 //Termina la tarea tomada en notificacion estandar
 function TerminarTarea() {
-   url = '<?php echo TST ?>Tarea/terminarTareaPlanificada/'+fec_fin+'/'+case_id,
+   url = '<?php echo TST ?>Tarea/terminarTareaPlanificada/0/'+case_id;
     $.ajax({
         type: 'POST',
         url: url,
@@ -218,8 +218,8 @@ function TerminarTarea() {
 ////////////////////////////////////////////////////////
 //cerrar tarea en notificacion estandar
 function CerrarTarea() {
-    if (nombreTarea ==="Tarea Generica"){
-        terminarTareaPlanificada();
+    if (esTareaGenerica){
+        TerminarTarea();
         var caseid = task.caseId;
         var taskid = task.taskId;
         $.ajax({
