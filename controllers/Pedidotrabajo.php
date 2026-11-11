@@ -367,6 +367,7 @@ public function cargar_formulario_asociado(){
 
         $data['_delete_pedidotrabajo'] = array(
             'petr_id' => $petr_id,
+            'empr_id' => empresa(),
         );
 
         $rsp = $this->Pedidotrabajos->eliminarPedidoTrabajo($data);
