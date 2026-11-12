@@ -176,7 +176,7 @@ class Pedidotrabajos extends CI_Model
 
     public function obtenerHito($hitoId)
     {
-        $url = REST_TST . "/hitos/$hitoId";
+        $url = REST_TST . "/hitos/$hitoId?empr_id=" . empresa();
         return wso2($url);
     }
 
