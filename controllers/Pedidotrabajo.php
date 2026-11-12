@@ -577,19 +577,19 @@ public function cargar_formulario_asociado(){
             $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$myData);
         }
 
-		$datos =$r['datos'];
-		$totalDatos = $r['numDataTotal'];
-		$datosPagina = count($datos);
+		// Sin pedidos el model no trae 'datos' ni 'numDataTotal': se responde una grilla vacía válida
+		$datos = (isset($r['datos']) && is_array($r['datos'])) ? array_values($r['datos']) : array();
+		$totalDatos = isset($r['numDataTotal']) ? intval($r['numDataTotal']) : 0;
 
 		$json_data = array(
 			"draw" 				=> intval($this->input->post('draw')),
-			"recordsTotal"  	=> intval($datosPagina),
+			"recordsTotal"  	=> $totalDatos, // total de pedidos, no el tamaño de la página
 			"recordsFiltered"	=> intval($totalDatos),
 			"data" 				=> $datos,
-            "filtro" => $r['filtro'],
-            "estadoFinal" => $r['estadoFinal'],
+            "filtro" => isset($r['filtro']) ? $r['filtro'] : '',
+            "estadoFinal" => isset($r['estadoFinal']) ? $r['estadoFinal'] : '',
             'search' => $search,
-            "mydata" => $r['mydata']
+            "mydata" => isset($r['mydata']) ? $r['mydata'] : null
             
 		);
 		echo json_encode($json_data);
