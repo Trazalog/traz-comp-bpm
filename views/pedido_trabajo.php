@@ -245,20 +245,11 @@ $proccessname = $this->session->userdata('proccessname');
 					contentType: false,
 					processData: false,
 					success: function(rsp) {
-					var result = rsp.status.toString(); 
-
-					var pedido = rsp.data
-						var num_pedido = JSON.parse(pedido);
-				
-					
-					console.log('status esta en saliendo por success:' + result);
-
-					console.log('se genero pedido numero:' + num_pedido);
-
-					var petr_id = num_pedido.respuesta['petr_id'];
-
+					// Si el alta falla el servidor no trae respuesta del servicio: no se parsea a ciegas
+					var petr_id = '';
+					try { petr_id = JSON.parse(rsp.data).respuesta.petr_id; } catch (e) { rsp.status = false; }
 					$('#petr_id').val(petr_id);
-				
+
 							if (rsp.status) {
 							
 							
@@ -308,6 +299,11 @@ $proccessname = $this->session->userdata('proccessname');
 									}
 									})
 											} 
+								if(proccesname != 'SEIN-SERVICIOS-INDUSTRIALES' && proccesname != 'YUDI-NEUMATICOS'){
+									Swal.fire('Hecho!', 'Pedido de trabajo Número: ' + petr_id + ' generado con éxito', 'success');
+									resetFormAndSelect2();
+									if (typeof ActualizaTabla === 'function') ActualizaTabla();
+								}
 								if(proccesname == 'YUDI-NEUMATICOS'){
 										
 
@@ -352,7 +348,7 @@ $proccessname = $this->session->userdata('proccessname');
 							} else {
 									Swal.fire(
 											'Oops...',
-											'No se Guardo Pedido de Trabajo',
+											'No se Guardo Pedido de Trabajo. Revise que el código no esté repetido en la empresa.',
 											'error'
 									)
 									console.log("Error al guardar Formulario de Pedido de trabajo");

@@ -256,6 +256,9 @@ public function cargar_formulario_asociado(){
 
             log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
+            // La pantalla espera JSON: sin esto el usuario no recibe ningún aviso (p.ej. código repetido)
+            echo json_encode(array('status' => false, 'msj' => 'No se guardó el pedido de trabajo', 'data' => null));
+
             $this->eliminarPedidoTrabajo($petr_id);
 
             return $rsp;
