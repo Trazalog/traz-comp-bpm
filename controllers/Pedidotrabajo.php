@@ -259,7 +259,12 @@ public function cargar_formulario_asociado(){
             // La pantalla espera JSON: sin esto el usuario no recibe ningún aviso (p.ej. código repetido)
             echo json_encode(array('status' => false, 'msj' => 'No se guardó el pedido de trabajo', 'data' => null));
 
-            $this->eliminarPedidoTrabajo($petr_id);
+            // Si el alta falló no hay pedido que borrar; y si lo hay, su respuesta no se mezcla con la de arriba
+            if (!empty($petr_id)) {
+                ob_start();
+                $this->eliminarPedidoTrabajo($petr_id);
+                ob_end_clean();
+            }
 
             return $rsp;
 
@@ -580,6 +585,8 @@ public function cargar_formulario_asociado(){
 		// Sin pedidos el model no trae 'datos' ni 'numDataTotal': se responde una grilla vacía válida
 		$datos = (isset($r['datos']) && is_array($r['datos'])) ? array_values($r['datos']) : array();
 		$totalDatos = isset($r['numDataTotal']) ? intval($r['numDataTotal']) : 0;
+		// Sin filas en la primera página no hay pedidos (el servicio vacío no es una lista y contaba 1)
+		if (empty($datos) && intval($start) == 0) $totalDatos = 0;
 
 		$json_data = array(
 			"draw" 				=> intval($this->input->post('draw')),
