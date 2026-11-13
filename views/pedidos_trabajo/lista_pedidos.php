@@ -100,6 +100,8 @@ function selectPeta(id, codigo) {
     s_pema = id;
     $('peta').html(codigo);
     reload('comp#hitos', id);
+    reload('comp#metas', id);
+    $('#box-metas comp#metas').nextAll().remove();
     emptyTareas();
 }
 </script>
