@@ -256,7 +256,15 @@ public function cargar_formulario_asociado(){
 
             log_message('ERROR', '#TRAZA | #BPM |Pedido Trabajo | guardarPedidoTrabajo  >> ERROR al guardar pedido de trabajo Status false');
 
-            $this->eliminarPedidoTrabajo($petr_id);
+            // La pantalla espera JSON: sin esto el usuario no recibe ningún aviso (p.ej. código repetido)
+            echo json_encode(array('status' => false, 'msj' => 'No se guardó el pedido de trabajo', 'data' => null));
+
+            // Si el alta falló no hay pedido que borrar; y si lo hay, su respuesta no se mezcla con la de arriba
+            if (!empty($petr_id)) {
+                ob_start();
+                $this->eliminarPedidoTrabajo($petr_id);
+                ob_end_clean();
+            }
 
             return $rsp;
 
@@ -580,19 +588,21 @@ public function cargar_formulario_asociado(){
             $r = $this->Pedidotrabajos->pedidosTrabajoPaginados($start,$length,$search,$myData);
         }
 
-		$datos =$r['datos'];
-		$totalDatos = $r['numDataTotal'];
-		$datosPagina = count($datos);
+		// Sin pedidos el model no trae 'datos' ni 'numDataTotal': se responde una grilla vacía válida
+		$datos = (isset($r['datos']) && is_array($r['datos'])) ? array_values($r['datos']) : array();
+		$totalDatos = isset($r['numDataTotal']) ? intval($r['numDataTotal']) : 0;
+		// Sin filas en la primera página no hay pedidos (el servicio vacío no es una lista y contaba 1)
+		if (empty($datos) && intval($start) == 0) $totalDatos = 0;
 
 		$json_data = array(
 			"draw" 				=> intval($this->input->post('draw')),
-			"recordsTotal"  	=> intval($datosPagina),
+			"recordsTotal"  	=> $totalDatos, // total de pedidos, no el tamaño de la página
 			"recordsFiltered"	=> intval($totalDatos),
 			"data" 				=> $datos,
-            "filtro" => $r['filtro'],
-            "estadoFinal" => $r['estadoFinal'],
+            "filtro" => isset($r['filtro']) ? $r['filtro'] : '',
+            "estadoFinal" => isset($r['estadoFinal']) ? $r['estadoFinal'] : '',
             'search' => $search,
-            "mydata" => $r['mydata']
+            "mydata" => isset($r['mydata']) ? $r['mydata'] : null
             
 		);
 		echo json_encode($json_data);

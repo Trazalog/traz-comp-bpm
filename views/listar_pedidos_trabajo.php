@@ -842,6 +842,8 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             // tabla.destroy();
             $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
+                // Igual que la carga inicial: los más nuevos primero (si no, el pedido recién creado queda en la última página)
+                order: [[1, 'desc']],
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
                 responsive: true,
@@ -1068,6 +1070,8 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             // tabla.destroy();
             $('#tbl-pedidos').DataTable().destroy();
             $('#tbl-pedidos').DataTable({
+                // Igual que la carga inicial: los más nuevos primero (si no, el pedido recién creado queda en la última página)
+                order: [[1, 'desc']],
                 //Funcion de datatable para extencion de botones exportar
                 //excel, pdf, copiado portapapeles e impresion
                 responsive: true,
