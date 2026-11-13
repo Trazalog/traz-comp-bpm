@@ -450,6 +450,124 @@ public function cargar_formulario_asociado(){
         }
     }
 
+    /**
+     * Metas del pedido y de sus hitos sobre los KPI de la empresa (TAR-METAS).
+     * Las carga quien planifica el pedido (decisión PM 2026-11-12). La empresa sale de la sesión;
+     * que el pedido y el hito sean de la empresa lo valida kpi.objetivo_guardar().
+     * GET Pedidotrabajo/metas/{petr_id} -> vista con la lista y el formulario
+     */
+    public function metas($petrId = null)
+    {
+        if (!ctype_digit((string) $petrId)) {
+            echo '';
+            return;
+        }
+        $this->load->model('Objetivos_model');
+        $data['petr_id'] = $petrId;
+        $data['metas'] = $this->Objetivos_model->dePedido($petrId, array($this, '_valorKpiMan'));
+        $data['kpis'] = array_values($this->Objetivos_model->kpisDisponibles());
+        $hitos = $this->Pedidotrabajos->obtenerHitosXPedido($petrId);
+        $data['hitos'] = ($hitos['status'] && is_array($hitos['data'])) ? $hitos['data'] : array();
+        $this->load->view('pedidos_trabajo/metas_pedido', $data);
+    }
+
+    /**
+     * POST Pedidotrabajo/guardarMeta/{petr_id} — kpi, operador, meta, hasta[, hito_id, responsable]
+     * Responde JSON {ok, objetivo_id | error}
+     */
+    public function guardarMeta($petrId = null)
+    {
+        $this->load->model('Objetivos_model');
+        $kpis = $this->Objetivos_model->kpisDisponibles();
+        $kpi = (string) $this->input->post('kpi');
+        $operador = (string) $this->input->post('operador');
+        $meta = str_replace(',', '.', trim((string) $this->input->post('meta')));
+        $hasta = (string) $this->input->post('hasta');
+        $hito = (string) $this->input->post('hito_id');
+        $responsable = trim((string) $this->input->post('responsable'));
+
+        $error = '';
+        if (strtoupper($this->input->method()) !== 'POST' || !ctype_digit((string) $petrId)) {
+            $error = 'Pedido inválido.';
+        } elseif (!isset($kpis[$kpi])) {
+            $error = 'Elegí un indicador de la lista.';
+        } elseif ($operador !== '>=' && $operador !== '<=') {
+            $error = 'Elegí si el indicador tiene que subir o bajar hasta la meta.';
+        } elseif (!is_numeric($meta)) {
+            $error = 'La meta tiene que ser un número.';
+        } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $hasta) || $hasta < date('Y-m-d')) {
+            $error = 'La fecha límite tiene que ser hoy o más adelante.';
+        } elseif ($hito !== '' && !ctype_digit($hito)) {
+            $error = 'Hito inválido.';
+        } elseif (strlen($responsable) > 255) {
+            $error = 'El responsable es demasiado largo.';
+        }
+        if ($error !== '') {
+            echo json_encode(array('ok' => false, 'error' => $error));
+            return;
+        }
+
+        // Línea base: el valor de hoy. Los KPIs de tools la toma la base del motor de KPIs;
+        // los de Mantenimiento se leen de AssetPlanner y se mandan.
+        $base = null;
+        if ($kpis[$kpi]['fuente'] === 'man') {
+            $base = $this->_valorKpiMan($kpi);
+        }
+        log_message('DEBUG', "#TRAZA | #BPM | Pedidotrabajo | guardarMeta() >> petr_id $petrId hito '$hito' $kpi $operador $meta hasta $hasta base " . var_export($base, true));
+        $r = $this->Objetivos_model->guardar(array(
+            'kpi'           => $kpi,
+            'fuente'        => $kpis[$kpi]['fuente'],
+            'operador'      => $operador,
+            'meta'          => $meta,
+            'hasta'         => $hasta,
+            'responsable'   => $responsable,
+            'propuesto_por' => 'usuario',
+            'petr_id'       => $petrId,
+            'hito_id'       => $hito,
+            'linea_base'    => $base,
+        ));
+        echo json_encode($r);
+    }
+
+    /**
+     * POST Pedidotrabajo/cancelarMeta/{petr_id}/{objetivo_id} — solo metas de ese pedido
+     * (las metas generales de la empresa las maneja el administrador desde el Tablero).
+     */
+    public function cancelarMeta($petrId = null, $objetivoId = null)
+    {
+        if (strtoupper($this->input->method()) !== 'POST' || !ctype_digit((string) $petrId) || !ctype_digit((string) $objetivoId)) {
+            echo json_encode(array('ok' => false, 'error' => 'Pedido inválido.'));
+            return;
+        }
+        $this->load->model('Objetivos_model');
+        $esDelPedido = false;
+        foreach ($this->Objetivos_model->dePedido($petrId) as $m) {
+            if ($m['objetivo_id'] === (string) $objetivoId) {
+                $esDelPedido = true;
+                break;
+            }
+        }
+        if (!$esDelPedido) {
+            echo json_encode(array('ok' => false, 'error' => 'La meta no es de este pedido.'));
+            return;
+        }
+        $n = $this->Objetivos_model->cancelar($objetivoId);
+        echo json_encode(array('ok' => $n > 0, 'error' => $n > 0 ? '' : 'No se pudo cancelar la meta.'));
+    }
+
+    /** Valor actual de un KPI de Mantenimiento (AssetPlanner) o null si la empresa no tiene datos. */
+    public function _valorKpiMan($kpi)
+    {
+        $this->load->model('Objetivos_model');
+        $kpis = $this->Objetivos_model->kpisDisponibles();
+        if (!isset($kpis[$kpi]) || $kpis[$kpi]['fuente'] !== 'man') {
+            return null;
+        }
+        $this->load->model('Dashs');
+        $r = $this->Dashs->obtenerKpiMan($kpis[$kpi]['kpi_nombre']);
+        return (isset($r['valor']) && $r['valor'] !== null && $r['valor'] !== '') ? (float) $r['valor'] : null;
+    }
+
     public function hito($hitoId = false)
     {  
         if($hitoId){

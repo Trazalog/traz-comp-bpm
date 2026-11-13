@@ -75,6 +75,20 @@
 
         <!-- Tareas Planificar -->
         <div class="col-md-8">
+            <!-- Metas del pedido (TAR-METAS) -->
+            <div class="box box-primary w-box" id="box-metas">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Metas del pedido</h3>
+                    <h3 class="box-title pull-right"><cite><peta></peta></cite></h3>
+                </div>
+                <div class="box-body">
+                    <?php echo comp('metas', base_url(BPM.'Pedidotrabajo/metas')) ?>
+                    <div class="text-center">
+                        <cite>Selecciona un <b>Pedido de Trabajo</b> para ver y cargar sus metas sobre los indicadores de la empresa.</cite>
+                    </div>
+                </div>
+            </div>
+            <!-- / Metas del pedido -->
             <!-- <tareas>
                 <script>
                 $('tareas').load('<?php #echo base_url(TST) ?>Tarea/planificar/BATCH/0');
