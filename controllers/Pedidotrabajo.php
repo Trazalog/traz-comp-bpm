@@ -32,7 +32,16 @@ class Pedidotrabajo extends CI_Controller
 
         parse_str($components['query'], $results);
     
-        $proccessname = $results['proccessname']; 
+        $proccessname = isset($results['proccessname']) ? $results['proccessname'] : '';
+
+        // El menú "Pedidos Trabajo" es uno solo para todas las empresas y apunta a un proceso fijo
+        // (hoy YUDI-NEUMATICOS). Si la empresa no tiene ese proceso configurado en pro.procesos, se usa
+        // el proceso estándar de pedidos (decisión PM 2026-11-13). Las empresas que sí lo tienen
+        // (Yudica, SEIN, ...) siguen igual.
+        if ($proccessname == '' || !$this->procesoDeLaEmpresa($proccessname)) {
+            log_message('DEBUG', "#TRAZA | #BPM | Pedidotrabajo | index() >> la empresa " . empresa() . " no tiene el proceso '$proccessname': usa " . PRO_STD);
+            $proccessname = PRO_STD;
+        }
 
         $this->session->set_userdata('proccessname', $proccessname);
 
@@ -40,6 +49,17 @@ class Pedidotrabajo extends CI_Controller
       $this->load->view('listar_pedidos_trabajo', $data);
     }
 
+
+    /**
+     * Indica si la empresa de la sesión tiene configurado el proceso (pro.procesos, no eliminado).
+     * @param string $proccessname
+     * @return boolean
+     */
+    private function procesoDeLaEmpresa($proccessname)
+    {
+        $rsp = $this->Pedidotrabajos->procesos($proccessname);
+        return isset($rsp->proceso) && !empty($rsp->proceso->nombre);
+    }
 
     //carga la vista de pedido trabajo
     //
