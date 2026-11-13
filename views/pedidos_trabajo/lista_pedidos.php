@@ -71,6 +71,8 @@ function finalizarTrabajo(obj) {
                     $(obj).find('estado').html('Finalizado');
                     $(obj).closest('tr').find('.btn').css('opacity', '0.3');
                 }
+            } else {
+                error('Error!', res.msj ? res.msj : 'No se pudo marcar el trabajo como terminado');
             }
         },
         error: function(res) {

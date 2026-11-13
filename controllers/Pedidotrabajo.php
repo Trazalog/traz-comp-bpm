@@ -469,6 +469,12 @@ public function cargar_formulario_asociado(){
         log_message('DEBUG','#TRAZA | TRAZ-COMP-BPM | Pedidotrabajo | finalizarTrabajo()');
         $post  = $this->input->post();
         $proceso = $this->Pedidotrabajos->procesos($post['proc_id'])->proceso;
+        // Un pedido del proceso estándar no abre caso propio en Bonita: solo cambia de estado
+        if (empty($post['case_id']) || $proceso->lanzar_bpm == "false" || $proceso->lanzar_bpm === false) {
+            $rsp = $this->Pedidotrabajos->cambiarEstado($post['petr_id'], $post['estado']);
+            echo json_encode($rsp);
+            return;
+        }
         $taskObtenido = $this->bpm->ObtenerTaskidXNombre($proceso->nombre_bpm,$post['case_id'], TAREA_IT);
         if(!empty($taskObtenido)){
             $aux = $this->bpm->setUsuario($taskObtenido,userId());

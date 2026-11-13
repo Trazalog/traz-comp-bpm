@@ -157,6 +157,14 @@ $proccessname = $this->session->userdata('proccessname');
 				$proccessname = PRO_STD;
 				$form_id = $this->Pedidotrabajos->procesos($proccessname)->proceso->form_id;
 			}
+
+			// Sin formulario en el proceso, la empresa puede asociar uno por Lista de Valores
+			// (configuraciones / formulario_pedido_trabajo). Si tampoco hay, el pedido se guarda sin formulario.
+			if(empty($form_id)){
+				$ci =& get_instance();
+				$ci->load->model('core/Valores');
+				$form_id = $ci->Valores->getTablaValor('configuraciones', 'formulario_pedido_trabajo');
+			}
 		
 			echo (!empty($form_id)) ? '<div class="frm-new" data-form="'.$form_id.'"></div>' : '<div class="frm-new" data-form="0"></div>';
 			
