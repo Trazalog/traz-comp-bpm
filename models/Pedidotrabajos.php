@@ -170,8 +170,36 @@ class Pedidotrabajos extends CI_Model
 
     public function obtenerHitosXPedido($petrId)
     {
-        $url = REST_TST . "/pedidostrabajo/hitos/$petrId";
+        $url = REST_TST . "/pedidostrabajo/hitos/$petrId?empr_id=" . empresa();
         return wso2($url);
+    }
+
+    /**
+     * Indica si el pedido tiene alguna tarea planificada con responsable o con caso abierto en BPM.
+     * Si no se pueden leer los hitos responde true: ante la duda el pedido no se borra.
+     * @param integer $petrId
+     * @return boolean
+     */
+    public function tieneTareasAsignadas($petrId)
+    {
+        $rsp = $this->obtenerHitosXPedido($petrId);
+        if (!$rsp['status']) {
+            log_message('ERROR', "#TRAZA | #BPM | Pedidotrabajos | tieneTareasAsignadas() >> no se pudieron leer los hitos del pedido $petrId");
+            return true;
+        }
+        $hitos = is_array($rsp['data']) ? $rsp['data'] : array();
+        foreach ($hitos as $hito) {
+            $tareas = isset($hito->tareas->tarea) ? $hito->tareas->tarea : array();
+            if (is_object($tareas)) $tareas = array($tareas);
+            foreach ((array) $tareas as $tarea) {
+                $caso = isset($tarea->case_id) ? trim($tarea->case_id) : '';
+                $usuario = isset($tarea->user_id) ? trim($tarea->user_id) : '';
+                if (($usuario !== '' && $usuario !== 'null') || ($caso !== '' && $caso !== '0' && $caso !== 'null')) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function obtenerHito($hitoId)

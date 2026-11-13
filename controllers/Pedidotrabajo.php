@@ -373,6 +373,14 @@ public function cargar_formulario_asociado(){
             $petr_id =  $this->input->post('petr_id');
         }
 
+        // Un pedido con tareas ya asignadas no se borra: queda como trazabilidad (decisión PM 2026-11-12, bpm #9).
+        // Las llamadas internas (deshacer un alta que falló) pasan el petr_id como argumento y no se frenan.
+        if (func_num_args() == 0 && $this->Pedidotrabajos->tieneTareasAsignadas($petr_id)) {
+            log_message('DEBUG', "#TRAZA | #BPM | Pedido Trabajo | eliminarPedidoTrabajo() >> petr_id $petr_id tiene tareas asignadas, no se elimina");
+            echo json_encode(array('status' => false, 'bloqueado' => true, 'msj' => 'El pedido tiene tareas asignadas y no se puede eliminar: queda registrado para trazabilidad.'));
+            return;
+        }
+
         $data['_delete_pedidotrabajo'] = array(
             'petr_id' => $petr_id,
             'empr_id' => empresa(),

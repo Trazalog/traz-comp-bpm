@@ -502,6 +502,12 @@ $this->load->view('pedidos_trabajo/mdl_pedidos_trabajo');
             url: '<?php base_url() ?>index.php/<?php echo BPM ?>Pedidotrabajo/eliminarPedidoTrabajo/?petr_id=' +
                 petr_id + '&case_id=' + case_id,
             success: function(rsp) {
+                var r = null;
+                try { r = (typeof rsp === 'string') ? JSON.parse(rsp) : rsp; } catch (e) {}
+                if (r && r.bloqueado) {
+                    Swal.fire('No se puede eliminar', r.msj, 'warning');
+                    return;
+                }
                 linkTo();
                 setTimeout(() => {
                     hecho('Perfecto!', 'Se Elimino Pedido Correctamente!');
